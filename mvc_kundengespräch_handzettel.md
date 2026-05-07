@@ -24,12 +24,12 @@ Am Ende **[8]** soll eine Highscore-Liste erscheinen, auf der **[9]** die fünf 
 | # | Unterstrichene Stelle | M / V / C | Begründung |
 |---|---|----------|---|
 | 1 | Die Kinder sollen ihren Namen eingeben |   M       | Name ist ein Datenpunkt,wird gespeichert und weiterverwendet|
-| 2 | Aufgabe erscheint groß in der Mitte |          | |
-| 3 | Kind gibt Antwort ein, klickt auf ‚Prüfen' |          | |
-| 4 | Grünes Häkchen + Punktestand erhöhen |          | |
-| 5 | Roter Rahmen um Eingabefeld |          | |
-| 6 | Das Spiel endet irgendwann |          | |
-| 7 | Schüler sieht seinen Endpunktestand |          | |
-| 8 | Highscore-Liste erscheint |          | |
-| 9 | Fünf beste Ergebnisse gespeichert |          | |
-| 10 | Klick auf ‚Nochmal spielen' setzt zurück |          | |
+| 2 | Aufgabe erscheint groß in der Mitte |       V   |Reine Darstellung |
+| 3 | Kind gibt Antwort ein, klickt auf ‚Prüfen' |   C       | Nutzeraktion löst Verarbeitungslogik aus|
+| 4 | Grünes Häkchen + Punktestand erhöhen |      M V    | Punktstand speichern=m , Häkchen anzeigen = V|
+| 5 | Roter Rahmen um Eingabefeld |        V  | Visuelle Rückmeldung|
+| 6 | Das Spiel endet irgendwann |        C  | Spiellogik entscheidet wann und unter welcher Bedingung|
+| 7 | Schüler sieht seinen Endpunktestand |     V     | Darstellung eines Datenwerts |
+| 8 | Highscore-Liste erscheint |       V   | Darstellung der Liste|
+| 9 | Fünf beste Ergebnisse gespeichert |      M    | Datenbank|
+| 10 | Klick auf ‚Nochmal spielen' setzt zurück |         C | Verarbeitungslogik|
