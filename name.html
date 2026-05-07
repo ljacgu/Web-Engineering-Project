@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Math Dungeon RPG</title>
+
+  <link rel="stylesheet" href="style.css" href="">
+</head>
+<body>
+
+  <!-- STARTSCREEN -->
+  <section id="start-screen" class="screen">
+
+    <div class="card">
+
+      <h1>⚔️ Math Dungeon RPG</h1>
+
+      <input 
+        type="text" 
+        id="player-name"
+        placeholder="Heldenname eingeben..."
+        aria-label="Spielername eingeben"
+      >
+
+      <button id="start-btn">
+        Abenteuer starten
+      </button>
+
+    </div>
+
+  </section>
+
+  <!-- SPIELSCREEN -->
+  <section id="game-screen" class="screen hidden">
+
+    <div class="top-bar">
+
+      <div>🧙 Held: <span id="name-output"></span></div>
+
+      <div>❤️❤️❤️</div>
+
+      <div>⭐ Punkte: <span id="score">0</span></div>
+
+    </div>
+
+    <div class="game-card">
+
+      <h2>Zahlen-Dungeon</h2>
+
+      <p id="task">12 + 7 = ?</p>
+
+      <input 
+        type="number"
+        id="answer-input"
+        placeholder="Antwort..."
+        aria-label="Antwort eingeben"
+      >
+
+      <button id="check-btn">
+        Prüfen
+      </button>
+
+      <p id="message"></p>
+
+    </div>
+
+  </section>
+
+  <script src="logik.js"></script>
+
+</body>
+</html>
