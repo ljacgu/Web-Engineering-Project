@@ -23,7 +23,7 @@ Am Ende **[8]** soll eine Highscore-Liste erscheinen, auf der **[9]** die fünf 
 
 | # | Unterstrichene Stelle | M / V / C | Begründung |
 |---|---|----------|---|
-| 1 | Die Kinder sollen ihren Namen eingeben |          | |
+| 1 | Die Kinder sollen ihren Namen eingeben |   M       | Name ist ein Datenpunkt,wird gespeichert und weiterverwendet|
 | 2 | Aufgabe erscheint groß in der Mitte |          | |
 | 3 | Kind gibt Antwort ein, klickt auf ‚Prüfen' |          | |
 | 4 | Grünes Häkchen + Punktestand erhöhen |          | |
