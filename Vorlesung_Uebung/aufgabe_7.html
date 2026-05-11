@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="de"> <head>
+    <meta charset="UTF-8"> <title>Mathe Spiel Start</title>
+</head>
+<body>
+
+<form action="#" method="POST">
+    <section>
+        <label for="spielername">Dein Name:</label>
+        <input
+                type="text"
+                id="spielername"
+                name="username"
+                placeholder="z. B. Lisa"
+                required
+                maxlength="20"
+                title="Bitte gib deinen Namen ein (maximal 20 Zeichen).">
+    </section>
+
+    <br>
+
+    <section>
+        <label for="modus">Wähle einen Spielmodus:</label>
+        <select id="modus" name="spielmodus" required>
+            <option value="" disabled selected>Bitte wählen...</option>
+            <option value="addition">Addition (+)</option>
+            <option value="subtraktion">Subtraktion (-)</option>
+            <option value="gemischt">Gemischt (+/-)</option>
+        </select>
+    </section>
+
+    <br>
+
+    <button type="submit">Spiel starten</button>
+</form>
+
+</body>
+</html>
