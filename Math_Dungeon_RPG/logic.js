@@ -53,10 +53,18 @@ function generiereAufgabe() {
     const zahl1 = Math.floor(Math.random() * 50)+1;
     const zahl2 = Math.floor(Math.random() * 50)+1;
 
-    korrekteAntwort = zahl1 + zahl2;
+    const modus = document.getElementById("modus").value;
 
-    aufgabe.textContent = `${zahl1} + ${zahl2} = ?`;
+    let operator = "+";
 
+    if(modus === "addieren"){
+        operator = "+";
+        korrekteAntwort = zahl1 + zahl2;
+    }
+
+    aufgabe.textContent = `${zahl1} ${operator} ${zahl2} = ?`;
+
+    document.getElementById("modusAnzeige").textContent = `Modus: ${modus}`;
 }
 
 function überprüfeAntwort() {

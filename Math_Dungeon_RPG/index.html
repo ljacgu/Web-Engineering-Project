@@ -35,9 +35,10 @@
                 
                 <label for="modus">Modus:</label>
                 <select id="modus" name="Modus auswählen">
-                    <option value="noob(Addition+Subtraktion)">noob</option>
+                    <!-- <option value="noob(Addition+Subtraktion)">noob</option>
                     <option value="mittel(multi/divid)">Mittel</option>
-                    <option value="Hülle">Schwer</option>
+                    <option value="Hülle">Schwer</option> -->
+                    <option value="addieren">Addition</option>
                 </select>
                 <br>
                 <button id="start-button" aria-label="Dungeon betreten">Dungeon betreten</button>
@@ -63,12 +64,16 @@
            
                 <hr>
                 
+            <div class="aufgabenBox">
 
-                <p id="aufgabe"> Aufgabe erscheint hier</p>
-                <p class="modus-anzeige">Rechnungsart: Addition</p>
-                <p id="aufgabe" class="grosse-aufgabe">24 + 18 = ?</p>
-                <p class="ziel">Besiege das Monster mit 10 richtigen Antworten!</p>
+                <p id="modusAnzeige">Modus: Addition</p>
 
+                <p id="spielziel">Besiege das Monster mit 10 richtigen Antworten!</p>
+
+                <p id="aufgabe">Aufgabe erscheint hier</p>
+
+            </div>
+     
                 <input type="number" id="antwort-input"  placeholder="Antwort eingeben" aria-label="Antwort eingeben">
                 <button id="check-button" aria-label="Antwort prüfen"> Antwort prüfen </button>
                 <p id="nachricht"></p>

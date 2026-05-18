@@ -175,3 +175,38 @@ button {
     0 8px 20px rgba(236,72,153,0.35),
     inset 0 1px 1px rgba(255,255,255,0.25);
 }
+
+.aufgabenBox{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background-color: rgba(0,0,0,0.7);
+
+    padding: 30px;
+    border-radius: 20px;
+
+    min-width: 400px;
+}
+
+#modusAnzeige{
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: gold;
+
+    margin-bottom: 10px;
+}
+
+#spielziel{
+    font-size: 1rem;
+    margin-bottom: 25px;
+
+    text-align: center;
+}
+
+#aufgabe{
+    font-size: 3rem;
+    font-weight: bold;
+
+    margin-bottom: 25px;
+}
