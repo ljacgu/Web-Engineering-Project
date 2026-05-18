@@ -19,7 +19,8 @@ body {
 }
 
 .hidden {
-    display: none;
+    display: none !important;  /*!important hier wichtg, weil #spielscreen stärker ist als .hidden*/
+    /*Spielscreen wird nicht mehr angezeigt*/
 }
 
 #spielscreen {
