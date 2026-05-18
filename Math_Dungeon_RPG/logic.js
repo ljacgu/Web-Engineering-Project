@@ -14,7 +14,7 @@ const nachricht = document.getElementById("nachricht");
 
 //const restartbutton = document.getElementById("restart-button");
 
-const genderSwitch = document.getElementById("gender");
+const genderSwitch = document.getElementById("genderToggle");
 
 genderSwitch.addEventListener("change", function() {
 
