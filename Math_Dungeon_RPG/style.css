@@ -23,14 +23,20 @@ body {
 }
 
 #spielscreen {
+    display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: center;
     gap: 40px;
+    flex-wrap: wrap;    /* Verhindert abgeschnittene Inhalte */
+    padding: 20px;
 }
 
 .character_img, .monster_img {
-    margin-top: 140px;
-    width: 350px;
+    margin-top: 120px;
+    width: 25vw;
+    max-width: 320px;
+    min-width: 140px;
     height: auto;
     object-fit: contain;
 }
@@ -59,7 +65,8 @@ body {
     border-radius: 20px;        /*Rundungen der Ecken */
     padding: 30px;
     margin: 10px;
-    width: 50%;
+    width: 90%;
+    max-width: 700px;
     text-align: center;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
@@ -186,7 +193,8 @@ button {
     padding: 30px;
     border-radius: 20px;
 
-    min-width: 400px;
+    width: 100%;
+    max-width: 500px;
 }
 
 #modusAnzeige{
