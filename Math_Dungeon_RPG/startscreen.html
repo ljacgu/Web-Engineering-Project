@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Dungeon RPG</title>
+    <link rel="stylesheet" href="startscreen.css">
+</head>
+<body>
+    <main>
+        <section id="startscreen" class="screen">
+            <article class="card">
+                <h1>Math Dungeon RPG</h1>
+                <p>Willkommen zum Math Dungeon RPG!</p>
+                <p>Möchtest du den Dungeon beitreten und Monster mit Mathe besiegen?</p>
+
+                <hr>
+
+                <!-- Geschlecht-Schalter -->
+                <label class="gender-switch">
+                    <input type="checkbox" id="genderToggle">
+                    <div class="slider"></div>
+                    <div class="labels">
+                        <span class="label male">Male</span>
+                        <span class="label female">Female</span>
+                    </div>
+                </label>
+
+                <label for="spielername">Heldenname:</label>
+                <input type="text" id="spielername" placeholder="Heldenname eingeben" aria-label="Heldennamen eingeben">
+
+                <label for="modus">Modus:</label>
+                <select id="modus" name="modus">
+                    <option value="addieren">Addition</option>
+                </select>
+
+                <br>
+
+                <button id="start-button" aria-label="Dungeon betreten">Dungeon betreten</button>
+            </article>
+        </section>
+    </main>
+
+    <script src="startscreen.js"></script>
+</body>
+</html>

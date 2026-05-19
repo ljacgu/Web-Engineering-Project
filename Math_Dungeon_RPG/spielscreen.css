@@ -1,0 +1,152 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-image: url(bilder/Dungeon1.jpg);
+    background-size: cover;           /* Füllt den gesamten Hintergrund */
+    background-position: center;      /* Bild in der Mitte */
+    background-repeat: no-repeat;     /* Bild wird nicht wiederholt */
+    background-attachment: fixed;     /* Bild ist fixiert */
+    color: white;
+}
+
+#spielscreen {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;        /* Verhindert abgeschnittene Inhalte */
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.character_img,
+.monster_img {
+    margin-top: 120px;
+    width: 25vw;            /* vw = viewport width, 1vw = 1% der Bildschirmbreite */
+    max-width: 320px;
+    min-width: 140px;
+    height: auto;
+    object-fit: contain;
+}
+
+.gameBar {
+    position: absolute;
+    top: 20px;
+    display: flex;
+    gap: 40px;
+    padding: 10px 30px 5px;
+    background-color: #333;
+    border-radius: 15px;
+}
+
+.anzeigebar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.card {
+    background-color: #333;
+    border: 1px solid #555;
+    border-radius: 20px;
+    padding: 30px;
+    margin: 10px;
+    width: 90%;
+    max-width: 700px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+h2 {
+    color: blue;
+}
+
+input {
+    padding: 12px;
+    margin: 15px;
+    border: none;
+    border-radius: 10px;
+    width: 80%;
+    font-size: 17px;
+}
+
+button {
+    padding: 10px 30px;
+    margin: 20px;
+    border: none;
+    border-radius: 10px;
+    background-color: #555;
+    color: white;
+    font-size: 17px;
+    cursor: pointer;
+}
+
+.aufgabenBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 30px;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 500px;
+}
+
+#modusAnzeige {
+    font-size: 1.3rem;      /* rem = relativ zur Grundschriftgröße, 1rem = 16px */
+    font-weight: bold;
+    color: gold;
+    margin-bottom: 10px;
+}
+
+#spielziel {
+    font-size: 1rem;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+#aufgabe {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+
+#nachricht {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* ---- Mobile Ansicht (Telefon) ---- */
+
+@media (max-width: 900px) {
+    #spielscreen {
+        flex-direction: column;
+    }
+
+    .character_img,
+    .monster_img {
+        margin-top: 20px;
+        width: 45vw;
+    }
+
+    .gameBar {
+        position: static;
+        margin-bottom: 20px;
+    }
+
+    #aufgabe {
+        font-size: 2rem;
+    }
+
+    .aufgabenBox {
+        padding: 20px;
+    }
+}
