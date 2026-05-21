@@ -5,7 +5,6 @@
 // Elemente aus dem Startscreen holen
 const spielerInput = document.getElementById("spielername");
 const startButton = document.getElementById("start-button");
-const genderSwitch = document.getElementById("genderToggle");
 const modusSelect = document.getElementById("modus");
 
 
@@ -53,6 +52,7 @@ const modusAnzeige = document.getElementById("modusAnzeige");
 const antwortInput = document.getElementById("antwort-input");
 const checkButton = document.getElementById("check-button");
 const nachricht = document.getElementById("nachricht");
+const newGameButton = document.getElementById("newGame-button");
 
 // =========================
 // SPIELZUSTAND
@@ -95,6 +95,10 @@ if (checkButton) {
         "click",
         überprüfeAntwort
     );
+}
+
+if (newGameButton) {
+    newGameButton.addEventListener("click", newGame);
 }
 
 // =========================
@@ -171,9 +175,26 @@ function überprüfeAntwort() {
 
         checkButton.disabled = true;
 
-        return;s
+        return;
     }
 
     // Neue Aufgabe
+    generiereAufgabe();
+}
+
+// =========================
+// NEUES SPIEL BUTTON - FUNKTION
+// =========================
+
+function newGame() {
+    punktestand = 0;
+    lebenAnzahl = 3;
+
+    punkteSpan.textContent = punktestand;
+    lebenSpan.textContent = lebenAnzahl;
+    nachricht.textContent = "";
+
+    checkButton.disabled = false;
+
     generiereAufgabe();
 }
