@@ -5,8 +5,43 @@
 // Elemente aus dem Startscreen holen
 const spielerInput = document.getElementById("spielername");
 const startButton = document.getElementById("start-button");
-const modusSelect = document.getElementById("modus");
+const schwierigkeitSelect = document.getElementById("schwierigkeit");
 
+// ==========================================
+// HINTERGRUNDWECHSEL BEI SCHWIERIGKEITSWAHL
+// ==========================================
+function ändereDungeonHintergrund() {
+    //welcher Wert gerade ausgewählt ist
+    const ausgewählterSchwierigkeit = schwierigkeitSelect.value;
+
+    // Alle alten Hintergrund löschen, damit nicht stapeln
+    document.body.classList.remove('bg-einfach', 'bg-mittel', 'bg-schwer', 'bg-extra_schwer');
+
+    // Die passende neue Klasse an den body hängen
+    if (ausgewählterSchwierigkeit === 'einfach') {
+        document.body.classList.add('bg-einfach');
+    } else if (ausgewählterSchwierigkeit === 'mittel') {
+        document.body.classList.add('bg-mittel');
+    } else if (ausgewählterSchwierigkeit === 'schwer') {
+        document.body.classList.add('bg-schwer');
+    } else if (ausgewählterSchwierigkeit === 'extra_schwer') {
+        document.body.classList.add('bg-extra_schwer');
+    }
+}
+
+// Beim Laden der Seite initialisieren
+if (schwierigkeitSelect) {
+    // Liest jetzt die "schwierigkeit" aus dem Speicher
+    const gespeicherteSchwierigkeit = localStorage.getItem("schwierigkeit");
+    if (gespeicherteSchwierigkeit) {
+        schwierigkeitSelect.value = gespeicherteSchwierigkeit;
+    }
+
+    // Hintergrund direkt einmal richtig setzen beim Laden
+    ändereDungeonHintergrund();
+    // Event Listener aktivieren
+    schwierigkeitSelect.addEventListener("change", ändereDungeonHintergrund);
+}
 
 
 // =========================
@@ -28,12 +63,9 @@ function starteSpiel() {
 
     // Daten speichern
     localStorage.setItem("heldenname", name);
-    localStorage.setItem("modus", modusSelect.value);
+    localStorage.setItem("schwierigkeit", schwierigkeitSelect.value);
 
-    localStorage.setItem(
-        "geschlecht",
-        genderSwitch.checked ? "weiblich" : "männlich"
-    );
+
 
     // Zur Spielseite wechseln
     window.location.href = "spielscreen.html";
@@ -48,7 +80,7 @@ const heldennameSpan = document.getElementById("heldenname");
 const punkteSpan = document.getElementById("punkte");
 const lebenSpan = document.getElementById("leben");
 const aufgabeEl = document.getElementById("aufgabe");
-const modusAnzeige = document.getElementById("modusAnzeige");
+const schwierigkeitAnzeige = document.getElementById("schwierigkeitAnzeige");
 const antwortInput = document.getElementById("antwort-input");
 const checkButton = document.getElementById("check-button");
 const nachricht = document.getElementById("nachricht");
@@ -66,8 +98,8 @@ let korrekteAntwort = 0;
 const heldenname =
     localStorage.getItem("heldenname") || "Held";
 
-const modus =
-    localStorage.getItem("modus") || "addieren";
+const schwierigkeit =
+    localStorage.getItem("schwierigkeit") || "addieren";
 
 // =========================
 // ANZEIGE INITIALISIEREN
@@ -77,10 +109,27 @@ if (heldennameSpan) {
     heldennameSpan.textContent = heldenname;
 }
 
-if (modusAnzeige) {
-    modusAnzeige.textContent = `Modus: ${modus}`;
-}
+if (schwierigkeitAnzeige) {
+    // Schöne Text-Anzeige für den Spielscreen
+    let schwierigkeitText = "Einfach";
+    if (schwierigkeit === "mittel") schwierigkeitText = "Mittel";
+    if (schwierigkeit === "schwer") schwierigkeitText = "Schwer";
+    if (schwierigkeit === "extra_schwer") schwierigkeitText = "Extra Schwer";
 
+    schwierigkeitAnzeige.textContent = `Schwierigkeit: ${schwierigkeitText}`;
+}
+document.body.classList.remove('bg-einfach', 'bg-mittel', 'bg-schwer', 'bg-extra_schwer');
+
+if (schwierigkeit === 'einfach') {
+    document.body.classList.add('bg-einfach');
+} else if (schwierigkeit === 'mittel') {
+    document.body.classList.add('bg-mittel');
+} else if (schwierigkeit === 'schwer') {
+    document.body.classList.add('bg-schwer');
+} else if (schwierigkeit === 'extra_schwer') {
+    document.body.classList.add('bg-extra_schwer');
+
+}
 // Erste Aufgabe erzeugen
 if (aufgabeEl) {
     generiereAufgabe();

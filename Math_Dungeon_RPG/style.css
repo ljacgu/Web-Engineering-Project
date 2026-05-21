@@ -14,6 +14,37 @@ body {
     color: white;
 }
 
+/* ==========================================
+   HINTERGRUNDBILDER
+   ========================================== */
+
+/* Das Standard-Bild beim Laden der Seite */
+body {
+    background-image: url('bilder/StandradHintergrund.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    transition: background-image 0.5s ease-in-out; /* Macht den Übergang weich */
+}
+
+/* Die Klassen, die das JavaScript umschaltet */
+body.bg-einfach {
+    background-image: url('bilder/Forest_Easy.webp');
+}
+
+body.bg-mittel {
+    background-image: url('bilder/Town_Mittel.webp');
+}
+
+body.bg-schwer {
+    background-image: url('bilder/Basement_Schwer.webp');
+}
+
+body.bg-extra_schwer {
+    background-image: url('bilder/TowerOfMoonGod_ExtSchwer.png');
+}
+
 /* =========================
    STARTSCREEN
 ========================= */
