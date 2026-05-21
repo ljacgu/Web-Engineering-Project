@@ -126,78 +126,7 @@ button:hover {
     background-color: #777;
 }
 
-/* =========================
-   GENDER SWITCH
-========================= */
 
-.gender-switch {
-    position: relative;
-    width: 170px;
-    height: 50px;
-    margin: 30px auto;
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 999px;
-    padding: 6px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    user-select: none;
-    overflow: hidden;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-.gender-switch input {
-    display: none;
-}
-
-.slider {
-    position: absolute;
-    top: 6px;
-    left: 6px;
-    width: calc(50% - 6px);
-    height: calc(100% - 12px);
-    border-radius: 999px;
-    background: linear-gradient(135deg, #3b82f6, #60a5fa);
-    transition: all 0.35s ease;
-    box-shadow:
-        0 8px 20px rgba(59, 130, 246, 0.35),
-        inset 0 1px 1px rgba(255, 255, 255, 0.25);
-}
-
-.labels {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    z-index: 2;
-    position: relative;
-}
-
-.label {
-    width: 50%;
-    text-align: center;
-    font-size: 15px;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
-    transition: color 0.35s ease;
-    line-height: 58px;
-}
-
-#genderToggle:not(:checked) ~ .labels .male {
-    color: white;
-}
-
-#genderToggle:checked ~ .labels .female {
-    color: white;
-}
-
-#genderToggle:checked ~ .slider {
-    transform: translateX(100%);
-    background: linear-gradient(135deg, #ec4899, #f472b6);
-    box-shadow:
-        0 8px 20px rgba(236, 72, 153, 0.35),
-        inset 0 1px 1px rgba(255, 255, 255, 0.25);
-}
 
 /* =========================
    AUFGABEN BOX

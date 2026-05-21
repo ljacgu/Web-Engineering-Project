@@ -8,21 +8,7 @@ const startButton = document.getElementById("start-button");
 const genderSwitch = document.getElementById("genderToggle");
 const modusSelect = document.getElementById("modus");
 
-// =========================
-// GESCHLECHT SCHALTER
-// =========================
 
-if (genderSwitch) {
-    genderSwitch.addEventListener("change", function () {
-
-        if (genderSwitch.checked) {
-            console.log("Geschlecht: Weiblich");
-        } else {
-            console.log("Geschlecht: Männlich");
-        }
-
-    });
-}
 
 // =========================
 // SPIEL STARTEN
@@ -185,7 +171,7 @@ function überprüfeAntwort() {
 
         checkButton.disabled = true;
 
-        return;
+        return;s
     }
 
     // Neue Aufgabe
