@@ -211,7 +211,8 @@ button:hover {
     padding: 30px;
     border-radius: 20px;
     width: 100%;
-    max-width: 500px;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 #modusAnzeige {
