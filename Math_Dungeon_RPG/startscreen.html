@@ -19,9 +19,9 @@
                 
 
                 <label for="spielername">Heldenname:</label>
-                <input type="text" id="spielername" placeholder="Heldenname eingeben" aria-label="Heldennamen eingeben">
-
-
+                <input type="text" id="spielername" placeholder="Heldenname eingeben" aria-label="Heldennamen eingeben" maxlength="20" autocomplete="off">
+                    <!-- maxlenght = max. 20 Zeichen können eingegeben werden -->
+                    <!-- autocomplete = Der Browser schlägt keine alten Eingaben automatisch vor -->
                 <br>
                 <label for="schwierigkeit">Wähle deinen Dungeon:</label>
                 <select id="schwierigkeit" name="dungeon_modus">
