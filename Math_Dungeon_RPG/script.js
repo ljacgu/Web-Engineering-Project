@@ -99,7 +99,7 @@ const heldenname =
     localStorage.getItem("heldenname") || "Held";
 
 const schwierigkeit =
-    localStorage.getItem("schwierigkeit") || "addieren";
+    localStorage.getItem("schwierigkeit") || "einfach";
 
 // =========================
 // ANZEIGE INITIALISIEREN
@@ -164,7 +164,7 @@ function generiereAufgabe() {
 
     let operator = "+";
 
-    if (modus === "addieren") {
+    if (schwierigkeit === "einfach") {
 
         operator = "+";
 
