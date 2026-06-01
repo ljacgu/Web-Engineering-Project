@@ -4,21 +4,7 @@
     padding: 0;
 }
 
-body {
-    font-family: Arial, Helvetica, sans-serif;
-    background-image: url(bilder/Dungeon1.jpg);
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    color: white;
-}
-
-/* ==========================================
-   HINTERGRUNDBILDER
-   ========================================== */
-
-/* Das Standard-Bild beim Laden der Seite */
+/* Das Standard-Bild */
 body {
     background-image: url('bilder/StandradHintergrund.png');
     background-size: cover;
@@ -28,27 +14,63 @@ body {
     transition: background-image 0.5s ease-in-out; /* Macht den Übergang weich */
 }
 
-/* Die Klassen, die das JavaScript umschaltet */
+/* ==========================================
+   DUNGEON DESIGN (HINTERGRÜNDE & MONSTER)
+   ========================================== */
+/* --- 1. Einfacher Dungeon (Forest) --- */
 body.bg-einfach {
     background-image: url('bilder/Forest_Easy.webp');
 }
+body.bg-einfach #monster-bild {
+    content: url('bilder/Monster_Einfach.webp');
+}
 
+/* --- 2. Mittlerer Dungeon (Town) --- */
 body.bg-mittel {
     background-image: url('bilder/Town_Mittel.webp');
 }
+body.bg-mittel #monster-bild {
+    content: url('bilder/Monster_Mittel.webp');
+}
 
+/* --- 3. Schwerer Dungeon (Basement) --- */
 body.bg-schwer {
     background-image: url('bilder/Basement_Schwer.webp');
 }
+body.bg-schwer #monster-bild {
+    content: url('bilder/Monster_Schwer.webp');
+}
 
+/* --- 4. Extra schwerer Dungeon (Moon God) --- */
 body.bg-extra_schwer {
     background-image: url('bilder/TowerOfMoonGod_ExtSchwer.png');
 }
+body.bg-extra_schwer #monster-bild {
+    content: url('bilder/Monster_Extraschwer.webp');
+}
 
-/* =========================
-   STARTSCREEN
-========================= */
 
+
+
+
+/* Versteckt den Spielscreen beim Starten, ohne das Layout zu brechen */
+.hidden {
+    display: none !important;
+}
+
+/* Versteckt die Pflicht-Überschriften für den W3C-Validator visuell */
+.hidden-visual {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+/* STARTSCREEN*/
 .screen {
     display: flex;
     flex-direction: column;
@@ -57,9 +79,7 @@ body.bg-extra_schwer {
     min-height: 100vh;
 }
 
-/* =========================
-   SPIELSCREEN
-========================= */
+/*  SPIELSCREEN */
 
 #spielscreen {
     display: flex;
@@ -167,7 +187,7 @@ button:hover {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(255, 255, 255, 0.18);
     padding: 30px;
     border-radius: 20px;
     width: 100%;

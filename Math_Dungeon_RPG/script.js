@@ -1,249 +1,233 @@
-// =========================
-// STARTSCREEN
-// =========================
+//1. Startscreen
+document.addEventListener("DOMContentLoaded", () => {
 
-// Elemente aus dem Startscreen holen
-const spielerInput = document.getElementById("spielername");
-const startButton = document.getElementById("start-button");
-const schwierigkeitSelect = document.getElementById("schwierigkeit");
+    const startScreen = document.querySelector("#startscreen");
+    const spielScreen = document.querySelector("#spielscreen");
 
-// ==========================================
-// HINTERGRUNDWECHSEL BEI SCHWIERIGKEITSWAHL
-// ==========================================
-function ändereDungeonHintergrund() {
-    //welcher Wert gerade ausgewählt ist
-    const ausgewählterSchwierigkeit = schwierigkeitSelect.value;
+    const inputSpielername = document.querySelector("#spielername");
+    const selectSchwierigkeit = document.querySelector("#schwierigkeit");
+    const btnStart = document.querySelector("#start-button");
 
-    // Alle alten Hintergrund löschen, damit nicht stapeln
-    document.body.classList.remove('bg-einfach', 'bg-mittel', 'bg-schwer', 'bg-extra_schwer');
+    const displayHeldenname = document.querySelector("#heldenname");
+    const displayPunkte = document.querySelector("#punkte");
+    const displayLeben = document.querySelector("#leben");
+    const displayModus = document.querySelector("#modusAnzeige");
+    const displayAufgabe = document.querySelector("#aufgabe");
+    const displayNachricht = document.querySelector("#nachricht");
 
-    // Die passende neue Klasse an den body hängen
-    if (ausgewählterSchwierigkeit === 'einfach') {
-        document.body.classList.add('bg-einfach');
-    } else if (ausgewählterSchwierigkeit === 'mittel') {
-        document.body.classList.add('bg-mittel');
-    } else if (ausgewählterSchwierigkeit === 'schwer') {
-        document.body.classList.add('bg-schwer');
-    } else if (ausgewählterSchwierigkeit === 'extra_schwer') {
-        document.body.classList.add('bg-extra_schwer');
-    }
-}
+    const inputAntwort = document.querySelector("#antwort-input");
+    const btnCheck = document.querySelector("#check-button");
+    const btnNewGame = document.querySelector("#newGame-button");
 
-// Beim Laden der Seite initialisieren
-if (schwierigkeitSelect) {
-    // Liest jetzt die "schwierigkeit" aus dem Speicher
-    const gespeicherteSchwierigkeit = localStorage.getItem("schwierigkeit");
-    if (gespeicherteSchwierigkeit) {
-        schwierigkeitSelect.value = gespeicherteSchwierigkeit;
-    }
+    // --- SPIEL-ZUSTAND (State) ---
+    let gameState = {
+        heldenname: "",
+        schwierigkeit: "einfach",
+        punkte: 0,
+        leben: 3,
+        aktuelleAntwort: 0
+    };
 
-    // Hintergrund direkt einmal richtig setzen beim Laden
-    ändereDungeonHintergrund();
-    // Event Listener aktivieren
-    schwierigkeitSelect.addEventListener("change", ändereDungeonHintergrund);
-}
-
-
-// =========================
-// SPIEL STARTEN
-// =========================
-
-if (startButton) {
-    startButton.addEventListener("click", starteSpiel);
-}
-
-function starteSpiel() {
-
-    const name = spielerInput.value.trim();
-
-    if (name === "") {
-        alert("Bitte gib zuerst deinen Heldennamen ein!");
-        return;
+    // Live-Wechsel schon bei der Auswahl auf dem Startscreen
+    selectSchwierigkeit.addEventListener("change", () => {
+        updateDungeonVisuals(selectSchwierigkeit.value);
+    });
+    //--- Hintergrundbild UND Monster-Bild anhand Schwierigkeit wechseln ---
+    function updateDungeonVisuals(schwierigkeit) {
+        document.body.className = "";
+        document.body.classList.add(`bg-${schwierigkeit}`);
     }
 
-    // Daten speichern
-    localStorage.setItem("heldenname", name);
-    localStorage.setItem("schwierigkeit", schwierigkeitSelect.value);
 
 
+    // --- NAVIGATION: DUNGEON BETRETEN ---
+    btnStart.addEventListener("click", () => {
+        try {
+            const name = inputSpielername.value.trim();
 
-    // Zur Spielseite wechseln
-    window.location.href = "spielscreen.html";
-}
+            // Ausfallsicherheit: Name darf nicht leer sein
+            if (name === "") {
+                alert("Bitte gib einen Heldennamen ein, um den Dungeon zu betreten!");
+                return;
+            }
 
-// =========================
-// SPIELSCREEN
-// =========================
+            // Spieldaten speichern
+            gameState.heldenname = name;
+            gameState.schwierigkeit = selectSchwierigkeit.value;
+            gameState.punkte = 0;
+            gameState.leben = 3;
 
-// Elemente aus dem Spielscreen holen
-const heldennameSpan = document.getElementById("heldenname");
-const punkteSpan = document.getElementById("punkte");
-const lebenSpan = document.getElementById("leben");
-const aufgabeEl = document.getElementById("aufgabe");
-const schwierigkeitAnzeige = document.getElementById("schwierigkeitAnzeige");
-const antwortInput = document.getElementById("antwort-input");
-const checkButton = document.getElementById("check-button");
-const nachricht = document.getElementById("nachricht");
-const newGameButton = document.getElementById("newGame-button");
+            // UI für das neue Spiel vorbereiten
+            displayHeldenname.textContent = gameState.heldenname;
+            displayPunkte.textContent = gameState.punkte;
+            displayLeben.textContent = gameState.leben;
+            displayNachricht.textContent = "";
+            btnNewGame.classList.add("hidden");
+            btnCheck.classList.remove("hidden");
+            inputAntwort.disabled = false;
 
-// =========================
-// SPIELZUSTAND
-// =========================
+            // NAVIGATION OHNE NEULADEN (SPA)
+            startScreen.classList.add("hidden");
+            spielScreen.classList.remove("hidden");
 
-let punktestand = 0;
-let lebenAnzahl = 3;
-let korrekteAntwort = 0;
+            // Erste Matheaufgabe starten
+            generiereAufgabe();
 
-// Spielerdaten laden
-const heldenname =
-    localStorage.getItem("heldenname") || "Held";
+        } catch (error) {
+            console.error("Fehler beim Wechseln des Screens:", error);
+        }
+    });
 
-const schwierigkeit =
-    localStorage.getItem("schwierigkeit") || "einfach";
+    // --- NAVIGATON: ZURÜCK ZUM START ---
+    btnNewGame.addEventListener("click", () => {
+        document.body.className = "bg-standard"; // Zurück zum Start-Hintergrund
+        spielScreen.classList.add("hidden");
+        startScreen.classList.remove("hidden");
+        inputSpielername.value = "";
+    });
 
-// =========================
-// ANZEIGE INITIALISIEREN
-// =========================
+    // --- SPIELLOGIK: DYNAMISCHE AUFGABEN ---
+    function generiereAufgabe() {
+        let num1 = 0;
+        let num2 = 0;
+        let operator = "+";
 
-if (heldennameSpan) {
-    heldennameSpan.textContent = heldenname;
-}
+        // Generierung basierend auf deinem gewählten Dungeon-Modus
+        if (gameState.modus === "einfach") {
+            displayModus.textContent = "Modus: 10er-Übergang (Forest)";
+            operator = Math.random() > 0.5 ? "+" : "-";
 
-if (schwierigkeitAnzeige) {
-    // Schöne Text-Anzeige für den Spielscreen
-    let schwierigkeitText = "Einfach";
-    if (schwierigkeit === "mittel") schwierigkeitText = "Mittel";
-    if (schwierigkeit === "schwer") schwierigkeitText = "Schwer";
-    if (schwierigkeit === "extra_schwer") schwierigkeitText = "Extra Schwer";
+            // Garantiert einen Zehnerübergang im Zahlenraum bis 20
+            num1 = Math.floor(Math.random() * 4) + 6; // 6, 7, 8, 9
+            num2 = Math.floor(Math.random() * 5) + 5; // 5, 6, 7, 8, 9
 
-    schwierigkeitAnzeige.textContent = `Schwierigkeit: ${schwierigkeitText}`;
-}
-document.body.classList.remove('bg-einfach', 'bg-mittel', 'bg-schwer', 'bg-extra_schwer');
+            if (operator === "-" && num1 < num2) {
+                let temp = num1; num1 = num2; num2 = temp;
+            }
+        }
+        else {
+            displayModus.textContent = `Modus: Zahlenraum 1-100 (${gameState.modus.toUpperCase()})`;
+            // Für die anderen Modi nutzen wir standardmäßig eine Addition im Zahlenraum 1-100
+            operator = "+";
+            num1 = Math.floor(Math.random() * 50) + 1;
+            num2 = Math.floor(Math.random() * 49) + 1;
+        }
 
-if (schwierigkeit === 'einfach') {
-    document.body.classList.add('bg-einfach');
-} else if (schwierigkeit === 'mittel') {
-    document.body.classList.add('bg-mittel');
-} else if (schwierigkeit === 'schwer') {
-    document.body.classList.add('bg-schwer');
-} else if (schwierigkeit === 'extra_schwer') {
-    document.body.classList.add('bg-extra_schwer');
+        // Richtige Antwort im Hintergrund berechnen
+        if (operator === "+") gameState.aktuelleAntwort = num1 + num2;
+        if (operator === "-") gameState.aktuelleAntwort = num1 - num2;
 
-}
-// Erste Aufgabe erzeugen
-if (aufgabeEl) {
-    generiereAufgabe();
-}
-
-// =========================
-// EVENT LISTENER
-// =========================
-
-if (checkButton) {
-    checkButton.addEventListener(
-        "click",
-        überprüfeAntwort
-    );
-}
-
-if (newGameButton) {
-    newGameButton.addEventListener("click", newGame);
-}
-
-// =========================
-// AUFGABE GENERIEREN
-// =========================
-
-function generiereAufgabe() {
-
-    const zahl1 =
-        Math.floor(Math.random() * 50) + 1;
-
-    const zahl2 =
-        Math.floor(Math.random() * 50) + 1;
-
-    let operator = "+";
-
-    if (schwierigkeit === "einfach") {
-
-        operator = "+";
-
-        korrekteAntwort = zahl1 + zahl2;
-
+        // Aufgabe im HTML anzeigen
+        displayAufgabe.textContent = `${num1} ${operator} ${num2} = ?`;
+        inputAntwort.value = "";
+        inputAntwort.focus();
     }
 
-    aufgabeEl.textContent =
-        `${zahl1} ${operator} ${zahl2} = ?`;
+    // --- ANTWORT PRÜFEN & EXCEPTION HANDLING ---
+    btnCheck.addEventListener("click", pruefeAntwort);
 
-    antwortInput.value = "";
-}
+    // Ermöglicht die Bestätigung mit der Enter-Taste im Eingabefeld
+    inputAntwort.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") pruefeAntwort();
+    });
 
-// =========================
-// ANTWORT PRÜFEN
-// =========================
 
-function überprüfeAntwort() {
 
-    if (antwortInput.value === "") {
 
-        nachricht.textContent =
-            "Bitte gib eine Antwort ein!";
 
-        return;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function pruefeAntwort() {
+        try {
+            const spielerAntwort = parseInt(inputAntwort.value, 10);
+
+            // Ausfallsicherheit: Verhindert Absturz oder Fehler bei leeren/falschen Eingaben
+            if (isNaN(spielerAntwort)) {
+                displayNachricht.textContent = " Bitte gib eine gültige Zahl ein!";
+                displayNachricht.style.color = "orange";
+                return;
+            }
+
+            // Auswertung
+            if (spielerAntwort === gameState.aktuelleAntwort) {
+                gameState.punkte += 10;
+                displayPunkte.textContent = gameState.punkte;
+                displayNachricht.textContent = " Treffer! Das Monster verliert KP!";
+                displayNachricht.style.color = "lime";
+            } else {
+                gameState.leben--;
+                displayLeben.textContent = gameState.leben;
+                displayNachricht.textContent = ` Autsch! Richtig war: ${gameState.aktuelleAntwort}`;
+                displayNachricht.style.color = "red";
+            }
+
+            // Spiel-Ende prüfen (Gewonnen bei 100 Punkten / Verloren bei 0 Leben)
+            if (gameState.punkte >= 100 || gameState.leben <= 0) {
+                if (gameState.punkte >= 100) {
+                    displayNachricht.textContent = " Sieg! Du hast das Monster besiegt!";
+                    displayNachricht.style.color = "gold";
+                } else {
+                    displayNachricht.textContent = " Game Over! Du bist im Dungeon gefallen.";
+                    displayNachricht.style.color = "darkred";
+                }
+
+                // Buttons umschalten
+                btnCheck.classList.add("hidden");
+                inputAntwort.disabled = true;
+                btnNewGame.classList.remove("hidden");
+            } else {
+                // Nächste Aufgabe nach einer kurzen Pause laden (1,2 Sekunden)
+                setTimeout(generiereAufgabe, 1200);
+            }
+
+        } catch (error) {
+            console.warn("Fehler bei der Eingabeverarbeitung abgefangen:", error);
+        }
     }
 
-    const benutzerAntwort =
-        Number(antwortInput.value);
 
-    // Richtige Antwort
-    if (benutzerAntwort === korrekteAntwort) {
+});
 
-        punktestand += 10;
+//2. Spielscreen
 
-        punkteSpan.textContent = punktestand;
 
-        nachricht.textContent =
-            "Richtig! Das Monster wurde getroffen: +10 Punkte";
+//3. High-Score
 
-    } else {
 
-        // Falsche Antwort
-        lebenAnzahl--;
+//4. 10er-Übergang
 
-        lebenSpan.textContent = lebenAnzahl;
 
-        nachricht.textContent =
-            "Falsch! Das Monster hat dich getroffen: -1 Leben";
-    }
 
-    // Game Over
-    if (lebenAnzahl === 0) {
+//Aufgaben:
 
-        nachricht.textContent =
-            "Game Over! Du hast keine Leben mehr.";
 
-        checkButton.disabled = true;
+// 10er-Übung fertigstellen
 
-        return;
-    }
+// 1 JavaScript Datei, und am Ende nur eine index.html-Datei
 
-    // Neue Aufgabe
-    generiereAufgabe();
-}
+// DOM erstellen
 
-// =========================
-// NEUES SPIEL BUTTON - FUNKTION
-// =========================
+//Icon ??
 
-function newGame() {
-    punktestand = 0;
-    lebenAnzahl = 3;
 
-    punkteSpan.textContent = punktestand;
-    lebenSpan.textContent = lebenAnzahl;
-    nachricht.textContent = "";
+//Formatierung von Dropdown-Menu + Startscreen, div-Container
 
-    checkButton.disabled = false;
+//Zahlen-Eingabefeld (Spin Buttons) entfernen
 
-    generiereAufgabe();
-}
+//Multiplikation, Addition, Subtraktion
+
+//Letztes Level, längere Gleichungen 
+
+// startButton ändern. Button, soll auf Startscreen verweisen

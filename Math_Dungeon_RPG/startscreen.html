@@ -5,40 +5,83 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Math Dungeon RPG</title>
     <link rel="stylesheet" href="style.css">
+    <script src="index.js" defer></script>
 </head>
-<body>
-    <main>
-        <section id="startscreen" class="screen">
-            <article class="card">
-                <h1>Math Dungeon RPG</h1>
-                <p>Willkommen zum Math Dungeon RPG!</p>
-                <p>Möchtest du den Dungeon beitreten und Monster mit Mathe besiegen?</p>
+<body class="bg-standard">
+<main>
 
-                <hr>
 
-                
+<!--1.Startscreen-->
+    <section id="startscreen" class="screen">
+        <article class="card">
+            <h1>Math Dungeon RPG</h1>
+            <p>Willkommen zum Math Dungeon RPG!</p>
+            <p>Möchtest du den Dungeon beitreten und Monster mit Mathe besiegen?</p>
 
-                <label for="spielername">Heldenname:</label>
-                <input type="text" id="spielername" placeholder="Heldenname eingeben" aria-label="Heldennamen eingeben" maxlength="20" autocomplete="off">
-                    <!-- maxlenght = max. 20 Zeichen können eingegeben werden -->
-                    <!-- autocomplete = Der Browser schlägt keine alten Eingaben automatisch vor -->
-                     
-                <br>
-                <label for="schwierigkeit">Wähle deinen Dungeon:</label>
-                <select id="schwierigkeit" name="dungeon_modus">
-                    <option value="einfach">Forest[ + / - ]</option>
-                    <option value="mittel">Town[ × / ÷ ]</option>
-                    <option value="schwer">Basement[ + / - / × / ÷ ]</option>
-                    <option value="extra_schwer"> The Trickster Moon God[Extra Schwer!]</option>
-                </select>
+            <hr>
 
-                <br>
+            <label for="spielername">Heldenname:</label>
+            <input type="text" id="spielername" placeholder="Heldenname eingeben" aria-label="Heldennamen eingeben" maxlength="20" autocomplete="off">
 
-                <button id="start-button" aria-label="Dungeon betreten">Dungeon betreten</button>
-            </article>
-        </section>
-    </main>
+            <br>
 
-    <script src="script.js"></script>
+            <label for="schwierigkeit">Wähle deinen Dungeon:</label>
+            <select id="schwierigkeit" name="dungeon_modus" aria-label="Dungeon Modus auswählen">
+                <option value="" selected disabled>-- Bitte Dungeon wählen --</option>
+                <option value="einfach">Forest [ + / - ]</option>
+                <option value="mittel">Town [ × / ÷ ]</option>
+                <option value="schwer">Basement [ + / - / × / ÷ ]</option>
+                <option value="extra_schwer">The Trickster Moon God [Extra Schwer!]</option>
+            </select>
+
+            <br>
+            <button id="start-button" aria-label="Dungeon betreten">Dungeon betreten</button>
+        </article>
+    </section>
+
+
+
+
+
+<!--    Spielscreen-->
+    <section id="spielscreen" class="screen hidden">
+
+        <img src="bilder/Character1.png" alt="Held" class="character_img">
+
+        <header class="gameBar">
+            <section class="anzeigebar" aria-label="Spieler Status">
+                <h2 class="hidden-visual">Statuswerte</h2>
+                <p>Held: <span id="heldenname">[Name]</span></p>
+                <p>Punkte: <span id="punkte">0</span></p>
+                <p>Leben: <span id="leben">3</span></p>
+            </section>
+        </header>
+
+        <article class="card">
+            <h2>Dungeon-Kampf</h2>
+
+            <hr>
+
+            <section class="aufgabenBox" aria-label="Aktuelle Matheaufgabe">
+                <h3 class="hidden-visual">Aufgabenstellung</h3>
+                <p id="modusAnzeige">Modus: Addition</p>
+                <p id="spielziel">Besiege das Monster mit 10 richtigen Antworten!</p>
+                <p id="aufgabe">Aufgabe erscheint hier</p>
+            </section>
+
+            <input type="number" id="antwort-input" placeholder="Antwort eingeben" aria-label="Antwort eingeben" step="1" autocomplete="off">
+
+            <button id="check-button" aria-label="Antwort prüfen">Antwort prüfen</button>
+            <p id="nachricht"></p>
+
+            <button id="newGame-button" aria-label="Neues Spiel starten" class="hidden">Neues Spiel starten</button>
+        </article>
+
+        <img src="" alt="Monster" class="monster_img" id="monster-bild">
+
+
+    </section>
+
+</main>
 </body>
 </html>
