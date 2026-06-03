@@ -93,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let operator = "+";
 
         // Generierung basierend auf deinem gewählten Dungeon-Modus
-        if (gameState.modus === "einfach") {
+        if (gameState.schwierigkeit === "einfach") {
             displayModus.textContent = "Modus: 10er-Übergang (Forest)";
             operator = Math.random() > 0.5 ? "+" : "-";
 
