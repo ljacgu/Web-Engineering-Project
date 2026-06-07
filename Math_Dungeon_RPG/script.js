@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const PUNKTE_PRO_RICHTIGE_ANTWORT = 10;
     const SIEG_PUNKTE = 100;
     const PAUSE_BIS_NAECHSTE_AUFGABE = 1200;
+    const HIGHSCORE_KEY = "mathDungeonHighscore";
 
     const startScreen = document.querySelector("#startscreen");
     const spielScreen = document.querySelector("#spielscreen");
@@ -19,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const displayHeldenname = document.querySelector("#heldenname");
     const displayPunkte = document.querySelector("#punkte");
     const displayLeben = document.querySelector("#leben");
+    const displayHighscore = document.querySelector("#highscore");
     const displayModus = document.querySelector("#modusAnzeige");
     const displayAufgabe = document.querySelector("#aufgabe");
     const displayNachricht = document.querySelector("#nachricht");
@@ -35,6 +37,10 @@ document.addEventListener("DOMContentLoaded", () => {
         leben: START_LEBEN,
         aktuelleAntwort: 0
     };
+
+    // --- HIGHSCORE LADEN ---
+    let highscore = Number(localStorage.getItem(HIGHSCORE_KEY)) || 0;
+    displayHighscore.textContent = highscore;
 
     // Live-Wechsel bei Dungeon-Kartenklick
     dungeonKarten.forEach(karte => {
@@ -196,6 +202,12 @@ document.addEventListener("DOMContentLoaded", () => {
             if (spielerAntwort === gameState.aktuelleAntwort) {
                 gameState.punkte += PUNKTE_PRO_RICHTIGE_ANTWORT;
                 displayPunkte.textContent = gameState.punkte;
+
+                if (gameState.punkte > highscore) {
+                    highscore = gameState.punkte;
+                    localStorage.setItem(HIGHSCORE_KEY, highscore);
+                    displayHighscore.textContent = highscore;
+                }
                 displayNachricht.textContent = " Treffer! Das Monster verliert KP!";
                 displayNachricht.style.color = "lime";
             } else {
