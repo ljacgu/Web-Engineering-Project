@@ -130,7 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
         else {
-            displayModus.textContent = `Modus: Zahlenraum 1-100 (${gameState.modus.toUpperCase()})`;
+            displayModus.textContent = `Modus: Zahlenraum 1-100 (${gameState.schwierigkeit})`;
             // Für die anderen Modi nutzen wir standardmäßig eine Addition im Zahlenraum 1-100
             operator = "+";
             num1 = Math.floor(Math.random() * 50) + 1;
@@ -175,10 +175,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function pruefeAntwort() {
         try {
-            const spielerAntwort = parseInt(inputAntwort.value, 10);
+            const spielerAntwort = Number(inputAntwort.value);
 
             // Ausfallsicherheit: Verhindert Absturz oder Fehler bei leeren/falschen Eingaben
-            if (isNaN(spielerAntwort)) {
+            if (inputAntwort.value.trim() === "" || Number.isNaN(spielerAntwort)) {
+                //Ist das Feld leer oder ist die Eingabe keine Zahl?
                 displayNachricht.textContent = " Bitte gib eine gültige Zahl ein!";
                 displayNachricht.style.color = "orange";
                 return;
