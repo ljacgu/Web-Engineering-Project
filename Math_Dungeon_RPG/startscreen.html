@@ -1,454 +1,107 @@
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-/* Das Standard-Bild */
-body {
-    background-image: url('bilder/StandradHintergrund.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    transition: background-image 0.5s ease-in-out; /* Macht den Übergang weich */
-}
-
-/* ==========================================
-   DUNGEON DESIGN (HINTERGRÜNDE & MONSTER)
-   ========================================== */
-/* --- 1. Einfacher Dungeon (Forest) --- */
-body.bg-einfach {
-    background-image: url('bilder/Forest_Easy.webp');
-}
-body.bg-einfach #monster-bild {
-    content: url('bilder/Monster_Einfach.webp');
-}
-
-/* --- 2. Mittlerer Dungeon (Town) --- */
-body.bg-mittel {
-    background-image: url('bilder/Town_Mittel.webp');
-}
-body.bg-mittel #monster-bild {
-    content: url('bilder/Monster_Mittel.webp');
-}
-
-/* --- 3. Schwerer Dungeon (Basement) --- */
-body.bg-schwer {
-    background-image: url('bilder/Basement_Schwer.webp');
-}
-body.bg-schwer #monster-bild {
-    content: url('bilder/Monster_Schwer.webp');
-}
-
-/* --- 4. Extra schwerer Dungeon (Moon God) --- */
-body.bg-extra_schwer {
-    background-image: url('bilder/TowerOfMoonGod_ExtSchwer.png');
-}
-body.bg-extra_schwer #monster-bild {
-    content: url('bilder/Monster_Extraschwer.webp');
-}
-
-
-
-
-
-/* Versteckt den Spielscreen beim Starten, ohne das Layout zu brechen */
-.hidden {
-    display: none !important;
-}
-
-/* Versteckt die Pflicht-Überschriften für den W3C-Validator visuell */
-.hidden-visual {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    border: 0;
-}
-
-/* STARTSCREEN*/
-.screen {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-}
-
-/*  SPIELSCREEN */
-
-#spielscreen {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 40px;
-    flex-wrap: wrap;
-    padding: 20px;
-    min-height: 100vh;
-}
-
-.character_img,
-.monster_img {
-    margin-top: 120px;
-    width: 25vw;
-    max-width: 320px;
-    min-width: 140px;
-    height: auto;
-    object-fit: contain;
-}
-
-/* =========================
-   GAME BAR
-========================= */
-
-.gameBar {
-    position: absolute;
-    top: 20px;
-    display: flex;
-    gap: 40px;
-    padding: 10px 30px 5px;
-    background-color: #333;
-    border-radius: 15px;
-}
-
-.anzeigebar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-    flex-wrap: wrap;
-}
-
-/* =========================
-   CARD
-========================= */
-
-.card {
-    background-color: #333;
-    border: 1px solid #555;
-    border-radius: 20px;
-    padding: 30px;
-    margin: 10px;
-    width: 90%;
-    max-width: 700px;
-    text-align: center;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-}
-
-/* =========================
-   HEADINGS
-========================= */
-
-h1,
-h2 {
-    color: blue;
-}
-
-/* =========================
-   INPUTS & BUTTONS
-========================= */
-
-input {
-    padding: 12px;
-    margin: 15px;
-    border: none;
-    border-radius: 10px;
-    width: 80%;
-    font-size: 17px;
-}
-
-button {
-    padding: 10px 30px;
-    margin: 20px;
-    border: none;
-    border-radius: 10px;
-    background-color: #555;
-    color: white;
-    font-size: 17px;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #777;
-}
-
-
-
-/* =========================
-   AUFGABEN BOX
-========================= */
-
-.aufgabenBox {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: rgba(255, 255, 255, 0.18);
-    padding: 30px;
-    border-radius: 20px;
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-}
-
-#modusAnzeige {
-    font-size: 1.3rem;
-    font-weight: bold;
-    color: gold;
-    margin-bottom: 10px;
-}
-
-#spielziel {
-    font-size: 1rem;
-    margin-bottom: 25px;
-    text-align: center;
-}
-
-#aufgabe {
-    font-size: 3rem;
-    font-weight: bold;
-    margin-bottom: 25px;
-}
-
-#nachricht {
-    font-size: 18px;
-    font-weight: bold;
-}
-
-/* =========================
-   STARTSCREEN STYLES
-========================= */
-
-.start-card {
-    max-width: 880px;
-    padding: 45px 50px;
-    background: linear-gradient(160deg, #2a2a2a 0%, #1a1a2e 100%);
-    border: 1px solid #555;
-    box-shadow: 0 0 40px rgba(0, 0, 0, 0.7), 0 0 80px rgba(0, 40, 100, 0.3);
-}
-
-#startscreen h1 {
-    font-size: 2.8rem;
-    letter-spacing: 2px;
-    text-shadow: 0 0 20px rgba(74, 158, 255, 0.6);
-    margin-bottom: 12px;
-}
-
-.start-subtitle {
-    font-size: 1.15rem;
-    color: #ccc;
-    margin-bottom: 6px;
-}
-
-.start-desc {
-    color: #999;
-    font-size: 0.95rem;
-}
-
-.start-hr {
-    border: none;
-    border-top: 1px solid #444;
-    margin: 25px 0;
-}
-
-.heldenname-group {
-    margin-bottom: 28px;
-    text-align: left;
-}
-
-.heldenname-group label {
-    display: block;
-    font-size: 1rem;
-    color: #bbb;
-    font-weight: bold;
-    letter-spacing: 0.5px;
-    margin-bottom: 10px;
-}
-
-#spielername {
-    width: 100%;
-    padding: 14px 20px;
-    margin: 0;
-    font-size: 1.1rem;
-    background-color: #111827;
-    color: #fff;
-    border: 2px solid #444;
-    border-radius: 12px;
-    transition: border-color 0.25s, box-shadow 0.25s;
-}
-
-#spielername::placeholder {
-    color: #555;
-}
-
-#spielername:focus {
-    outline: none;
-    border-color: #4a9eff;
-    box-shadow: 0 0 10px rgba(74, 158, 255, 0.25);
-}
-
-.dungeon-auswahl {
-    margin-bottom: 28px;
-    text-align: left;
-}
-
-.dungeon-label {
-    font-size: 1rem;
-    color: #bbb;
-    font-weight: bold;
-    letter-spacing: 0.5px;
-    margin-bottom: 14px;
-}
-
-.dungeon-karten {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 14px;
-}
-
-.dungeon-karte {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #1c1c1c;
-    border: 2px solid #3a3a3a;
-    border-radius: 14px;
-    padding: 10px 8px 12px;
-    cursor: pointer;
-    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-    user-select: none;
-}
-
-.dungeon-karte img {
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    display: block;
-}
-
-.dungeon-karte:hover {
-    transform: translateY(-4px);
-    border-color: #666;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-}
-
-.dungeon-karte.ausgewaehlt {
-    border-color: gold;
-    box-shadow: 0 0 18px rgba(255, 215, 0, 0.45), 0 8px 24px rgba(0, 0, 0, 0.5);
-    transform: translateY(-4px);
-}
-
-.dungeon-name {
-    font-size: 0.9rem;
-    font-weight: bold;
-    color: #eee;
-    margin-bottom: 4px;
-}
-
-.dungeon-modus {
-    font-size: 0.75rem;
-    color: #999;
-    margin-bottom: 8px;
-    text-align: center;
-}
-
-.dungeon-schwier {
-    font-size: 0.68rem;
-    font-weight: bold;
-    padding: 3px 10px;
-    border-radius: 20px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.dungeon-schwier.einfach {
-    background-color: rgba(45, 122, 45, 0.4);
-    color: #90ee90;
-    border: 1px solid #2d7a2d;
-}
-
-.dungeon-schwier.mittel {
-    background-color: rgba(122, 122, 45, 0.4);
-    color: #ffd700;
-    border: 1px solid #7a7a2d;
-}
-
-.dungeon-schwier.schwer {
-    background-color: rgba(122, 45, 45, 0.4);
-    color: #ff9090;
-    border: 1px solid #7a2d2d;
-}
-
-.dungeon-schwier.extra {
-    background-color: rgba(74, 45, 122, 0.4);
-    color: #da70d6;
-    border: 1px solid #4a2d7a;
-}
-
-#start-button {
-    background: linear-gradient(135deg, #1a5c9a, #1a7acc);
-    font-size: 1.1rem;
-    padding: 14px 45px;
-    letter-spacing: 1px;
-    border-radius: 12px;
-    margin-top: 10px;
-    transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
-}
-
-#start-button:hover {
-    background: linear-gradient(135deg, #2070bb, #2090ee);
-    box-shadow: 0 0 20px rgba(74, 158, 255, 0.4);
-    transform: translateY(-2px);
-}
-
-#start-button:active {
-    transform: translateY(0);
-}
-
-/* =========================
-   MOBILE
-========================= */
-
-@media (max-width: 900px) {
-
-    #spielscreen {
-        flex-direction: column;
-    }
-
-    .character_img,
-    .monster_img {
-        margin-top: 20px;
-        width: 45vw;
-    }
-
-    .gameBar {
-        position: static;
-        margin-bottom: 20px;
-    }
-
-    #aufgabe {
-        font-size: 2rem;
-    }
-
-    .aufgabenBox {
-        padding: 20px;
-    }
-
-    .dungeon-karten {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .start-card {
-        padding: 30px 25px;
-    }
-
-    #startscreen h1 {
-        font-size: 2rem;
-    }
-}
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Dungeon RPG</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body class="bg-standard">
+<main>
+
+
+<!--1.Startscreen-->
+    <section id="startscreen" class="screen">
+        <article class="card start-card">
+            <h1>Math Dungeon RPG</h1>
+            <p class="start-subtitle">Willkommen, tapferer Held!</p>
+            <p class="start-desc">Möchtest du den Dungeon beitreten und Monster mit Mathe besiegen?</p>
+
+            <hr class="start-hr">
+
+            <div class="heldenname-group">
+                <label for="spielername">Heldenname:</label>
+                <input type="text" id="spielername" placeholder="Gib deinen Heldennamen ein..." aria-label="Heldennamen eingeben" maxlength="20" autocomplete="off">
+            </div>
+
+            <div class="dungeon-auswahl">
+                <p class="dungeon-label">Wähle deinen Dungeon:</p>
+                <div class="dungeon-karten" role="radiogroup" aria-label="Dungeon Modus auswählen">
+                    <div class="dungeon-karte" data-wert="einfach" role="radio" aria-checked="false" tabindex="0">
+                        <img src="bilder/Forest_Easy.webp" alt="Forest Dungeon Vorschau">
+                        <span class="dungeon-name">Forest</span>
+                        <span class="dungeon-modus">[ + / - ]</span>
+                        <span class="dungeon-schwier einfach">Einfach</span>
+                    </div>
+                    <div class="dungeon-karte" data-wert="mittel" role="radio" aria-checked="false" tabindex="0">
+                        <img src="bilder/Town_Mittel.webp" alt="Town Dungeon Vorschau">
+                        <span class="dungeon-name">Town</span>
+                        <span class="dungeon-modus">[ × / ÷ ]</span>
+                        <span class="dungeon-schwier mittel">Mittel</span>
+                    </div>
+                    <div class="dungeon-karte" data-wert="schwer" role="radio" aria-checked="false" tabindex="0">
+                        <img src="bilder/Basement_Schwer.webp" alt="Basement Dungeon Vorschau">
+                        <span class="dungeon-name">Basement</span>
+                        <span class="dungeon-modus">[ + / - / × / ÷ ]</span>
+                        <span class="dungeon-schwier schwer">Schwer</span>
+                    </div>
+                    <div class="dungeon-karte" data-wert="extra_schwer" role="radio" aria-checked="false" tabindex="0">
+                        <img src="bilder/TowerOfMoonGod_ExtSchwer.png" alt="Moon God Tower Vorschau">
+                        <span class="dungeon-name">Moon God Tower</span>
+                        <span class="dungeon-modus">Extra Schwer!</span>
+                        <span class="dungeon-schwier extra">Extra!</span>
+                    </div>
+                </div>
+            </div>
+
+            <button id="start-button" aria-label="Dungeon betreten">Dungeon betreten</button>
+        </article>
+    </section>
+
+
+
+
+
+<!--    Spielscreen-->
+    <section id="spielscreen" class="screen hidden">
+
+        <img src="bilder/Character1.png" alt="Held" class="character_img">
+
+        <header class="gameBar">
+            <section class="anzeigebar" aria-label="Spieler Status">
+                <h2 class="hidden-visual">Statuswerte</h2>
+                <p>Held: <span id="heldenname">[Name]</span></p>
+                <p>Punkte: <span id="punkte">0</span></p>
+                <p>Leben: <span id="leben">3</span></p>
+            </section>
+        </header>
+
+        <article class="card">
+            <h2>Dungeon-Kampf</h2>
+
+            <hr>
+
+            <section class="aufgabenBox" aria-label="Aktuelle Matheaufgabe">
+                <h3 class="hidden-visual">Aufgabenstellung</h3>
+                <p id="modusAnzeige">Modus: Addition</p>
+                <p id="spielziel">Besiege das Monster mit 10 richtigen Antworten!</p>
+                <p id="aufgabe">Aufgabe erscheint hier</p>
+            </section>
+
+            <input type="number" id="antwort-input" placeholder="Antwort eingeben" aria-label="Antwort eingeben" step="1" autocomplete="off">
+
+            <button id="check-button" aria-label="Antwort prüfen">Antwort prüfen</button>
+            <p id="nachricht"></p>
+
+            <button id="newGame-button" aria-label="Neues Spiel starten" class="hidden">Neues Spiel starten</button>
+        </article>
+
+        <img src="" alt="Monster" class="monster_img" id="monster-bild">
+
+
+    </section>
+
+</main>
+</body>
+</html>
