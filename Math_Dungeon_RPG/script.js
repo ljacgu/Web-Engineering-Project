@@ -1,6 +1,13 @@
 //1. Startscreen
 document.addEventListener("DOMContentLoaded", () => {
 
+    /*Konstanten, damit wichtige Werte nur an einer Stelle geändert werden müssen
+    und der Code besser lesbar ist.*/
+    const START_LEBEN = 3;
+    const PUNKTE_PRO_RICHTIGE_ANTWORT = 10;
+    const SIEG_PUNKTE = 100;
+    const PAUSE_BIS_NAECHSTE_AUFGABE = 1200;
+
     const startScreen = document.querySelector("#startscreen");
     const spielScreen = document.querySelector("#spielscreen");
 
@@ -25,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
         heldenname: "",
         schwierigkeit: "einfach",
         punkte: 0,
-        leben: 3,
+        leben: START_LEBEN,
         aktuelleAntwort: 0
     };
 
@@ -74,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
             gameState.heldenname = name;
             gameState.schwierigkeit = gewaehlterDungeon;
             gameState.punkte = 0;
-            gameState.leben = 3;
+            gameState.leben = START_LEBEN;
 
             // UI für das neue Spiel vorbereiten
             displayHeldenname.textContent = gameState.heldenname;
@@ -187,7 +194,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Auswertung
             if (spielerAntwort === gameState.aktuelleAntwort) {
-                gameState.punkte += 10;
+                gameState.punkte += PUNKTE_PRO_RICHTIGE_ANTWORT;
                 displayPunkte.textContent = gameState.punkte;
                 displayNachricht.textContent = " Treffer! Das Monster verliert KP!";
                 displayNachricht.style.color = "lime";
@@ -199,8 +206,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             // Spiel-Ende prüfen (Gewonnen bei 100 Punkten / Verloren bei 0 Leben)
-            if (gameState.punkte >= 100 || gameState.leben <= 0) {
-                if (gameState.punkte >= 100) {
+            if (gameState.punkte >= SIEG_PUNKTE || gameState.leben <= 0) {
+                if (gameState.punkte >= SIEG_PUNKTE) {
                     displayNachricht.textContent = " Sieg! Du hast das Monster besiegt!";
                     displayNachricht.style.color = "gold";
                 } else {
@@ -214,7 +221,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 btnNewGame.classList.remove("hidden");
             } else {
                 // Nächste Aufgabe nach einer kurzen Pause laden (1,2 Sekunden)
-                setTimeout(generiereAufgabe, 1200);
+                setTimeout(generiereAufgabe, PAUSE_BIS_NAECHSTE_AUFGABE);
             }
 
         } catch (error) {
