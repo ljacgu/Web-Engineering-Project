@@ -220,6 +220,198 @@ button:hover {
 }
 
 /* =========================
+   STARTSCREEN STYLES
+========================= */
+
+.start-card {
+    max-width: 880px;
+    padding: 45px 50px;
+    background: linear-gradient(160deg, #2a2a2a 0%, #1a1a2e 100%);
+    border: 1px solid #555;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.7), 0 0 80px rgba(0, 40, 100, 0.3);
+}
+
+#startscreen h1 {
+    font-size: 2.8rem;
+    letter-spacing: 2px;
+    text-shadow: 0 0 20px rgba(74, 158, 255, 0.6);
+    margin-bottom: 12px;
+}
+
+.start-subtitle {
+    font-size: 1.15rem;
+    color: #ccc;
+    margin-bottom: 6px;
+}
+
+.start-desc {
+    color: #999;
+    font-size: 0.95rem;
+}
+
+.start-hr {
+    border: none;
+    border-top: 1px solid #444;
+    margin: 25px 0;
+}
+
+.heldenname-group {
+    margin-bottom: 28px;
+    text-align: left;
+}
+
+.heldenname-group label {
+    display: block;
+    font-size: 1rem;
+    color: #bbb;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+}
+
+#spielername {
+    width: 100%;
+    padding: 14px 20px;
+    margin: 0;
+    font-size: 1.1rem;
+    background-color: #111827;
+    color: #fff;
+    border: 2px solid #444;
+    border-radius: 12px;
+    transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+#spielername::placeholder {
+    color: #555;
+}
+
+#spielername:focus {
+    outline: none;
+    border-color: #4a9eff;
+    box-shadow: 0 0 10px rgba(74, 158, 255, 0.25);
+}
+
+.dungeon-auswahl {
+    margin-bottom: 28px;
+    text-align: left;
+}
+
+.dungeon-label {
+    font-size: 1rem;
+    color: #bbb;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    margin-bottom: 14px;
+}
+
+.dungeon-karten {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+}
+
+.dungeon-karte {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #1c1c1c;
+    border: 2px solid #3a3a3a;
+    border-radius: 14px;
+    padding: 10px 8px 12px;
+    cursor: pointer;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    user-select: none;
+}
+
+.dungeon-karte img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.dungeon-karte:hover {
+    transform: translateY(-4px);
+    border-color: #666;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.dungeon-karte.ausgewaehlt {
+    border-color: gold;
+    box-shadow: 0 0 18px rgba(255, 215, 0, 0.45), 0 8px 24px rgba(0, 0, 0, 0.5);
+    transform: translateY(-4px);
+}
+
+.dungeon-name {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #eee;
+    margin-bottom: 4px;
+}
+
+.dungeon-modus {
+    font-size: 0.75rem;
+    color: #999;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.dungeon-schwier {
+    font-size: 0.68rem;
+    font-weight: bold;
+    padding: 3px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.dungeon-schwier.einfach {
+    background-color: rgba(45, 122, 45, 0.4);
+    color: #90ee90;
+    border: 1px solid #2d7a2d;
+}
+
+.dungeon-schwier.mittel {
+    background-color: rgba(122, 122, 45, 0.4);
+    color: #ffd700;
+    border: 1px solid #7a7a2d;
+}
+
+.dungeon-schwier.schwer {
+    background-color: rgba(122, 45, 45, 0.4);
+    color: #ff9090;
+    border: 1px solid #7a2d2d;
+}
+
+.dungeon-schwier.extra {
+    background-color: rgba(74, 45, 122, 0.4);
+    color: #da70d6;
+    border: 1px solid #4a2d7a;
+}
+
+#start-button {
+    background: linear-gradient(135deg, #1a5c9a, #1a7acc);
+    font-size: 1.1rem;
+    padding: 14px 45px;
+    letter-spacing: 1px;
+    border-radius: 12px;
+    margin-top: 10px;
+    transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+#start-button:hover {
+    background: linear-gradient(135deg, #2070bb, #2090ee);
+    box-shadow: 0 0 20px rgba(74, 158, 255, 0.4);
+    transform: translateY(-2px);
+}
+
+#start-button:active {
+    transform: translateY(0);
+}
+
+/* =========================
    MOBILE
 ========================= */
 
@@ -246,5 +438,17 @@ button:hover {
 
     .aufgabenBox {
         padding: 20px;
+    }
+
+    .dungeon-karten {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .start-card {
+        padding: 30px 25px;
+    }
+
+    #startscreen h1 {
+        font-size: 2rem;
     }
 }

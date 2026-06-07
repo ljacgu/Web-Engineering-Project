@@ -5,8 +5,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const spielScreen = document.querySelector("#spielscreen");
 
     const inputSpielername = document.querySelector("#spielername");
-    const selectSchwierigkeit = document.querySelector("#schwierigkeit");
+    const dungeonKarten = document.querySelectorAll(".dungeon-karte");
     const btnStart = document.querySelector("#start-button");
+    let gewaehlterDungeon = "";
 
     const displayHeldenname = document.querySelector("#heldenname");
     const displayPunkte = document.querySelector("#punkte");
@@ -28,9 +29,22 @@ document.addEventListener("DOMContentLoaded", () => {
         aktuelleAntwort: 0
     };
 
-    // Live-Wechsel schon bei der Auswahl auf dem Startscreen
-    selectSchwierigkeit.addEventListener("change", () => {
-        updateDungeonVisuals(selectSchwierigkeit.value);
+    // Live-Wechsel bei Dungeon-Kartenklick
+    dungeonKarten.forEach(karte => {
+        karte.addEventListener("click", () => {
+            dungeonKarten.forEach(k => {
+                k.classList.remove("ausgewaehlt");
+                k.setAttribute("aria-checked", "false");
+            });
+            karte.classList.add("ausgewaehlt");
+            karte.setAttribute("aria-checked", "true");
+            gewaehlterDungeon = karte.dataset.wert;
+            updateDungeonVisuals(gewaehlterDungeon);
+        });
+
+        karte.addEventListener("keypress", (e) => {
+            if (e.key === "Enter" || e.key === " ") karte.click();
+        });
     });
     //--- Hintergrundbild UND Monster-Bild anhand Schwierigkeit wechseln ---
     function updateDungeonVisuals(schwierigkeit) {
@@ -51,9 +65,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
+            if (gewaehlterDungeon === "") {
+                alert("Bitte wähle einen Dungeon aus!");
+                return;
+            }
+
             // Spieldaten speichern
             gameState.heldenname = name;
-            gameState.schwierigkeit = selectSchwierigkeit.value;
+            gameState.schwierigkeit = gewaehlterDungeon;
             gameState.punkte = 0;
             gameState.leben = 3;
 
@@ -84,6 +103,11 @@ document.addEventListener("DOMContentLoaded", () => {
         spielScreen.classList.add("hidden");
         startScreen.classList.remove("hidden");
         inputSpielername.value = "";
+        gewaehlterDungeon = "";
+        dungeonKarten.forEach(k => {
+            k.classList.remove("ausgewaehlt");
+            k.setAttribute("aria-checked", "false");
+        });
     });
 
     // --- SPIELLOGIK: DYNAMISCHE AUFGABEN ---
