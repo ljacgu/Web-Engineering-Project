@@ -310,6 +310,8 @@ button:hover {
     gap: 14px;
 }
 
+
+
 .dungeon-karte {
     display: flex;
     flex-direction: column;
@@ -451,4 +453,10 @@ button:hover {
     #startscreen h1 {
         font-size: 2rem;
     }
+}
+
+/* Spielauswahl mit zwei Karten mittig anzeigen */
+#spielauswahl-bereich .dungeon-karten {
+    grid-template-columns: repeat(2, 250px);
+    justify-content: center;
 }

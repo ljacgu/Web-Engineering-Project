@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const spielScreen = document.querySelector("#spielscreen");
 
     const inputSpielername = document.querySelector("#spielername");
-    const dungeonKarten = document.querySelectorAll(".dungeon-karte");
+    const dungeonKarten = document.querySelectorAll("#dungeon-auswahl-bereich .dungeon-karte");
     const btnStart = document.querySelector("#start-button");
    // Bereiche für die Navigation zwischen Spielauswahl und Dungeon-Auswahl
     const spielAuswahlBereich = document.querySelector("#spielauswahl-bereich");
