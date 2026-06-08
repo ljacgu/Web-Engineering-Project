@@ -15,7 +15,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const inputSpielername = document.querySelector("#spielername");
     const dungeonKarten = document.querySelectorAll(".dungeon-karte");
     const btnStart = document.querySelector("#start-button");
+    // Spielauswahl (Math Dungeon RPG oder 10er-Übergang)
+    const spielAuswahl = document.querySelectorAll('input[name="spielmodus"]');
     let gewaehlterDungeon = "";
+    // Speichert, welches Spiel im Startscreen ausgewählt wurde
+    let gewaehltesSpiel = "dungeon";
 
     const displayHeldenname = document.querySelector("#heldenname");
     const displayPunkte = document.querySelector("#punkte");
@@ -59,6 +63,14 @@ document.addEventListener("DOMContentLoaded", () => {
             if (e.key === "Enter" || e.key === " ") karte.click();
         });
     });
+
+    // Speichert die Auswahl des Spielmodus
+    spielAuswahl.forEach(spiel => {
+        spiel.addEventListener("change", () => {
+            gewaehltesSpiel = spiel.value;
+        });
+    });
+
     //--- Hintergrundbild UND Monster-Bild anhand Schwierigkeit wechseln ---
     function updateDungeonVisuals(schwierigkeit) {
         document.body.className = "";
