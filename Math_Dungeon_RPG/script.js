@@ -15,8 +15,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const inputSpielername = document.querySelector("#spielername");
     const dungeonKarten = document.querySelectorAll(".dungeon-karte");
     const btnStart = document.querySelector("#start-button");
-    // Spielauswahl (Math Dungeon RPG oder 10er-Übergang)
-    const spielAuswahl = document.querySelectorAll('input[name="spielmodus"]');
+   // Bereiche für die Navigation zwischen Spielauswahl und Dungeon-Auswahl
+    const spielAuswahlBereich = document.querySelector("#spielauswahl-bereich");
+    const dungeonAuswahlBereich = document.querySelector("#dungeon-auswahl-bereich");
+
+    const btnWeiter = document.querySelector("#weiter-button");
+
+    // Karten für die Spielauswahl
+    const spielKarten = document.querySelectorAll(".spiel-karte");
     let gewaehlterDungeon = "";
     // Speichert, welches Spiel im Startscreen ausgewählt wurde
     let gewaehltesSpiel = "dungeon";
@@ -65,10 +71,41 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Speichert die Auswahl des Spielmodus
-    spielAuswahl.forEach(spiel => {
+    /*spielAuswahl.forEach(spiel => {
         spiel.addEventListener("change", () => {
             gewaehltesSpiel = spiel.value;
         });
+    });*/
+
+    // Speichert die Auswahl des Spielmodus über Karten
+    spielKarten.forEach(karte => {
+        karte.addEventListener("click", () => {
+            spielKarten.forEach(k => {
+                k.classList.remove("ausgewaehlt");
+                k.setAttribute("aria-checked", "false");
+            });
+
+            karte.classList.add("ausgewaehlt");
+            karte.setAttribute("aria-checked", "true");
+            gewaehltesSpiel = karte.dataset.spiel;
+        });
+
+        karte.addEventListener("keypress", (e) => {
+            if (e.key === "Enter" || e.key === " ") karte.click();
+        });
+    });
+
+    // --- NAVIGATION: VON SPIELAUSWAHL ZUR NÄCHSTEN AUSWAHL ---
+    btnWeiter.addEventListener("click", () => {
+        if (gewaehltesSpiel === "dungeon") {
+            spielAuswahlBereich.classList.add("hidden");
+            btnWeiter.classList.add("hidden");
+
+            dungeonAuswahlBereich.classList.remove("hidden");
+            btnStart.classList.remove("hidden");
+        } else {
+            alert("Der 10er-Übergang wird im nächsten Schritt geöffnet.");
+        }
     });
 
     //--- Hintergrundbild UND Monster-Bild anhand Schwierigkeit wechseln ---

@@ -21,25 +21,7 @@
             <hr class="start-hr">
 
 <!-- SPIELAUSWAHL: Math Dungeon RPG oder 10er-Übergang -->
-            <div class="spielauswahl">
-                <p class="dungeon-label">Wähle dein Spiel:</p>
-
-                <label>
-                    <input type="radio" name="spielmodus" value="dungeon" checked>
-                    Math Dungeon RPG
-                </label>
-
-                <label>
-                    <input type="radio" name="spielmodus" value="zehner">
-                     10er-Übergang
-                </label>
-            </div>
-
-            <div class="heldenname-group">
-                <label for="spielername">Heldenname:</label>
-                <input type="text" id="spielername" placeholder="Gib deinen Heldennamen ein..." aria-label="Heldennamen eingeben" maxlength="20" autocomplete="off">
-            </div>
-
+            <!--
             <div class="dungeon-auswahl">
                 <p class="dungeon-label">Wähle deinen Dungeon:</p>
                 <div class="dungeon-karten" role="radiogroup" aria-label="Dungeon Modus auswählen">
@@ -71,6 +53,65 @@
             </div>
 
             <button id="start-button" aria-label="Dungeon betreten">Dungeon betreten</button>
+            -->
+<!-- SPIELAUSWAHL -->
+            <div id="spielauswahl-bereich" class="dungeon-auswahl">
+                <p class="dungeon-label">Wähle dein Spiel:</p>
+
+                <div class="dungeon-karten" role="radiogroup" aria-label="Spiel auswählen">
+                    <div class="spiel-karte dungeon-karte ausgewaehlt" data-spiel="dungeon" role="radio" aria-checked="true" tabindex="0">
+                        <span class="dungeon-name">Math Dungeon RPG</span>
+                        <span class="dungeon-modus">Monster mit Mathe besiegen</span>
+                        <span class="dungeon-schwier mittel">RPG</span>
+                    </div>
+
+                    <div class="spiel-karte dungeon-karte" data-spiel="zehner" role="radio" aria-checked="false" tabindex="0">
+                        <span class="dungeon-name">10er-Übergang</span>
+                        <span class="dungeon-modus">Rechnen über den Zehner</span>
+                        <span class="dungeon-schwier einfach">Übung</span>
+                    </div>
+                </div>
+            </div>
+
+            <button id="weiter-button" aria-label="Spiel auswählen">Weiter</button>
+
+<!-- DUNGEON-AUSWAHL -->
+            <div id="dungeon-auswahl-bereich" class="dungeon-auswahl hidden">
+                <p class="dungeon-label">Wähle deinen Dungeon:</p>
+
+                <div class="dungeon-karten" role="radiogroup" aria-label="Dungeon Modus auswählen">
+                    <div class="dungeon-karte" data-wert="einfach" role="radio" aria-checked="false" tabindex="0">
+                        <img src="bilder/Forest_Easy.webp" alt="Forest Dungeon Vorschau">
+                        <span class="dungeon-name">Forest</span>
+                        <span class="dungeon-modus">[ + / - ]</span>
+                        <span class="dungeon-schwier einfach">Einfach</span>
+                    </div>
+
+                    <div class="dungeon-karte" data-wert="mittel" role="radio" aria-checked="false" tabindex="0">
+                        <img src="bilder/Town_Mittel.webp" alt="Town Dungeon Vorschau">
+                        <span class="dungeon-name">Town</span>
+                        <span class="dungeon-modus">[ × / ÷ ]</span>
+                        <span class="dungeon-schwier mittel">Mittel</span>
+                    </div>
+
+                    <div class="dungeon-karte" data-wert="schwer" role="radio" aria-checked="false" tabindex="0">
+                        <img src="bilder/Basement_Schwer.webp" alt="Basement Dungeon Vorschau">
+                        <span class="dungeon-name">Basement</span>
+                        <span class="dungeon-modus">[ + / - / × / ÷ ]</span>
+                        <span class="dungeon-schwier schwer">Schwer</span>
+                    </div>
+
+                    <div class="dungeon-karte" data-wert="extra_schwer" role="radio" aria-checked="false" tabindex="0">
+                        <img src="bilder/TowerOfMoonGod_ExtSchwer.png" alt="Moon God Tower Vorschau">
+                        <span class="dungeon-name">Moon God Tower</span>
+                        <span class="dungeon-modus">Extra Schwer!</span>
+                        <span class="dungeon-schwier extra">Extra!</span>
+                    </div>
+                </div>
+            </div>
+
+            <button id="start-button" aria-label="Dungeon betreten" class="hidden">Dungeon betreten</button>
+            
         </article>
     </section>
 
