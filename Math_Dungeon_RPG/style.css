@@ -92,12 +92,20 @@ body.bg-extra_schwer #monster-bild {
     min-height: 100vh;
 }
 
-.character_img,
+/*.character_img,
 .monster_img {
     margin-top: 120px;
     width: 25vw;
     max-width: 320px;
     min-width: 140px;
+    height: auto;
+    object-fit: contain;
+}*/ 
+
+/* Spieler- und Monsterbilder */
+.character_img,
+.monster_img {
+    width: 280px;
     height: auto;
     object-fit: contain;
 }
@@ -463,14 +471,27 @@ button:hover {
 
 
 
-
+/* Spieler und Monster stehen auf gleicher Höhe im Spielscreen */
 .spieler-bereich,
 .monster-bereich {
+    position: absolute;
+    top: 90px;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
+/* Spieler steht links */
+.spieler-bereich {
+    left: 90px;
+}
+
+/* Monster steht rechts */
+.monster-bereich {
+    right: 130px;
+}
+
+/* Herzen über dem Spieler */
 #herzen {
     font-size: 2rem;
     margin-bottom: 10px;
@@ -487,14 +508,15 @@ button:hover {
     color: gray;
 }
 
+/* Monster-Lebensbalken direkt über dem Monster */
 .monster-leiste {
-    width: 220px;
+    width: 230px;
     height: 22px;
     background-color: #444;
     border: 2px solid #222;
     border-radius: 12px;
     overflow: hidden;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 /* Lebensbalken des Monsters */
@@ -503,6 +525,18 @@ button:hover {
     height: 100%;
     background-color: red;
     transition: width 0.4s;
+}
+
+/* Monstergröße an Spielergröße angepasst */
+.monster_img {
+    width: 240px;
+    height: auto;
+}
+
+/* Spielerbild */
+.character_img {
+    width: 300px;
+    height: auto;
 }
 
 #damage-anzeige {
