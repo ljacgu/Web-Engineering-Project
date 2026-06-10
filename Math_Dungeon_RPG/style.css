@@ -4,6 +4,14 @@
     padding: 0;
 }
 
+/* Verhindert seitliches Scrollen auf Handy und kleinen Bildschirmen */
+html,
+body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
 /* Das Standard-Bild */
 body {
     background-image: url('bilder/StandradHintergrund.png');
@@ -424,71 +432,109 @@ button:hover {
 /* =========================
    MOBILE
 ========================= */
+/* Mobile Ansicht ohne horizontales Scrollen */
+/* Mobile Ansicht ohne horizontales Scrollen */
+@media (max-width: 600px) {
 
-@media (max-width: 900px) {
-
-    #spielscreen {
-        flex-direction: column;
-    }
-
-    .character_img,
-    .monster_img {
-        margin-top: 20px;
-        width: 45vw;
-    }
-
-    .gameBar {
-        position: static;
-        margin-bottom: 20px;
-    }
-
-    #aufgabe {
-        font-size: 2rem;
-    }
-
-    .aufgabenBox {
-        padding: 20px;
-    }
-
-    .dungeon-karten {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
+    /* Startkarte auf dem Handy etwas kompakter machen */
     .start-card {
-        padding: 30px 25px;
+        width: 92%;
+        padding: 22px 16px;
     }
 
+    /* Überschrift auf dem Handy verkleinern */
     #startscreen h1 {
         font-size: 2rem;
+        line-height: 1.1;
+    }
+
+    /* Spielauswahl bleibt zweispaltig, aber lesbar */
+    #spielauswahl-bereich .dungeon-karten {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    /* Dungeon-Auswahl bleibt zweispaltig */
+    #dungeon-auswahl-bereich .dungeon-karten {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    /* Karten bekommen genug Innenabstand */
+    .dungeon-karte {
+        padding: 8px;
+    }
+
+    /* Bilder in den Karten nicht zu groß */
+    .dungeon-karte img {
+        height: 75px;
+        object-fit: cover;
+    }
+
+    /* Namen bleiben lesbar */
+    .dungeon-name {
+        font-size: 0.85rem;
+    }
+
+    /* Beschreibung bleibt lesbar */
+    .dungeon-modus {
+        font-size: 0.7rem;
+    }
+
+    /* Schwierigkeitslabel bleibt lesbar */
+    .dungeon-schwier {
+        font-size: 0.65rem;
+        padding: 2px 6px;
+    }
+
+    /* Eingabefeld passt besser in die Karte */
+    input {
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    /* Button passt besser in die Karte */
+    button {
+        width: 100%;
+        margin: 15px 0;
     }
 }
 
+
 /* Spielauswahl mit zwei Karten mittig anzeigen */
 #spielauswahl-bereich .dungeon-karten {
-    grid-template-columns: repeat(2, 250px);
+    grid-template-columns: repeat(2, minmax(130px, 1fr));
     justify-content: center;
 }
 
 
 
-/* Spieler und Monster stehen auf gleicher Höhe im Spielscreen */
+/* Responsive Kampfanzeige: Spieler, Karte und Monster nebeneinander */
+#spielscreen {
+    display: grid;
+    grid-template-columns: 1fr minmax(360px, 700px) 1fr;
+    align-items: center;
+    gap: 30px;
+    padding: 90px 30px 30px;
+}
+
+/* Spieler und Monster werden nicht mehr fest positioniert */
 .spieler-bereich,
 .monster-bereich {
-    position: absolute;
-    top: 90px;
+    position: static;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-/* Spieler steht links */
+/* Spieler links */
 .spieler-bereich {
-    left: 90px;
+    justify-self: center;
 }
 
-/* Monster steht rechts */
+/* Monster rechts */
 .monster-bereich {
-    right: 130px;
+    justify-self: center;
 }
 
 /* Herzen über dem Spieler */
@@ -527,15 +573,15 @@ button:hover {
     transition: width 0.4s;
 }
 
-/* Monstergröße an Spielergröße angepasst */
-.monster_img {
-    width: 240px;
+/* Spielerbild passt sich der Bildschirmgröße an */
+.character_img {
+    width: clamp(170px, 20vw, 300px);
     height: auto;
 }
 
-/* Spielerbild */
-.character_img {
-    width: 300px;
+/* Monsterbild etwas kleiner als der Spieler */
+.monster_img {
+    width: clamp(150px, 17vw, 240px);
     height: auto;
 }
 
