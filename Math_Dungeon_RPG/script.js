@@ -40,6 +40,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnCheck = document.querySelector("#check-button");
     const btnNewGame = document.querySelector("#newGame-button");
 
+    // Elemente für das Kampfsystem
+    const monsterBild = document.querySelector("#monster-bild");
+    const monsterLebenBalken = document.querySelector("#monster-leben-balken");
+    const damageAnzeige = document.querySelector("#damage-anzeige");
+    const herzen = document.querySelectorAll(".herz");
+
     const displayZehnerHeldenname = document.querySelector("#zehner-heldenname");
     const displayZehnerPunkte = document.querySelector("#zehner-punkte");
     const displayZehnerAufgabe = document.querySelector("#zehner-aufgabe");
@@ -55,7 +61,10 @@ document.addEventListener("DOMContentLoaded", () => {
         schwierigkeit: "einfach",
         punkte: 0,
         leben: START_LEBEN,
-        aktuelleAntwort: 0
+        aktuelleAntwort: 0,
+        
+        // Zusätzliche Werte für das Kampfsystem
+        monsterLeben: 100
     };
 
     // --- 10ER-ÜBERGANG ZUSTAND ---
@@ -166,6 +175,17 @@ document.addEventListener("DOMContentLoaded", () => {
             gameState.schwierigkeit = gewaehlterDungeon;
             gameState.punkte = 0;
             gameState.leben = START_LEBEN;
+
+            // Monsterleben und Herz-Anzeige zurücksetzen
+            gameState.monsterLeben = 100;
+            monsterLebenBalken.style.width = "100%";
+
+            herzen.forEach(herz => {
+                herz.classList.remove("verloren");
+            });
+
+            damageAnzeige.classList.add("hidden");
+
 
             // UI für das neue Spiel vorbereiten
             displayHeldenname.textContent = gameState.heldenname;
@@ -316,8 +336,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
+    // --- KAMPFSYSTEM: MONSTER ERHÄLT SCHADEN ---
+    function monsterBekommtSchaden() {
+        const schaden = 10;
 
+        gameState.monsterLeben -= schaden;
 
+        if (gameState.monsterLeben < 0) {
+            gameState.monsterLeben = 0;
+        }
+
+        monsterLebenBalken.style.width = gameState.monsterLeben + "%";
+
+        damageAnzeige.textContent = "-" + schaden + " Damage";
+        damageAnzeige.classList.remove("hidden");
+
+        monsterBild.classList.add("monster-wackelt");
+
+        setTimeout(() => {
+            monsterBild.classList.remove("monster-wackelt");
+            damageAnzeige.classList.add("hidden");
+        }, 700);
+    }
+
+    // --- SPIELERLEBEN VISUELL AKTUALISIEREN ---
+    function aktualisiereHerzen() {
+        herzen.forEach((herz, index) => {
+            if (index < gameState.leben) {
+                herz.classList.remove("verloren");
+            } else {
+                herz.classList.add("verloren");
+            }
+        });
+    }
 
 
     function pruefeAntwort() {
@@ -336,6 +387,8 @@ document.addEventListener("DOMContentLoaded", () => {
             if (spielerAntwort === gameState.aktuelleAntwort) {
                 gameState.punkte += PUNKTE_PRO_RICHTIGE_ANTWORT;
                 displayPunkte.textContent = gameState.punkte;
+                monsterBekommtSchaden();
+
 
                 if (gameState.punkte > highscore) {
                     highscore = gameState.punkte;
@@ -347,6 +400,7 @@ document.addEventListener("DOMContentLoaded", () => {
             } else {
                 gameState.leben--;
                 displayLeben.textContent = gameState.leben;
+                aktualisiereHerzen();
                 displayNachricht.textContent = ` Autsch! Richtig war: ${gameState.aktuelleAntwort}`;
                 displayNachricht.style.color = "red";
             }

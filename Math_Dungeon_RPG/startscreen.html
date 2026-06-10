@@ -127,7 +127,16 @@
 <!--    Spielscreen-->
     <section id="spielscreen" class="screen hidden">
 
-        <img src="bilder/Character1.png" alt="Held" class="character_img">
+        <div class="spieler-bereich">
+            <!-- Anzeige der Spielerleben -->
+            <div id="herzen">
+                <span class="herz">❤</span>
+                <span class="herz">❤</span>
+                <span class="herz">❤</span>
+            </div>
+
+            <img src="bilder/Character1.png" alt="Held" class="character_img">
+        </div>
 
         <header class="gameBar">
             <section class="anzeigebar" aria-label="Spieler Status">
@@ -159,8 +168,19 @@
             <button id="newGame-button" aria-label="Neues Spiel starten" class="hidden">Neues Spiel starten</button>
         </article>
 
-        <img src="" alt="Monster" class="monster_img" id="monster-bild">
+        <!-- Monsterbereich mit Lebensbalken -->
+        <div class="monster-bereich">
 
+             <!-- Zeigt die verbleibenden Lebenspunkte des Monsters -->
+            <div class="monster-leiste">
+                <div id="monster-leben-balken"></div>
+            </div>
+
+            <!-- Damage-Anzeige bei Treffern -->
+            <p id="damage-anzeige" class="hidden"></p>
+
+            <img src="" alt="Monster" class="monster_img" id="monster-bild">
+        </div>
 
     </section>
 
