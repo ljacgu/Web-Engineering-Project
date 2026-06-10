@@ -295,6 +295,9 @@ document.addEventListener("DOMContentLoaded", () => {
         spielAuswahlBereich.classList.remove("hidden");
         btnWeiter.classList.remove("hidden");
 
+        dungeonAuswahlBereich.classList.add("hidden");
+        btnStart.classList.add("hidden");
+
         displayZehnerNachricht.textContent = "";
         inputZehnerAntwort.value = "";
     });
