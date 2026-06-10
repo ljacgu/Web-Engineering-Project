@@ -58,7 +58,7 @@
                 <label for="spielername">Heldenname:</label>
                 <input type="text" id="spielername" placeholder="Gib deinen Heldennamen ein..." aria-label="Heldennamen eingeben" maxlength="20" autocomplete="off">
             </div>
-            
+
 <!-- SPIELAUSWAHL -->
             <div id="spielauswahl-bereich" class="dungeon-auswahl">
                 <p class="dungeon-label">Wähle dein Spiel:</p>
@@ -162,6 +162,29 @@
         <img src="" alt="Monster" class="monster_img" id="monster-bild">
 
 
+    </section>
+
+<!-- 10er-Übergang Screen -->
+    <section id="zehner-screen" class="screen hidden">
+        <article class="card">
+            <h2>10er-Übergang</h2>
+
+            <hr>
+
+            <section class="aufgabenBox" aria-label="10er-Übergang Aufgabe">
+                <h3 class="hidden-visual">Aufgabenstellung</h3>
+                <p>Held: <span id="zehner-heldenname">[Name]</span></p>
+                <p>Punkte: <span id="zehner-punkte">0</span></p>
+                <p id="zehner-aufgabe">Aufgabe erscheint hier</p>
+            </section>
+
+            <input type="number" id="zehner-antwort" placeholder="Antwort eingeben" aria-label="Antwort für 10er-Übergang eingeben" step="1" autocomplete="off">
+
+            <button id="zehner-check-button" aria-label="10er-Übergang Antwort prüfen">Antwort prüfen</button>
+            <p id="zehner-nachricht"></p>
+
+            <button id="zehner-zurueck-button" aria-label="Zurück zur Spielauswahl">Zurück zur Spielauswahl</button>
+        </article>
     </section>
 
 </main>

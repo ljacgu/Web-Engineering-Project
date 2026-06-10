@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const startScreen = document.querySelector("#startscreen");
     const spielScreen = document.querySelector("#spielscreen");
+    const zehnerScreen = document.querySelector("#zehner-screen");
 
     const inputSpielername = document.querySelector("#spielername");
     const dungeonKarten = document.querySelectorAll("#dungeon-auswahl-bereich .dungeon-karte");
@@ -39,6 +40,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnCheck = document.querySelector("#check-button");
     const btnNewGame = document.querySelector("#newGame-button");
 
+    const displayZehnerHeldenname = document.querySelector("#zehner-heldenname");
+    const displayZehnerPunkte = document.querySelector("#zehner-punkte");
+    const displayZehnerAufgabe = document.querySelector("#zehner-aufgabe");
+    const displayZehnerNachricht = document.querySelector("#zehner-nachricht");
+
+    const inputZehnerAntwort = document.querySelector("#zehner-antwort");
+    const btnZehnerCheck = document.querySelector("#zehner-check-button");
+    const btnZehnerZurueck = document.querySelector("#zehner-zurueck-button");
+
     // --- SPIEL-ZUSTAND (State) ---
     let gameState = {
         heldenname: "",
@@ -47,6 +57,10 @@ document.addEventListener("DOMContentLoaded", () => {
         leben: START_LEBEN,
         aktuelleAntwort: 0
     };
+
+    // --- 10ER-ÜBERGANG ZUSTAND ---
+    let zehnerPunkte = 0;
+    let zehnerAntwort = 0;
 
     // --- HIGHSCORE LADEN ---
     let highscore = Number(localStorage.getItem(HIGHSCORE_KEY)) || 0;
@@ -104,7 +118,22 @@ document.addEventListener("DOMContentLoaded", () => {
             dungeonAuswahlBereich.classList.remove("hidden");
             btnStart.classList.remove("hidden");
         } else {
-            alert("Der 10er-Übergang wird im nächsten Schritt geöffnet.");
+            const name = inputSpielername.value.trim();
+
+            if (name === "") {
+                alert("Bitte gib einen Heldennamen ein!");
+                return;
+            }
+
+            zehnerPunkte = 0;
+            displayZehnerHeldenname.textContent = name;
+            displayZehnerPunkte.textContent = zehnerPunkte;
+            displayZehnerNachricht.textContent = "";
+
+            startScreen.classList.add("hidden");
+            zehnerScreen.classList.remove("hidden");
+
+            generiereZehnerAufgabe();
         }
     });
 
@@ -209,12 +238,65 @@ document.addEventListener("DOMContentLoaded", () => {
         inputAntwort.focus();
     }
 
+    // --- 10ER-ÜBERGANG: AUFGABE GENERIEREN ---
+    function generiereZehnerAufgabe() {
+        const zahl1 = Math.floor(Math.random() * 4) + 6; // 6 bis 9
+        const zahl2 = Math.floor(Math.random() * 5) + 5; // 5 bis 9
+
+        zehnerAntwort = zahl1 + zahl2;
+
+        displayZehnerAufgabe.textContent = `${zahl1} + ${zahl2} = ?`;
+        inputZehnerAntwort.value = "";
+        inputZehnerAntwort.focus();
+    }
+
+    // --- 10ER-ÜBERGANG: ANTWORT PRÜFEN ---
+    function pruefeZehnerAntwort() {
+        const antwort = Number(inputZehnerAntwort.value);
+
+        if (inputZehnerAntwort.value.trim() === "" || Number.isNaN(antwort)) {
+            displayZehnerNachricht.textContent = "Bitte gib eine gültige Zahl ein!";
+            displayZehnerNachricht.style.color = "orange";
+            return;
+        }
+
+        if (antwort === zehnerAntwort) {
+            zehnerPunkte += 10;
+            displayZehnerPunkte.textContent = zehnerPunkte;
+            displayZehnerNachricht.textContent = "Richtig!";
+            displayZehnerNachricht.style.color = "lime";
+        } else {
+            displayZehnerNachricht.textContent = `Falsch! Richtig war: ${zehnerAntwort}`;
+            displayZehnerNachricht.style.color = "red";
+        }
+
+        setTimeout(generiereZehnerAufgabe, 1200);
+    }
+
     // --- ANTWORT PRÜFEN & EXCEPTION HANDLING ---
     btnCheck.addEventListener("click", pruefeAntwort);
 
     // Ermöglicht die Bestätigung mit der Enter-Taste im Eingabefeld
     inputAntwort.addEventListener("keypress", (e) => {
         if (e.key === "Enter") pruefeAntwort();
+    });
+
+    btnZehnerCheck.addEventListener("click", pruefeZehnerAntwort);
+
+    inputZehnerAntwort.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") pruefeZehnerAntwort();
+    });
+
+
+    btnZehnerZurueck.addEventListener("click", () => {
+        zehnerScreen.classList.add("hidden");
+        startScreen.classList.remove("hidden");
+
+        spielAuswahlBereich.classList.remove("hidden");
+        btnWeiter.classList.remove("hidden");
+
+        displayZehnerNachricht.textContent = "";
+        inputZehnerAntwort.value = "";
     });
 
 
