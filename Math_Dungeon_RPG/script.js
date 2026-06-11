@@ -16,11 +16,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const inputSpielername = document.querySelector("#spielername");
     const dungeonKarten = document.querySelectorAll("#dungeon-auswahl-bereich .dungeon-karte");
     const btnStart = document.querySelector("#start-button");
+    const btnZurueckAuswahl = document.querySelector("#zurueck-auswahl-button");
+    
    // Bereiche für die Navigation zwischen Spielauswahl und Dungeon-Auswahl
     const spielAuswahlBereich = document.querySelector("#spielauswahl-bereich");
     const dungeonAuswahlBereich = document.querySelector("#dungeon-auswahl-bereich");
 
     const btnWeiter = document.querySelector("#weiter-button");
+    btnZurueckAuswahl.addEventListener("click", () => {
+        dungeonAuswahlBereich.classList.add("hidden");
+        btnStart.classList.add("hidden");
+        btnZurueckAuswahl.classList.add("hidden");
+
+        spielAuswahlBereich.classList.remove("hidden");
+        btnWeiter.classList.remove("hidden");
+    });
 
     // Karten für die Spielauswahl
     const spielKarten = document.querySelectorAll(".spiel-karte");
@@ -39,6 +49,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const inputAntwort = document.querySelector("#antwort-input");
     const btnCheck = document.querySelector("#check-button");
     const btnNewGame = document.querySelector("#newGame-button");
+
+    const btnZurueckStart = document.querySelector("#zurueck-start-button");
 
     // Elemente für das Kampfsystem
     const monsterBild = document.querySelector("#monster-bild");
@@ -126,6 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             dungeonAuswahlBereich.classList.remove("hidden");
             btnStart.classList.remove("hidden");
+            btnZurueckAuswahl.classList.remove("hidden");
         } else {
             const name = inputSpielername.value.trim();
 
@@ -287,7 +300,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         // Moon God Tower: extra schwer
-        else if (gameState.schwierigkeit === "extra") {
+        else if (gameState.schwierigkeit === "extra_schwer") {
             displayModus.textContent = "Modus: Moon God Tower";
 
             const operatoren = ["+", "-", "×", "÷"];
@@ -388,6 +401,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
         displayZehnerNachricht.textContent = "";
         inputZehnerAntwort.value = "";
+    });
+
+    btnZurueckStart.addEventListener("click", () => {
+
+        // Spielscreen verlassen
+        spielScreen.classList.add("hidden");
+
+        // Startscreen anzeigen
+        startScreen.classList.remove("hidden");
+
+        // Hintergrund zurücksetzen
+        document.body.className = "bg-standard";
+
+        // Spielauswahl anzeigen
+        spielAuswahlBereich.classList.remove("hidden");
+        btnWeiter.classList.remove("hidden");
+
+        // Dungeonauswahl verstecken
+        dungeonAuswahlBereich.classList.add("hidden");
+        btnStart.classList.add("hidden");
+
+        // Auswahl zurücksetzen
+        gewaehlterDungeon = "";
+
+        dungeonKarten.forEach(k => {
+            k.classList.remove("ausgewaehlt");
+            k.setAttribute("aria-checked", "false");
+        });
+
     });
 
 
