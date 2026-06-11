@@ -26,44 +26,41 @@
 
             <hr class="start-hr">
 
-<!-- SPIELAUSWAHL: Math Dungeon RPG oder 10er-Übergang -->
-            <!--
-            <div class="dungeon-auswahl">
-                <p class="dungeon-label">Wähle deinen Dungeon:</p>
-                <div class="dungeon-karten" role="radiogroup" aria-label="Dungeon Modus auswählen">
-                    <div class="dungeon-karte" data-wert="einfach" role="radio" aria-checked="false" tabindex="0">
-                        <img src="bilder/Forest_Easy.webp" alt="Forest Dungeon Vorschau">
-                        <span class="dungeon-name">Forest</span>
-                        <span class="dungeon-modus">[ + / - ]</span>
-                        <span class="dungeon-schwier einfach">Einfach</span>
-                    </div>
-                    <div class="dungeon-karte" data-wert="mittel" role="radio" aria-checked="false" tabindex="0">
-                        <img src="bilder/Town_Mittel.webp" alt="Town Dungeon Vorschau">
-                        <span class="dungeon-name">Town</span>
-                        <span class="dungeon-modus">[ × / ÷ ]</span>
-                        <span class="dungeon-schwier mittel">Mittel</span>
-                    </div>
-                    <div class="dungeon-karte" data-wert="schwer" role="radio" aria-checked="false" tabindex="0">
-                        <img src="bilder/Basement_Schwer.webp" alt="Basement Dungeon Vorschau">
-                        <span class="dungeon-name">Basement</span>
-                        <span class="dungeon-modus">[ + / - / × / ÷ ]</span>
-                        <span class="dungeon-schwier schwer">Schwer</span>
-                    </div>
-                    <div class="dungeon-karte" data-wert="extra_schwer" role="radio" aria-checked="false" tabindex="0">
-                        <img src="bilder/TowerOfMoonGod_ExtSchwer.png" alt="Moon God Tower Vorschau">
-                        <span class="dungeon-name">Moon God Tower</span>
-                        <span class="dungeon-modus">Extra Schwer!</span>
-                        <span class="dungeon-schwier extra">Extra!</span>
-                    </div>
-                </div>
-            </div>
-
-            <button id="start-button" aria-label="Dungeon betreten">Dungeon betreten</button>
-            -->
             <div class="heldenname-group">
                 <label for="spielername">Heldenname:</label>
                 <input type="text" id="spielername" placeholder="Gib deinen Heldennamen ein..." aria-label="Heldennamen eingeben" maxlength="20" autocomplete="off">
             </div>
+
+<!-- SPIELFIGURENAUSWAHL -->
+            <section class="figur-auswahl" aria-labelledby="figur-auswahl-titel">
+                <h2 id="figur-auswahl-titel" class="dungeon-label">Wähle deine Spielfigur:</h2>
+
+                <div class="figur-leiste" role="radiogroup" aria-label="Spielfigur auswählen">
+                    <button class="figur-option ausgewaehlt" type="button"
+                            data-portrait="bilder/FigurePortrait1.webp" role="radio"
+                            aria-checked="true" aria-label="Spielfigur 1 auswählen">
+                        <img src="bilder/FigureIcon1.webp" alt="">
+                    </button>
+
+                    <button class="figur-option" type="button"
+                            data-portrait="bilder/FigurePortrait2.webp" role="radio"
+                            aria-checked="false" aria-label="Spielfigur 2 auswählen">
+                        <img src="bilder/FigureIcon2.webp" alt="">
+                    </button>
+
+                    <button class="figur-option" type="button"
+                            data-portrait="bilder/FigurePortrait3.webp" role="radio"
+                            aria-checked="false" aria-label="Spielfigur 3 auswählen">
+                        <img src="bilder/FigureIcon3.webp" alt="">
+                    </button>
+
+                    <button class="figur-option" type="button"
+                            data-portrait="bilder/FigurePortrait4.webp" role="radio"
+                            aria-checked="false" aria-label="Spielfigur 4 auswählen">
+                        <img src="bilder/FigureIcon4.webp" alt="">
+                    </button>
+                </div>
+            </section>
 
 <!-- SPIELAUSWAHL -->
             <div id="spielauswahl-bereich" class="dungeon-auswahl">
@@ -85,6 +82,8 @@
             </div>
 
             <button id="weiter-button" aria-label="Spiel auswählen">Weiter</button>
+
+
 
 <!-- DUNGEON-AUSWAHL -->
             <div id="dungeon-auswahl-bereich" class="dungeon-auswahl hidden">
@@ -123,7 +122,7 @@
 
             <button id="start-button" aria-label="Dungeon betreten" class="hidden">Dungeon betreten</button>
             <button id="zurueck-auswahl-button" aria-label="Zurück zur Spielauswahl" class="hidden">Zurück</button>
-            
+
         </article>
     </section>
 
@@ -142,7 +141,7 @@
                 <span class="herz">❤</span>
             </div>
 
-            <img src="bilder/Character1.png" alt="Held" class="character_img">
+            <img src="bilder/FigurePortrait1.webp" alt="Ausgewählte Spielfigur" class="character_img" id="spieler-figur">
         </div>
 
         <header class="gameBar">

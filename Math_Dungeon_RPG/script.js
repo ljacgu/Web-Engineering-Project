@@ -14,6 +14,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const zehnerScreen = document.querySelector("#zehner-screen");
 
     const inputSpielername = document.querySelector("#spielername");
+    const figurOptionen = document.querySelectorAll(".figur-option");
+    const spielerFigur = document.querySelector("#spieler-figur");
     const dungeonKarten = document.querySelectorAll("#dungeon-auswahl-bereich .dungeon-karte");
     const btnStart = document.querySelector("#start-button");
     const btnZurueckAuswahl = document.querySelector("#zurueck-auswahl-button");
@@ -35,6 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Karten für die Spielauswahl
     const spielKarten = document.querySelectorAll(".spiel-karte");
     let gewaehlterDungeon = "";
+    let gewaehltesPortrait = "bilder/FigurePortrait1.webp";
     // Speichert, welches Spiel im Startscreen ausgewählt wurde
     let gewaehltesSpiel = "dungeon";
 
@@ -86,6 +89,20 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- HIGHSCORE LADEN ---
     let highscore = Number(localStorage.getItem(HIGHSCORE_KEY)) || 0;
     displayHighscore.textContent = highscore;
+
+    // Speichert die angeklickte Figur und markiert immer nur eine Auswahl.
+    figurOptionen.forEach(option => {
+        option.addEventListener("click", () => {
+            figurOptionen.forEach(figur => {
+                figur.classList.remove("ausgewaehlt");
+                figur.setAttribute("aria-checked", "false");
+            });
+
+            option.classList.add("ausgewaehlt");
+            option.setAttribute("aria-checked", "true");
+            gewaehltesPortrait = option.dataset.portrait;
+        });
+    });
 
     // Live-Wechsel bei Dungeon-Kartenklick
     dungeonKarten.forEach(karte => {
@@ -188,6 +205,9 @@ document.addEventListener("DOMContentLoaded", () => {
             gameState.schwierigkeit = gewaehlterDungeon;
             gameState.punkte = 0;
             gameState.leben = START_LEBEN;
+
+            // Übernimmt die Auswahl vom Startscreen in den Spielscreen.
+            spielerFigur.src = gewaehltesPortrait;
 
             // Monsterleben und Herz-Anzeige zurücksetzen
             gameState.monsterLeben = 100;
