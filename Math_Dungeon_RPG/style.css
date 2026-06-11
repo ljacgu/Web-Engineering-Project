@@ -619,3 +619,150 @@ button:hover {
         transform: translateX(0);
     }
 }
+
+/* =========================
+   MOBILE SPIELSCREEN
+========================= */
+
+@media (max-width: 600px) {
+
+    #spielscreen {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 10px;
+        padding: 12px;
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+
+    /* Reihenfolge auf Handy */
+    .spieler-bereich {
+        order: 1;
+    }
+
+    .gameBar {
+        order: 2;
+    }
+
+    .monster-bereich {
+        order: 3;
+    }
+
+    #spielscreen .card {
+        order: 4;
+    }
+
+    /* Figuren auf Handy ausblenden */
+    .character_img,
+    .monster_img {
+        display: none;
+    }
+
+    /* Herzen oben mittig */
+    #herzen {
+        font-size: 1.8rem;
+        margin-bottom: 0;
+    }
+
+    /* Statusleiste kompakt */
+    .gameBar {
+        position: static;
+        width: 90%;
+        max-width: 330px;
+        gap: 14px;
+        padding: 8px 10px;
+        justify-content: center;
+        flex-wrap: wrap;
+        font-size: 0.85rem;
+        margin: 0;
+    }
+
+    /* Monster-Lebensbalken direkt unter der Statusleiste */
+    .monster-leiste {
+        width: 230px;
+        height: 18px;
+        margin: 0;
+    }
+
+    /* Damage-Anzeige auf Handy kleiner */
+    #damage-anzeige {
+        font-size: 1rem;
+        margin: 0;
+    }
+
+    /* Spielkarte */
+    #spielscreen .card {
+        width: 90%;
+        max-width: 330px;
+        padding: 18px 14px;
+        margin: 0;
+    }
+
+    #modusAnzeige {
+        font-size: 1rem;
+    }
+
+    #spielziel {
+        font-size: 0.85rem;
+        margin-bottom: 18px;
+    }
+
+    #aufgabe {
+        font-size: 2.2rem;
+        margin-bottom: 20px;
+    }
+
+    input {
+        width: 100%;
+        margin: 8px 0;
+    }
+
+    button {
+        width: 100%;
+        margin: 12px 0;
+    }
+}
+
+/* =========================
+   HINWEIS FÜR HANDY-HOCHFORMAT
+========================= */
+
+/* Hinweis ist standardmäßig versteckt 
+#rotate-hinweis {
+    display: none;
+}
+
+/* Auf Handy im Hochformat wird nur der Dreh-Hinweis angezeigt */
+/*@media (max-width: 700px) and (orientation: portrait) {
+
+    #rotate-hinweis {
+        display: flex;
+        position: fixed;
+        z-index: 9999;
+        inset: 0;
+        background-color: #111;
+        color: white;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 30px;
+        font-size: 1.4rem;
+        font-weight: bold;
+    }
+
+    #startscreen,
+    #spielscreen,
+    #zehner-screen {
+        display: none !important;
+    }
+}*/
+
+/* Im Querformat wird der Hinweis wieder versteckt */
+/*@media (max-width: 900px) and (orientation: landscape) {
+
+    #rotate-hinweis {
+        display: none;
+    }
+}*/

@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
         punkte: 0,
         leben: START_LEBEN,
         aktuelleAntwort: 0,
-        
+
         // Zusätzliche Werte für das Kampfsystem
         monsterLeben: 100
     };
@@ -227,32 +227,100 @@ document.addEventListener("DOMContentLoaded", () => {
         let num2 = 0;
         let operator = "+";
 
-        // Generierung basierend auf deinem gewählten Dungeon-Modus
+        // Forest: Addition & Subtraktion mit 10er-Übergang
         if (gameState.schwierigkeit === "einfach") {
-            displayModus.textContent = "Modus: 10er-Übergang (Forest)";
+            displayModus.textContent = "Modus: Forest (+ / -)";
             operator = Math.random() > 0.5 ? "+" : "-";
 
             // Garantiert einen Zehnerübergang im Zahlenraum bis 20
-            num1 = Math.floor(Math.random() * 4) + 6; // 6, 7, 8, 9
-            num2 = Math.floor(Math.random() * 5) + 5; // 5, 6, 7, 8, 9
+            num1 = Math.floor(Math.random() * 4) + 6; // 6 bis 9
+            num2 = Math.floor(Math.random() * 5) + 5; // 5 bis 9
 
             if (operator === "-" && num1 < num2) {
-                let temp = num1; num1 = num2; num2 = temp;
+                let temp = num1; 
+                num1 = num2; 
+                num2 = temp;
             }
         }
-        else {
-            displayModus.textContent = `Modus: Zahlenraum 1-100 (${gameState.schwierigkeit})`;
-            // Für die anderen Modi nutzen wir standardmäßig eine Addition im Zahlenraum 1-100
-            operator = "+";
-            num1 = Math.floor(Math.random() * 50) + 1;
-            num2 = Math.floor(Math.random() * 49) + 1;
+        // Town: Multiplikation und Division
+        else if(gameState.schwierigkeit === "mittel"){
+            displayModus.textContent = `Modus: Town (× / ÷)`;
+            operator = Math.random() > 0.5 ?  "×" : "÷";
+            
+            if (operator === "×") {
+                num1 = Math.floor(Math.random() * 10) + 1;
+                num2 = Math.floor(Math.random() * 10) + 1;
+            } else{
+                num2 = Math.floor(Math.random() * 10) + 1;
+                let ergebnis = Math.floor(Math.random() * 10) + 1;
+                num1 = num2 * ergebnis; // sorgt für glatte Division
+            }
         }
 
-        // Richtige Antwort im Hintergrund berechnen
+        // Basement: gemischte Aufgaben
+        else if (gameState.schwierigkeit === "schwer") {
+            displayModus.textContent = "Modus: Basement (+ / - / × / ÷)";
+
+            const operatoren = ["+", "-", "×", "÷"];
+            operator = operatoren[Math.floor(Math.random() * operatoren.length)];
+
+            if (operator === "+") {
+                num1 = Math.floor(Math.random() * 100) + 1;
+                num2 = Math.floor(Math.random() * 100) + 1;
+            }
+
+            else if (operator === "-") {
+                num1 = Math.floor(Math.random() * 100) + 1;
+                num2 = Math.floor(Math.random() * num1) + 1;
+            }
+
+            else if (operator === "×") {
+                num1 = Math.floor(Math.random() * 12) + 1;
+                num2 = Math.floor(Math.random() * 12) + 1;
+            }
+
+            else if (operator === "÷") {
+                num2 = Math.floor(Math.random() * 12) + 1;
+                let ergebnis = Math.floor(Math.random() * 12) + 1;
+                num1 = num2 * ergebnis;
+            }
+        }
+
+        // Moon God Tower: extra schwer
+        else if (gameState.schwierigkeit === "extra") {
+            displayModus.textContent = "Modus: Moon God Tower";
+
+            const operatoren = ["+", "-", "×", "÷"];
+            operator = operatoren[Math.floor(Math.random() * operatoren.length)];
+
+            if (operator === "+") {
+                num1 = Math.floor(Math.random() * 200) + 1;
+                num2 = Math.floor(Math.random() * 200) + 1;
+            }
+
+            else if (operator === "-") {
+                num1 = Math.floor(Math.random() * 200) + 1;
+                num2 = Math.floor(Math.random() * num1) + 1;
+            }
+
+            else if (operator === "×") {
+                num1 = Math.floor(Math.random() * 20) + 1;
+                num2 = Math.floor(Math.random() * 20) + 1;
+            }
+
+            else if (operator === "÷") {
+                num2 = Math.floor(Math.random() * 20) + 1;
+                let ergebnis = Math.floor(Math.random() * 20) + 1;
+                num1 = num2 * ergebnis;
+            }
+        }
+
+        // Richtige Antwort berechnen
         if (operator === "+") gameState.aktuelleAntwort = num1 + num2;
         if (operator === "-") gameState.aktuelleAntwort = num1 - num2;
+        if (operator === "×") gameState.aktuelleAntwort = num1 * num2;
+        if (operator === "÷") gameState.aktuelleAntwort = num1 / num2;
 
-        // Aufgabe im HTML anzeigen
         displayAufgabe.textContent = `${num1} ${operator} ${num2} = ?`;
         inputAntwort.value = "";
         inputAntwort.focus();
