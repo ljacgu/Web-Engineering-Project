@@ -236,6 +236,65 @@ button:hover {
 }
 
 /* =========================
+   TIMER
+========================= */
+
+#timer-container {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: 3px solid #6b0000;
+    background: radial-gradient(circle, #1a0000 0%, #0d0000 100%);
+    box-shadow: 0 0 12px rgba(180, 0, 0, 0.5), inset 0 0 8px rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 12px auto 4px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+#timer-wert {
+    font-size: 1.9rem;
+    font-weight: bold;
+    color: #cc2200;
+    text-shadow: 0 0 8px rgba(200, 30, 0, 0.8);
+    line-height: 1;
+    letter-spacing: -1px;
+}
+
+#timer-container.warnung #timer-wert {
+    color: #ff6600;
+    text-shadow: 0 0 10px rgba(255, 100, 0, 0.9);
+}
+
+#timer-container.kritisch {
+    animation: timerPuls 0.4s ease-in-out infinite;
+    border-color: #ff0000;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.7), inset 0 0 10px rgba(100, 0, 0, 0.6);
+}
+
+#timer-container.kritisch #timer-wert {
+    color: #ff2200;
+    text-shadow: 0 0 14px rgba(255, 0, 0, 1);
+}
+
+@keyframes timerPuls {
+    0%, 100% { transform: scale(1); }
+    50%       { transform: scale(1.12); }
+}
+
+@media (max-width: 600px) {
+    #timer-container {
+        width: 58px;
+        height: 58px;
+    }
+
+    #timer-wert {
+        font-size: 1.5rem;
+    }
+}
+
+/* =========================
    STARTSCREEN STYLES
 ========================= */
 

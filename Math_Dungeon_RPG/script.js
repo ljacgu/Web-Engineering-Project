@@ -9,6 +9,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const PAUSE_BIS_NAECHSTE_AUFGABE = 1200;
     const HIGHSCORE_KEY = "mathDungeonHighscore";
 
+    const TIMER_LIMITS = {
+        einfach:     30,
+        mittel:      20,
+        schwer:      15,
+        extra_schwer: 10
+    };
+
     const startScreen = document.querySelector("#startscreen");
     const spielScreen = document.querySelector("#spielscreen");
     const zehnerScreen = document.querySelector("#zehner-screen");
@@ -52,6 +59,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const inputAntwort = document.querySelector("#antwort-input");
     const btnCheck = document.querySelector("#check-button");
     const btnNewGame = document.querySelector("#newGame-button");
+
+    const timerContainer = document.querySelector("#timer-container");
+    const timerWert = document.querySelector("#timer-wert");
+    let timerInterval = null;
 
     const btnZurueckStart = document.querySelector("#zurueck-start-button");
 
@@ -243,6 +254,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // --- NAVIGATON: ZURÜCK ZUM START ---
     btnNewGame.addEventListener("click", () => {
+        stoppeTimer();
         document.body.className = "bg-standard"; // Zurück zum Start-Hintergrund
         spielScreen.classList.add("hidden");
         startScreen.classList.remove("hidden");
@@ -253,6 +265,52 @@ document.addEventListener("DOMContentLoaded", () => {
             k.setAttribute("aria-checked", "false");
         });
     });
+
+    // --- TIMER ---
+    function stoppeTimer() {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        timerContainer.classList.remove("warnung", "kritisch");
+    }
+
+    function starteTimer() {
+        stoppeTimer();
+        const limit = TIMER_LIMITS[gameState.schwierigkeit] || 30;
+        let verbleibend = limit;
+
+        timerWert.textContent = verbleibend;
+
+        timerInterval = setInterval(() => {
+            verbleibend--;
+            timerWert.textContent = verbleibend;
+
+            timerContainer.classList.remove("warnung", "kritisch");
+            if (verbleibend <= 5) {
+                timerContainer.classList.add("kritisch");
+            } else if (verbleibend <= Math.ceil(limit * 0.4)) {
+                timerContainer.classList.add("warnung");
+            }
+
+            if (verbleibend <= 0) {
+                stoppeTimer();
+                gameState.leben--;
+                displayLeben.textContent = gameState.leben;
+                aktualisiereHerzen();
+                displayNachricht.textContent = "Zeit abgelaufen! Du verlierst ein Leben!";
+                displayNachricht.style.color = "red";
+
+                if (gameState.leben <= 0) {
+                    displayNachricht.textContent = "Game Over! Du bist im Dungeon gefallen.";
+                    displayNachricht.style.color = "darkred";
+                    btnCheck.classList.add("hidden");
+                    inputAntwort.disabled = true;
+                    btnNewGame.classList.remove("hidden");
+                } else {
+                    setTimeout(generiereAufgabe, PAUSE_BIS_NAECHSTE_AUFGABE);
+                }
+            }
+        }, 1000);
+    }
 
     // --- SPIELLOGIK: DYNAMISCHE AUFGABEN ---
     function generiereAufgabe() {
@@ -357,6 +415,7 @@ document.addEventListener("DOMContentLoaded", () => {
         displayAufgabe.textContent = `${num1} ${operator} ${num2} = ?`;
         inputAntwort.value = "";
         inputAntwort.focus();
+        starteTimer();
     }
 
     // --- 10ER-ÜBERGANG: AUFGABE GENERIEREN ---
@@ -424,6 +483,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     btnZurueckStart.addEventListener("click", () => {
+        stoppeTimer();
 
         // Spielscreen verlassen
         spielScreen.classList.add("hidden");
@@ -512,6 +572,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 displayNachricht.style.color = "orange";
                 return;
             }
+
+            stoppeTimer();
 
             // Auswertung
             if (spielerAntwort === gameState.aktuelleAntwort) {
