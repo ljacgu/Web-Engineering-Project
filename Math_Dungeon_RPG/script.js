@@ -159,33 +159,34 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // --- NAVIGATION: VON SPIELAUSWAHL ZUR NÄCHSTEN AUSWAHL ---
-    btnWeiter.addEventListener("click", () => {
-        if (gewaehltesSpiel === "dungeon") {
-            spielAuswahlBereich.classList.add("hidden");
-            btnWeiter.classList.add("hidden");
+btnWeiter.addEventListener("click", () => {
+    const name = inputSpielername.value.trim();
 
-            dungeonAuswahlBereich.classList.remove("hidden");
-            btnStart.classList.remove("hidden");
-            btnZurueckAuswahl.classList.remove("hidden");
-        } else {
-            const name = inputSpielername.value.trim();
+    if (name === "") {
+        alert("Bitte gib einen Heldennamen ein!");
+        return;
+    }
 
-            if (name === "") {
-                alert("Bitte gib einen Heldennamen ein!");
-                return;
-            }
+    if (gewaehltesSpiel === "dungeon") {
+        spielAuswahlBereich.classList.add("hidden");
+        btnWeiter.classList.add("hidden");
 
-            zehnerPunkte = 0;
-            displayZehnerHeldenname.textContent = name;
-            displayZehnerPunkte.textContent = zehnerPunkte;
-            displayZehnerNachricht.textContent = "";
+        dungeonAuswahlBereich.classList.remove("hidden");
+        btnStart.classList.remove("hidden");
+        btnZurueckAuswahl.classList.remove("hidden");
+    }
+    else {
+        zehnerPunkte = 0;
+        displayZehnerHeldenname.textContent = name;
+        displayZehnerPunkte.textContent = zehnerPunkte;
+        displayZehnerNachricht.textContent = "";
 
-            startScreen.classList.add("hidden");
-            zehnerScreen.classList.remove("hidden");
+        startScreen.classList.add("hidden");
+        zehnerScreen.classList.remove("hidden");
 
-            generiereZehnerAufgabe();
-        }
-    });
+        generiereZehnerAufgabe();
+    }
+});
 
     //--- Hintergrundbild UND Monster-Bild anhand Schwierigkeit wechseln ---
     function updateDungeonVisuals(schwierigkeit) {
