@@ -260,6 +260,7 @@ btnWeiter.addEventListener("click", () => {
         spielScreen.classList.add("hidden");
         startScreen.classList.remove("hidden");
         inputSpielername.value = "";
+        //inputSpielername.value = gameState.heldenname;//
         gewaehlterDungeon = "";
         dungeonKarten.forEach(k => {
             k.classList.remove("ausgewaehlt");
