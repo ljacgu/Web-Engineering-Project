@@ -235,7 +235,9 @@ btnWeiter.addEventListener("click", () => {
             // UI für das neue Spiel vorbereiten
             displayHeldenname.textContent = gameState.heldenname;
             displayPunkte.textContent = gameState.punkte;
-            displayLeben.textContent = gameState.leben;
+            if (displayLeben) {
+                displayLeben.textContent = gameState.leben;
+            }
             displayNachricht.textContent = "";
             btnNewGame.classList.add("hidden");
             btnCheck.classList.remove("hidden");
@@ -296,7 +298,9 @@ btnWeiter.addEventListener("click", () => {
             if (verbleibend <= 0) {
                 stoppeTimer();
                 gameState.leben--;
-                displayLeben.textContent = gameState.leben;
+                if (displayLeben) {
+                    displayLeben.textContent = gameState.leben;
+                }
                 aktualisiereHerzen();
                 displayNachricht.textContent = "Zeit abgelaufen! Du verlierst ein Leben!";
                 displayNachricht.style.color = "red";
@@ -593,7 +597,9 @@ btnWeiter.addEventListener("click", () => {
                 displayNachricht.style.color = "lime";
             } else {
                 gameState.leben--;
-                displayLeben.textContent = gameState.leben;
+                if (displayLeben) {
+                    displayLeben.textContent = gameState.leben;
+                }
                 aktualisiereHerzen();
                 displayNachricht.textContent = ` Autsch! Richtig war: ${gameState.aktuelleAntwort}`;
                 displayNachricht.style.color = "red";
