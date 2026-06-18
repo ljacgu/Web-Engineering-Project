@@ -9,33 +9,33 @@ document.addEventListener("DOMContentLoaded", () => {
     const ENEMIES   = { einfach: "👾", mittel: "🤖", schwer: "🐲", extra: "👹" };
 
     // Screens
-    const startScreen = document.getElementById("start-screen");
-    const gameScreen  = document.getElementById("game-screen");
+    const startScreen = document.querySelector("#start-screen");
+    const gameScreen  = document.querySelector("#game-screen");
 
     // Start screen
-    const nameInput  = document.getElementById("name-input");
+    const nameInput  = document.querySelector("#name-input");
     const charBtns   = document.querySelectorAll(".char-btn");
     const diffCards  = document.querySelectorAll(".diff-card");
-    const startBtn   = document.getElementById("start-btn");
+    const startBtn   = document.querySelector("#start-btn");
 
     // Game screen
-    const playerDisplay = document.getElementById("player-display");
-    const heartsEl      = document.getElementById("hearts");
-    const scoreEl       = document.getElementById("score");
-    const hsEl          = document.getElementById("highscore");
-    const enemyEl       = document.getElementById("enemy-emoji");
-    const hpFill        = document.getElementById("hp-fill");
-    const damagePop     = document.getElementById("damage-pop");
-    const timerEl       = document.getElementById("timer-ring");
-    const questionEl    = document.getElementById("question");
-    const choiceGrid    = document.getElementById("choice-grid");
-    const textMode      = document.getElementById("text-mode");
-    const textInput     = document.getElementById("text-input");
-    const checkBtn      = document.getElementById("check-btn");
-    const toggleModeBtn = document.getElementById("toggle-mode-btn");
-    const feedbackEl    = document.getElementById("feedback");
-    const newGameBtn    = document.getElementById("new-game-btn");
-    const backBtn       = document.getElementById("back-btn");
+    const playerDisplay = document.querySelector("#player-display");
+    const heartsEl      = document.querySelector("#hearts");
+    const scoreEl       = document.querySelector("#score");
+    const hsEl          = document.querySelector("#highscore");
+    const enemyEl       = document.querySelector("#enemy-emoji");
+    const hpFill        = document.querySelector("#hp-fill");
+    const damagePop     = document.querySelector("#damage-pop");
+    const timerEl       = document.querySelector("#timer-ring");
+    const questionEl    = document.querySelector("#question");
+    const choiceGrid    = document.querySelector("#choice-grid");
+    const textMode      = document.querySelector("#text-mode");
+    const textInput     = document.querySelector("#text-input");
+    const checkBtn      = document.querySelector("#check-btn");
+    const toggleModeBtn = document.querySelector("#toggle-mode-btn");
+    const feedbackEl    = document.querySelector("#feedback");
+    const newGameBtn    = document.querySelector("#new-game-btn");
+    const backBtn       = document.querySelector("#back-btn");
 
     let selectedChar = "🚀";
     let selectedDiff = "einfach";

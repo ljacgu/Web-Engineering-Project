@@ -7,14 +7,9 @@
 body {
     font-family: 'Segoe UI', system-ui, sans-serif;
     min-height: 100vh;
-    background: linear-gradient(135deg, #a29bfe, #fd79a8);
+    background: url("Bilder/hintergrund.gif") center / cover fixed no-repeat;
     transition: background 0.6s ease;
 }
-
-body.diff-einfach { background: linear-gradient(135deg, #55efc4, #00cec9); }
-body.diff-mittel  { background: linear-gradient(135deg, #74b9ff, #0984e3); }
-body.diff-schwer  { background: linear-gradient(135deg, #fd79a8, #e17055); }
-body.diff-extra   { background: linear-gradient(135deg, #6c5ce7, #2d3436); }
 
 .hidden { display: none !important; }
 
@@ -42,7 +37,8 @@ body.diff-extra   { background: linear-gradient(135deg, #6c5ce7, #2d3436); }
 ======================== */
 
 .card {
-    background: white;
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(6px);
     border-radius: 24px;
     padding: 28px;
     width: 100%;
