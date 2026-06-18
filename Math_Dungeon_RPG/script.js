@@ -21,6 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const zehnerScreen = document.querySelector("#zehner-screen");
 
     const inputSpielername = document.querySelector("#spielername");
+    const figurAuswahl = document.querySelector(".figur-auswahl");
     const figurOptionen = document.querySelectorAll(".figur-option");
     const spielerFigur = document.querySelector("#spieler-figur");
     const dungeonKarten = document.querySelectorAll("#dungeon-auswahl-bereich .dungeon-karte");
@@ -101,6 +102,11 @@ document.addEventListener("DOMContentLoaded", () => {
     let highscore = Number(localStorage.getItem(HIGHSCORE_KEY)) || 0;
     displayHighscore.textContent = highscore;
 
+    // Die Spielfigur-Auswahl erscheint erst im RPG-Zwischenschritt vor dem Spielstart.
+    if (figurAuswahl && dungeonAuswahlBereich) {
+        dungeonAuswahlBereich.insertBefore(figurAuswahl, dungeonAuswahlBereich.firstElementChild);
+    }
+
     // Speichert die angeklickte Figur und markiert immer nur eine Auswahl.
     figurOptionen.forEach(option => {
         option.addEventListener("click", () => {
@@ -112,6 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
             option.classList.add("ausgewaehlt");
             option.setAttribute("aria-checked", "true");
             gewaehltesPortrait = option.dataset.portrait;
+            spielerFigur.src = gewaehltesPortrait;
         });
     });
 

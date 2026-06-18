@@ -352,6 +352,15 @@ button:hover {
     text-align: left;
 }
 
+.start-card > .figur-auswahl {
+    display: none;
+}
+
+#dungeon-auswahl-bereich .figur-auswahl {
+    display: block;
+    margin-bottom: 24px;
+}
+
 /* Die Figuren werden als kompakte, horizontale Auswahlleiste dargestellt. */
 .figur-leiste {
     display: flex;
