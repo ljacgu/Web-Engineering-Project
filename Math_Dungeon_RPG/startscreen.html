@@ -3,220 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math Dungeon RPG</title>
+    <title>Mathe-Abenteuer!</title>
     <link rel="stylesheet" href="style.css">
     <script src="script.js" defer></script>
 </head>
-<body class="bg-standard">
+<body>
 
-    <!-- Hinweis für Handy-Nutzer im Hochformat -->
-    <div id="rotate-hinweis">
-        <p>Bitte drehe dein Handy ins Querformat, um das Spiel zu spielen.</p>
+<!-- STARTSCREEN -->
+<section id="start-screen" class="screen">
+    <div class="card start-card">
+        <h1>🧮 Mathe-Abenteuer!</h1>
+        <p class="subtitle">Werde zum Mathe-Helden! 🌟</p>
+
+        <hr class="divider">
+
+        <label class="section-label" for="name-input">Dein Heldenname:</label>
+        <input type="text" id="name-input" placeholder="Gib deinen Namen ein..." maxlength="20" autocomplete="off">
+
+        <span class="section-label">Wähle deinen Helden:</span>
+        <div class="char-grid">
+            <button class="char-btn selected" data-char="🚀">🚀</button>
+            <button class="char-btn" data-char="🦊">🦊</button>
+            <button class="char-btn" data-char="🐸">🐸</button>
+            <button class="char-btn" data-char="🦄">🦄</button>
+        </div>
+
+        <span class="section-label">Wähle dein Level:</span>
+        <div class="diff-grid">
+            <div class="diff-card selected" data-diff="einfach">
+                <span class="diff-emoji">🌿</span>
+                <span class="diff-name">Wald</span>
+                <span class="diff-ops">+ und −</span>
+                <span class="diff-badge badge-easy">Leicht</span>
+            </div>
+            <div class="diff-card" data-diff="mittel">
+                <span class="diff-emoji">🏙️</span>
+                <span class="diff-name">Stadt</span>
+                <span class="diff-ops">× und ÷</span>
+                <span class="diff-badge badge-mittel">Mittel</span>
+            </div>
+            <div class="diff-card" data-diff="schwer">
+                <span class="diff-emoji">🔥</span>
+                <span class="diff-name">Vulkan</span>
+                <span class="diff-ops">+ − × ÷</span>
+                <span class="diff-badge badge-schwer">Schwer</span>
+            </div>
+            <div class="diff-card" data-diff="extra">
+                <span class="diff-emoji">🌙</span>
+                <span class="diff-name">Mondturm</span>
+                <span class="diff-ops">Extra!</span>
+                <span class="diff-badge badge-extra">Experte</span>
+            </div>
+        </div>
+
+        <button id="start-btn">Los geht's! 🚀</button>
+    </div>
+</section>
+
+
+<!-- SPIELSCREEN -->
+<section id="game-screen" class="screen hidden">
+
+    <header class="game-bar">
+        <span id="player-display">🚀 Held</span>
+        <div id="hearts">
+            <span class="heart">❤️</span>
+            <span class="heart">❤️</span>
+            <span class="heart">❤️</span>
+        </div>
+        <span>⭐ <span id="score">0</span></span>
+        <span>🏆 <span id="highscore">0</span></span>
+    </header>
+
+    <div class="enemy-area">
+        <div class="hp-bar-wrap">
+            <div id="hp-fill"></div>
+        </div>
+        <div id="enemy-emoji">👾</div>
+        <p id="damage-pop" class="hidden">-10 💥</p>
     </div>
 
-<main>
+    <div class="card game-card">
+        <div id="timer-ring">30</div>
+        <p id="question">5 + 3 = ?</p>
 
-
-<!--1.Startscreen-->
-    <section id="startscreen" class="screen">
-        <article class="card start-card">
-            <h1>Math Dungeon RPG</h1>
-            <p class="start-subtitle">Willkommen, tapferer Held!</p>
-            <p class="start-desc">Möchtest du den Dungeon beitreten und Monster mit Mathe besiegen?</p>
-
-            <hr class="start-hr">
-
-            <div class="heldenname-group">
-                <label for="spielername">Heldenname:</label>
-                <input type="text" id="spielername" placeholder="Gib deinen Heldennamen ein..." aria-label="Heldennamen eingeben" maxlength="20" autocomplete="off">
-            </div>
-
-<!-- SPIELFIGURENAUSWAHL -->
-            <section class="figur-auswahl" aria-labelledby="figur-auswahl-titel">
-                <h2 id="figur-auswahl-titel" class="dungeon-label">Wähle deine Spielfigur:</h2>
-
-                <div class="figur-leiste" role="radiogroup" aria-label="Spielfigur auswählen">
-                    <button class="figur-option ausgewaehlt" type="button"
-                            data-portrait="bilder/FigurePortrait1.webp" role="radio"
-                            aria-checked="true" aria-label="Spielfigur 1 auswählen">
-                        <img src="bilder/FigureIcon1.webp" alt="">
-                    </button>
-
-                    <button class="figur-option" type="button"
-                            data-portrait="bilder/FigurePortrait2.webp" role="radio"
-                            aria-checked="false" aria-label="Spielfigur 2 auswählen">
-                        <img src="bilder/FigureIcon2.webp" alt="">
-                    </button>
-
-                    <button class="figur-option" type="button"
-                            data-portrait="bilder/FigurePortrait3.webp" role="radio"
-                            aria-checked="false" aria-label="Spielfigur 3 auswählen">
-                        <img src="bilder/FigureIcon3.webp" alt="">
-                    </button>
-
-                    <button class="figur-option" type="button"
-                            data-portrait="bilder/FigurePortrait4.webp" role="radio"
-                            aria-checked="false" aria-label="Spielfigur 4 auswählen">
-                        <img src="bilder/FigureIcon4.webp" alt="">
-                    </button>
-                </div>
-            </section>
-
-<!-- SPIELAUSWAHL -->
-            <div id="spielauswahl-bereich" class="dungeon-auswahl">
-                <p class="dungeon-label">Wähle dein Spiel:</p>
-
-                <div class="dungeon-karten" role="radiogroup" aria-label="Spiel auswählen">
-                    <div class="spiel-karte dungeon-karte ausgewaehlt" data-spiel="dungeon" role="radio" aria-checked="true" tabindex="0">
-                        <span class="dungeon-name">Math Dungeon RPG</span>
-                        <span class="dungeon-modus">Monster mit Mathe besiegen</span>
-                        <span class="dungeon-schwier mittel">RPG</span>
-                    </div>
-
-                    <div class="spiel-karte dungeon-karte" data-spiel="zehner" role="radio" aria-checked="false" tabindex="0">
-                        <span class="dungeon-name">10er-Übergang</span>
-                        <span class="dungeon-modus">Rechnen über den Zehner</span>
-                        <span class="dungeon-schwier einfach">Übung</span>
-                    </div>
-                </div>
-            </div>
-
-            <button id="weiter-button" aria-label="Spiel auswählen">Weiter</button>
-
-
-
-<!-- DUNGEON-AUSWAHL -->
-            <div id="dungeon-auswahl-bereich" class="dungeon-auswahl hidden">
-                <p class="dungeon-label">Wähle deinen Dungeon:</p>
-
-                <div class="dungeon-karten" role="radiogroup" aria-label="Dungeon Modus auswählen">
-                    <div class="dungeon-karte" data-wert="einfach" role="radio" aria-checked="false" tabindex="0">
-                        <img src="bilder/Forest_Easy.webp" alt="Forest Dungeon Vorschau">
-                        <span class="dungeon-name">Forest</span>
-                        <span class="dungeon-modus">[ + / - ]</span>
-                        <span class="dungeon-schwier einfach">Einfach</span>
-                    </div>
-
-                    <div class="dungeon-karte" data-wert="mittel" role="radio" aria-checked="false" tabindex="0">
-                        <img src="bilder/Town_Mittel.webp" alt="Town Dungeon Vorschau">
-                        <span class="dungeon-name">Town</span>
-                        <span class="dungeon-modus">[ × / ÷ ]</span>
-                        <span class="dungeon-schwier mittel">Mittel</span>
-                    </div>
-
-                    <div class="dungeon-karte" data-wert="schwer" role="radio" aria-checked="false" tabindex="0">
-                        <img src="bilder/Basement_Schwer.webp" alt="Basement Dungeon Vorschau">
-                        <span class="dungeon-name">Basement</span>
-                        <span class="dungeon-modus">[ + / - / × / ÷ ]</span>
-                        <span class="dungeon-schwier schwer">Schwer</span>
-                    </div>
-
-                    <div class="dungeon-karte" data-wert="extra_schwer" role="radio" aria-checked="false" tabindex="0">
-                        <img src="bilder/TowerOfMoonGod_ExtSchwer.png" alt="Moon God Tower Vorschau">
-                        <span class="dungeon-name">Moon God Tower</span>
-                        <span class="dungeon-modus">Extra Schwer!</span>
-                        <span class="dungeon-schwier extra">Extra!</span>
-                    </div>
-                </div>
-            </div>
-
-            <button id="start-button" aria-label="Dungeon betreten" class="hidden">Dungeon betreten</button>
-            <button id="zurueck-auswahl-button" aria-label="Zurück zur Spielauswahl" class="hidden">Zurück</button>
-
-        </article>
-    </section>
-
-
-
-
-
-<!--    Spielscreen-->
-    <section id="spielscreen" class="screen hidden">
-
-        <div class="spieler-bereich">
-            <!-- Anzeige der Spielerleben -->
-            <div id="herzen">
-                <span class="herz">❤</span>
-                <span class="herz">❤</span>
-                <span class="herz">❤</span>
-            </div>
-
-            <img src="bilder/FigurePortrait1.webp" alt="Ausgewählte Spielfigur" class="character_img" id="spieler-figur">
+        <div id="choice-grid">
+            <button class="choice-btn">1</button>
+            <button class="choice-btn">2</button>
+            <button class="choice-btn">3</button>
+            <button class="choice-btn">4</button>
         </div>
 
-        <header class="gameBar">
-            <section class="anzeigebar" aria-label="Spieler Status">
-                <h2 class="hidden-visual">Statuswerte</h2>
-                <p>Held: <span id="heldenname">[Name]</span></p>
-                <p>Punkte: <span id="punkte">0</span></p>
-                <p>Highscore: <span id="highscore">0</span></p>
-            </section>
-        </header>
-
-        <article class="card">
-            <h2>Dungeon-Kampf</h2>
-
-            <hr>
-
-            <section class="aufgabenBox" aria-label="Aktuelle Matheaufgabe">
-                <h3 class="hidden-visual">Aufgabenstellung</h3>
-                <p id="modusAnzeige">Modus: Addition</p>
-                <p id="spielziel">Besiege das Monster mit 10 richtigen Antworten!</p>
-                <p id="aufgabe">Aufgabe erscheint hier</p>
-                <div id="timer-container" aria-label="Verbleibende Zeit">
-                    <span id="timer-wert">30</span>
-                </div>
-            </section>
-
-            <input type="number" id="antwort-input" placeholder="Antwort eingeben" aria-label="Antwort eingeben" step="1" autocomplete="off">
-
-            <button id="check-button" aria-label="Antwort prüfen">Antwort prüfen</button>
-            <p id="nachricht"></p>
-
-            <button id="newGame-button" aria-label="Neues Spiel starten" class="hidden">Neues Spiel starten</button>
-
-            <button id="zurueck-start-button" aria-label="Zurück zur Startseite">Zurück zur Startseite</button>
-        </article>
-
-        <!-- Monsterbereich mit Lebensbalken -->
-        <div class="monster-bereich">
-
-             <!-- Zeigt die verbleibenden Lebenspunkte des Monsters -->
-            <div class="monster-leiste">
-                <div id="monster-leben-balken"></div>
-            </div>
-
-            <!-- Damage-Anzeige bei Treffern -->
-            <p id="damage-anzeige" class="hidden"></p>
-
-            <img src="" alt="Monster" class="monster_img" id="monster-bild">
+        <div id="text-mode" class="hidden">
+            <input type="number" id="text-input" placeholder="Antwort..." step="1" autocomplete="off">
+            <button id="check-btn">✔ Prüfen</button>
         </div>
 
-    </section>
+        <button id="toggle-mode-btn">⌨️ Lieber eintippen?</button>
 
-<!-- 10er-Übergang Screen -->
-    <section id="zehner-screen" class="screen hidden">
-        <article class="card">
-            <h2>10er-Übergang</h2>
+        <p id="feedback"></p>
+    </div>
 
-            <hr>
+    <div class="bottom-btns">
+        <button id="new-game-btn" class="hidden">🔄 Neues Spiel</button>
+        <button id="back-btn">↩ Zurück</button>
+    </div>
 
-            <section class="aufgabenBox" aria-label="10er-Übergang Aufgabe">
-                <h3 class="hidden-visual">Aufgabenstellung</h3>
-                <p>Held: <span id="zehner-heldenname">[Name]</span></p>
-                <p>Punkte: <span id="zehner-punkte">0</span></p>
-                <p id="zehner-aufgabe">Aufgabe erscheint hier</p>
-            </section>
+</section>
 
-            <input type="number" id="zehner-antwort" placeholder="Antwort eingeben" aria-label="Antwort für 10er-Übergang eingeben" step="1" autocomplete="off">
-
-            <button id="zehner-check-button" aria-label="10er-Übergang Antwort prüfen">Antwort prüfen</button>
-            <p id="zehner-nachricht"></p>
-
-            <button id="zehner-zurueck-button" aria-label="Zurück zur Spielauswahl">Zurück zur Spielauswahl</button>
-        </article>
-    </section>
-
-</main>
 </body>
 </html>

@@ -1,640 +1,328 @@
-//1. Startscreen
 document.addEventListener("DOMContentLoaded", () => {
 
-    /*Konstanten, damit wichtige Werte nur an einer Stelle geändert werden müssen
-    und der Code besser lesbar ist.*/
-    const START_LEBEN = 3;
-    const PUNKTE_PRO_RICHTIGE_ANTWORT = 10;
-    const SIEG_PUNKTE = 100;
-    const PAUSE_BIS_NAECHSTE_AUFGABE = 1200;
-    const HIGHSCORE_KEY = "mathDungeonHighscore";
+    const LIVES = 3;
+    const PTS_CORRECT = 10;
+    const WIN_PTS = 100;
+    const NEXT_DELAY = 1200;
+    const HS_KEY = "matheAbenteuerHS";
+    const TIMER_SECS = { einfach: 30, mittel: 20, schwer: 15, extra: 10 };
+    const ENEMIES   = { einfach: "👾", mittel: "🤖", schwer: "🐲", extra: "👹" };
 
-    const TIMER_LIMITS = {
-        einfach:     30,
-        mittel:      20,
-        schwer:      15,
-        extra_schwer: 10
-    };
+    // Screens
+    const startScreen = document.getElementById("start-screen");
+    const gameScreen  = document.getElementById("game-screen");
 
-    const startScreen = document.querySelector("#startscreen");
-    const spielScreen = document.querySelector("#spielscreen");
-    const zehnerScreen = document.querySelector("#zehner-screen");
+    // Start screen
+    const nameInput  = document.getElementById("name-input");
+    const charBtns   = document.querySelectorAll(".char-btn");
+    const diffCards  = document.querySelectorAll(".diff-card");
+    const startBtn   = document.getElementById("start-btn");
 
-    const inputSpielername = document.querySelector("#spielername");
-    const figurAuswahl = document.querySelector(".figur-auswahl");
-    const figurOptionen = document.querySelectorAll(".figur-option");
-    const spielerFigur = document.querySelector("#spieler-figur");
-    const dungeonKarten = document.querySelectorAll("#dungeon-auswahl-bereich .dungeon-karte");
-    const btnStart = document.querySelector("#start-button");
-    const btnZurueckAuswahl = document.querySelector("#zurueck-auswahl-button");
-    
-   // Bereiche für die Navigation zwischen Spielauswahl und Dungeon-Auswahl
-    const spielAuswahlBereich = document.querySelector("#spielauswahl-bereich");
-    const dungeonAuswahlBereich = document.querySelector("#dungeon-auswahl-bereich");
+    // Game screen
+    const playerDisplay = document.getElementById("player-display");
+    const heartsEl      = document.getElementById("hearts");
+    const scoreEl       = document.getElementById("score");
+    const hsEl          = document.getElementById("highscore");
+    const enemyEl       = document.getElementById("enemy-emoji");
+    const hpFill        = document.getElementById("hp-fill");
+    const damagePop     = document.getElementById("damage-pop");
+    const timerEl       = document.getElementById("timer-ring");
+    const questionEl    = document.getElementById("question");
+    const choiceGrid    = document.getElementById("choice-grid");
+    const textMode      = document.getElementById("text-mode");
+    const textInput     = document.getElementById("text-input");
+    const checkBtn      = document.getElementById("check-btn");
+    const toggleModeBtn = document.getElementById("toggle-mode-btn");
+    const feedbackEl    = document.getElementById("feedback");
+    const newGameBtn    = document.getElementById("new-game-btn");
+    const backBtn       = document.getElementById("back-btn");
 
-    const btnWeiter = document.querySelector("#weiter-button");
-    btnZurueckAuswahl.addEventListener("click", () => {
-        dungeonAuswahlBereich.classList.add("hidden");
-        btnStart.classList.add("hidden");
-        btnZurueckAuswahl.classList.add("hidden");
-
-        spielAuswahlBereich.classList.remove("hidden");
-        btnWeiter.classList.remove("hidden");
-    });
-
-    // Karten für die Spielauswahl
-    const spielKarten = document.querySelectorAll(".spiel-karte");
-    let gewaehlterDungeon = "";
-    let gewaehltesPortrait = "bilder/FigurePortrait1.webp";
-    // Speichert, welches Spiel im Startscreen ausgewählt wurde
-    let gewaehltesSpiel = "dungeon";
-
-    const displayHeldenname = document.querySelector("#heldenname");
-    const displayPunkte = document.querySelector("#punkte");
-    const displayLeben = document.querySelector("#leben");
-    const displayHighscore = document.querySelector("#highscore");
-    const displayModus = document.querySelector("#modusAnzeige");
-    const displayAufgabe = document.querySelector("#aufgabe");
-    const displayNachricht = document.querySelector("#nachricht");
-
-    const inputAntwort = document.querySelector("#antwort-input");
-    const btnCheck = document.querySelector("#check-button");
-    const btnNewGame = document.querySelector("#newGame-button");
-
-    const timerContainer = document.querySelector("#timer-container");
-    const timerWert = document.querySelector("#timer-wert");
+    let selectedChar = "🚀";
+    let selectedDiff = "einfach";
+    let state = {};
     let timerInterval = null;
+    let inputMode = "choice";
+    let highscore = Number(localStorage.getItem(HS_KEY)) || 0;
 
-    const btnZurueckStart = document.querySelector("#zurueck-start-button");
+    hsEl.textContent = highscore;
 
-    // Elemente für das Kampfsystem
-    const monsterBild = document.querySelector("#monster-bild");
-    const monsterLebenBalken = document.querySelector("#monster-leben-balken");
-    const damageAnzeige = document.querySelector("#damage-anzeige");
-    const herzen = document.querySelectorAll(".herz");
-
-    const displayZehnerHeldenname = document.querySelector("#zehner-heldenname");
-    const displayZehnerPunkte = document.querySelector("#zehner-punkte");
-    const displayZehnerAufgabe = document.querySelector("#zehner-aufgabe");
-    const displayZehnerNachricht = document.querySelector("#zehner-nachricht");
-
-    const inputZehnerAntwort = document.querySelector("#zehner-antwort");
-    const btnZehnerCheck = document.querySelector("#zehner-check-button");
-    const btnZehnerZurueck = document.querySelector("#zehner-zurueck-button");
-
-    // --- SPIEL-ZUSTAND (State) ---
-    let gameState = {
-        heldenname: "",
-        schwierigkeit: "einfach",
-        punkte: 0,
-        leben: START_LEBEN,
-        aktuelleAntwort: 0,
-
-        // Zusätzliche Werte für das Kampfsystem
-        monsterLeben: 100
-    };
-
-    // --- 10ER-ÜBERGANG ZUSTAND ---
-    let zehnerPunkte = 0;
-    let zehnerAntwort = 0;
-
-    // --- HIGHSCORE LADEN ---
-    let highscore = Number(localStorage.getItem(HIGHSCORE_KEY)) || 0;
-    displayHighscore.textContent = highscore;
-
-    // Die Spielfigur-Auswahl erscheint erst im RPG-Zwischenschritt vor dem Spielstart.
-    if (figurAuswahl && dungeonAuswahlBereich) {
-        dungeonAuswahlBereich.insertBefore(figurAuswahl, dungeonAuswahlBereich.firstElementChild);
-    }
-
-    // Speichert die angeklickte Figur und markiert immer nur eine Auswahl.
-    figurOptionen.forEach(option => {
-        option.addEventListener("click", () => {
-            figurOptionen.forEach(figur => {
-                figur.classList.remove("ausgewaehlt");
-                figur.setAttribute("aria-checked", "false");
-            });
-
-            option.classList.add("ausgewaehlt");
-            option.setAttribute("aria-checked", "true");
-            gewaehltesPortrait = option.dataset.portrait;
-            spielerFigur.src = gewaehltesPortrait;
+    // --- CHARACTER SELECTION ---
+    charBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            charBtns.forEach(b => b.classList.remove("selected"));
+            btn.classList.add("selected");
+            selectedChar = btn.dataset.char;
         });
     });
 
-    // Live-Wechsel bei Dungeon-Kartenklick
-    dungeonKarten.forEach(karte => {
-        karte.addEventListener("click", () => {
-            dungeonKarten.forEach(k => {
-                k.classList.remove("ausgewaehlt");
-                k.setAttribute("aria-checked", "false");
-            });
-            karte.classList.add("ausgewaehlt");
-            karte.setAttribute("aria-checked", "true");
-            gewaehlterDungeon = karte.dataset.wert;
-            updateDungeonVisuals(gewaehlterDungeon);
-        });
-
-        karte.addEventListener("keypress", (e) => {
-            if (e.key === "Enter" || e.key === " ") karte.click();
+    // --- DIFFICULTY SELECTION ---
+    diffCards.forEach(card => {
+        card.addEventListener("click", () => {
+            diffCards.forEach(c => c.classList.remove("selected"));
+            card.classList.add("selected");
+            selectedDiff = card.dataset.diff;
         });
     });
 
-    // Speichert die Auswahl des Spielmodus
-    /*spielAuswahl.forEach(spiel => {
-        spiel.addEventListener("change", () => {
-            gewaehltesSpiel = spiel.value;
-        });
-    });*/
-
-    // Speichert die Auswahl des Spielmodus über Karten
-    spielKarten.forEach(karte => {
-        karte.addEventListener("click", () => {
-            spielKarten.forEach(k => {
-                k.classList.remove("ausgewaehlt");
-                k.setAttribute("aria-checked", "false");
-            });
-
-            karte.classList.add("ausgewaehlt");
-            karte.setAttribute("aria-checked", "true");
-            gewaehltesSpiel = karte.dataset.spiel;
-        });
-
-        karte.addEventListener("keypress", (e) => {
-            if (e.key === "Enter" || e.key === " ") karte.click();
-        });
+    // --- TOGGLE INPUT MODE ---
+    toggleModeBtn.addEventListener("click", () => {
+        inputMode = inputMode === "choice" ? "text" : "choice";
+        const isChoice = inputMode === "choice";
+        choiceGrid.classList.toggle("hidden", !isChoice);
+        textMode.classList.toggle("hidden", isChoice);
+        toggleModeBtn.textContent = isChoice ? "⌨️ Lieber eintippen?" : "🎯 Antworten wählen?";
     });
 
-    // --- NAVIGATION: VON SPIELAUSWAHL ZUR NÄCHSTEN AUSWAHL ---
-btnWeiter.addEventListener("click", () => {
-    const name = inputSpielername.value.trim();
+    // --- START GAME ---
+    startBtn.addEventListener("click", () => {
+        const name = nameInput.value.trim();
+        if (!name) { alert("Bitte gib deinen Heldennamen ein!"); return; }
 
-    if (name === "") {
-        alert("Bitte gib einen Heldennamen ein!");
-        return;
-    }
+        state = { name, diff: selectedDiff, pts: 0, lives: LIVES, answer: 0, monsterHp: 100 };
 
-    if (gewaehltesSpiel === "dungeon") {
-        spielAuswahlBereich.classList.add("hidden");
-        btnWeiter.classList.add("hidden");
-
-        dungeonAuswahlBereich.classList.remove("hidden");
-        btnStart.classList.remove("hidden");
-        btnZurueckAuswahl.classList.remove("hidden");
-    }
-    else {
-        zehnerPunkte = 0;
-        displayZehnerHeldenname.textContent = name;
-        displayZehnerPunkte.textContent = zehnerPunkte;
-        displayZehnerNachricht.textContent = "";
+        document.body.className = `diff-${selectedDiff}`;
+        playerDisplay.textContent = `${selectedChar} ${name}`;
+        enemyEl.textContent = ENEMIES[selectedDiff];
+        hpFill.style.width = "100%";
+        scoreEl.textContent = 0;
+        feedbackEl.textContent = "";
+        newGameBtn.classList.add("hidden");
+        checkBtn.disabled = false;
+        updateHearts();
 
         startScreen.classList.add("hidden");
-        zehnerScreen.classList.remove("hidden");
+        gameScreen.classList.remove("hidden");
+        generateQuestion();
+    });
 
-        generiereZehnerAufgabe();
-    }
-});
+    // --- GENERATE QUESTION ---
+    function generateQuestion() {
+        let a, b, op;
+        const d = state.diff;
 
-    //--- Hintergrundbild UND Monster-Bild anhand Schwierigkeit wechseln ---
-    function updateDungeonVisuals(schwierigkeit) {
-        document.body.className = "";
-        document.body.classList.add(`bg-${schwierigkeit}`);
-    }
-
-
-
-    // --- NAVIGATION: DUNGEON BETRETEN ---
-    btnStart.addEventListener("click", () => {
-        try {
-            const name = inputSpielername.value.trim();
-
-            // Ausfallsicherheit: Name darf nicht leer sein
-            if (name === "") {
-                alert("Bitte gib einen Heldennamen ein, um den Dungeon zu betreten!");
-                return;
-            }
-
-            if (gewaehlterDungeon === "") {
-                alert("Bitte wähle einen Dungeon aus!");
-                return;
-            }
-
-            // Spieldaten speichern
-            gameState.heldenname = name;
-            gameState.schwierigkeit = gewaehlterDungeon;
-            gameState.punkte = 0;
-            gameState.leben = START_LEBEN;
-
-            // Übernimmt die Auswahl vom Startscreen in den Spielscreen.
-            spielerFigur.src = gewaehltesPortrait;
-
-            // Monsterleben und Herz-Anzeige zurücksetzen
-            gameState.monsterLeben = 100;
-            monsterLebenBalken.style.width = "100%";
-
-            herzen.forEach(herz => {
-                herz.classList.remove("verloren");
-            });
-
-            damageAnzeige.classList.add("hidden");
-
-
-            // UI für das neue Spiel vorbereiten
-            displayHeldenname.textContent = gameState.heldenname;
-            displayPunkte.textContent = gameState.punkte;
-            if (displayLeben) {
-                displayLeben.textContent = gameState.leben;
-            }
-            displayNachricht.textContent = "";
-            btnNewGame.classList.add("hidden");
-            btnCheck.classList.remove("hidden");
-            inputAntwort.disabled = false;
-
-            // NAVIGATION OHNE NEULADEN (SPA)
-            startScreen.classList.add("hidden");
-            spielScreen.classList.remove("hidden");
-
-            // Erste Matheaufgabe starten
-            generiereAufgabe();
-
-        } catch (error) {
-            console.error("Fehler beim Wechseln des Screens:", error);
+        if (d === "einfach") {
+            op = Math.random() > 0.5 ? "+" : "−";
+            a = rand(6, 9); b = rand(5, 9);
+            if (op === "−" && a < b) [a, b] = [b, a];
+        } else if (d === "mittel") {
+            op = Math.random() > 0.5 ? "×" : "÷";
+            if (op === "×") { a = rand(1, 10); b = rand(1, 10); }
+            else { b = rand(1, 10); a = b * rand(1, 10); }
+        } else if (d === "schwer") {
+            op = pick(["+", "−", "×", "÷"]);
+            if (op === "+") { a = rand(1, 100); b = rand(1, 100); }
+            else if (op === "−") { a = rand(10, 100); b = rand(1, a); }
+            else if (op === "×") { a = rand(1, 12); b = rand(1, 12); }
+            else { b = rand(1, 12); a = b * rand(1, 12); }
+        } else {
+            op = pick(["+", "−", "×", "÷"]);
+            if (op === "+") { a = rand(1, 200); b = rand(1, 200); }
+            else if (op === "−") { a = rand(10, 200); b = rand(1, a); }
+            else if (op === "×") { a = rand(1, 20); b = rand(1, 20); }
+            else { b = rand(1, 20); a = b * rand(1, 20); }
         }
+
+        if (op === "+") state.answer = a + b;
+        else if (op === "−") state.answer = a - b;
+        else if (op === "×") state.answer = a * b;
+        else state.answer = a / b;
+
+        questionEl.textContent = `${a} ${op} ${b} = ?`;
+        textInput.value = "";
+        feedbackEl.textContent = "";
+
+        const choices = makeChoices(state.answer);
+        document.querySelectorAll(".choice-btn").forEach((btn, i) => {
+            btn.textContent = choices[i];
+            btn.className = "choice-btn";
+            btn.disabled = false;
+        });
+
+        checkBtn.disabled = false;
+        startTimer();
+    }
+
+    // --- GENERATE MULTIPLE CHOICE OPTIONS ---
+    function makeChoices(correct) {
+        const set = new Set([correct]);
+        const spread = Math.max(5, Math.ceil(Math.abs(correct) * 0.25));
+        let tries = 0;
+        while (set.size < 4 && tries < 60) {
+            tries++;
+            const offset = rand(-spread, spread);
+            const w = correct + offset;
+            if (w !== correct && w >= 0) set.add(w);
+        }
+        let n = 1;
+        while (set.size < 4) { if (!set.has(correct + n)) set.add(correct + n); n++; }
+        return shuffle([...set]);
+    }
+
+    // --- ANSWER CHECK (choice buttons) ---
+    choiceGrid.addEventListener("click", e => {
+        const btn = e.target.closest(".choice-btn");
+        if (!btn || btn.disabled) return;
+        checkAnswer(Number(btn.textContent), btn);
     });
 
-    // --- NAVIGATON: ZURÜCK ZUM START ---
-    btnNewGame.addEventListener("click", () => {
-        stoppeTimer();
-        document.body.className = "bg-standard"; // Zurück zum Start-Hintergrund
-        spielScreen.classList.add("hidden");
-        startScreen.classList.remove("hidden");
-        inputSpielername.value = "";
-        //inputSpielername.value = gameState.heldenname;//
-        gewaehlterDungeon = "";
-        dungeonKarten.forEach(k => {
-            k.classList.remove("ausgewaehlt");
-            k.setAttribute("aria-checked", "false");
-        });
+    // --- ANSWER CHECK (text input) ---
+    checkBtn.addEventListener("click", () => {
+        if (textInput.value.trim() === "") {
+            feedbackEl.textContent = "Bitte gib eine Zahl ein!";
+            feedbackEl.style.color = "#e17055";
+            return;
+        }
+        checkAnswer(Number(textInput.value));
     });
+
+    textInput.addEventListener("keypress", e => {
+        if (e.key === "Enter") checkBtn.click();
+    });
+
+    function checkAnswer(answer, clickedBtn = null) {
+        stopTimer();
+        document.querySelectorAll(".choice-btn").forEach(b => b.disabled = true);
+        checkBtn.disabled = true;
+
+        if (answer === state.answer) {
+            state.pts += PTS_CORRECT;
+            scoreEl.textContent = state.pts;
+
+            if (state.pts > highscore) {
+                highscore = state.pts;
+                localStorage.setItem(HS_KEY, highscore);
+                hsEl.textContent = highscore;
+            }
+
+            state.monsterHp = Math.max(0, state.monsterHp - 10);
+            hpFill.style.width = state.monsterHp + "%";
+
+            if (clickedBtn) clickedBtn.classList.add("correct");
+            showDamage("-10 💥");
+            shakeEnemy();
+
+            feedbackEl.textContent = "🎉 Richtig! Weiter so!";
+            feedbackEl.style.color = "#00b894";
+        } else {
+            state.lives--;
+            updateHearts();
+
+            document.querySelectorAll(".choice-btn").forEach(b => {
+                if (Number(b.textContent) === state.answer) b.classList.add("correct");
+            });
+            if (clickedBtn) clickedBtn.classList.add("wrong");
+
+            feedbackEl.textContent = `❌ Fast! Richtig war: ${state.answer}`;
+            feedbackEl.style.color = "#d63031";
+        }
+
+        if (state.pts >= WIN_PTS) {
+            endGame(true);
+        } else if (state.lives <= 0) {
+            endGame(false);
+        } else {
+            setTimeout(generateQuestion, NEXT_DELAY);
+        }
+    }
 
     // --- TIMER ---
-    function stoppeTimer() {
-        clearInterval(timerInterval);
-        timerInterval = null;
-        timerContainer.classList.remove("warnung", "kritisch");
-    }
-
-    function starteTimer() {
-        stoppeTimer();
-        const limit = TIMER_LIMITS[gameState.schwierigkeit] || 30;
-        let verbleibend = limit;
-
-        timerWert.textContent = verbleibend;
+    function startTimer() {
+        stopTimer();
+        const limit = TIMER_SECS[state.diff] || 30;
+        let remaining = limit;
+        timerEl.textContent = remaining;
+        timerEl.className = "";
 
         timerInterval = setInterval(() => {
-            verbleibend--;
-            timerWert.textContent = verbleibend;
+            remaining--;
+            timerEl.textContent = remaining;
+            timerEl.className = remaining <= 5 ? "danger" : remaining <= Math.ceil(limit * 0.4) ? "warn" : "";
 
-            timerContainer.classList.remove("warnung", "kritisch");
-            if (verbleibend <= 5) {
-                timerContainer.classList.add("kritisch");
-            } else if (verbleibend <= Math.ceil(limit * 0.4)) {
-                timerContainer.classList.add("warnung");
-            }
+            if (remaining <= 0) {
+                stopTimer();
+                state.lives--;
+                updateHearts();
+                feedbackEl.textContent = "⏰ Zeit abgelaufen! Ein Leben weg!";
+                feedbackEl.style.color = "#d63031";
 
-            if (verbleibend <= 0) {
-                stoppeTimer();
-                gameState.leben--;
-                if (displayLeben) {
-                    displayLeben.textContent = gameState.leben;
-                }
-                aktualisiereHerzen();
-                displayNachricht.textContent = "Zeit abgelaufen! Du verlierst ein Leben!";
-                displayNachricht.style.color = "red";
-
-                if (gameState.leben <= 0) {
-                    displayNachricht.textContent = "Game Over! Du bist im Dungeon gefallen.";
-                    displayNachricht.style.color = "darkred";
-                    btnCheck.classList.add("hidden");
-                    inputAntwort.disabled = true;
-                    btnNewGame.classList.remove("hidden");
-                } else {
-                    setTimeout(generiereAufgabe, PAUSE_BIS_NAECHSTE_AUFGABE);
-                }
+                if (state.lives <= 0) endGame(false);
+                else setTimeout(generateQuestion, NEXT_DELAY);
             }
         }, 1000);
     }
 
-    // --- SPIELLOGIK: DYNAMISCHE AUFGABEN ---
-    function generiereAufgabe() {
-        let num1 = 0;
-        let num2 = 0;
-        let operator = "+";
-
-        // Forest: Addition & Subtraktion mit 10er-Übergang
-        if (gameState.schwierigkeit === "einfach") {
-            displayModus.textContent = "Modus: Forest (+ / -)";
-            operator = Math.random() > 0.5 ? "+" : "-";
-
-            // Garantiert einen Zehnerübergang im Zahlenraum bis 20
-            num1 = Math.floor(Math.random() * 4) + 6; // 6 bis 9
-            num2 = Math.floor(Math.random() * 5) + 5; // 5 bis 9
-
-            if (operator === "-" && num1 < num2) {
-                let temp = num1; 
-                num1 = num2; 
-                num2 = temp;
-            }
-        }
-        // Town: Multiplikation und Division
-        else if(gameState.schwierigkeit === "mittel"){
-            displayModus.textContent = `Modus: Town (× / ÷)`;
-            operator = Math.random() > 0.5 ?  "×" : "÷";
-            
-            if (operator === "×") {
-                num1 = Math.floor(Math.random() * 10) + 1;
-                num2 = Math.floor(Math.random() * 10) + 1;
-            } else{
-                num2 = Math.floor(Math.random() * 10) + 1;
-                let ergebnis = Math.floor(Math.random() * 10) + 1;
-                num1 = num2 * ergebnis; // sorgt für glatte Division
-            }
-        }
-
-        // Basement: gemischte Aufgaben
-        else if (gameState.schwierigkeit === "schwer") {
-            displayModus.textContent = "Modus: Basement (+ / - / × / ÷)";
-
-            const operatoren = ["+", "-", "×", "÷"];
-            operator = operatoren[Math.floor(Math.random() * operatoren.length)];
-
-            if (operator === "+") {
-                num1 = Math.floor(Math.random() * 100) + 1;
-                num2 = Math.floor(Math.random() * 100) + 1;
-            }
-
-            else if (operator === "-") {
-                num1 = Math.floor(Math.random() * 100) + 1;
-                num2 = Math.floor(Math.random() * num1) + 1;
-            }
-
-            else if (operator === "×") {
-                num1 = Math.floor(Math.random() * 12) + 1;
-                num2 = Math.floor(Math.random() * 12) + 1;
-            }
-
-            else if (operator === "÷") {
-                num2 = Math.floor(Math.random() * 12) + 1;
-                let ergebnis = Math.floor(Math.random() * 12) + 1;
-                num1 = num2 * ergebnis;
-            }
-        }
-
-        // Moon God Tower: extra schwer
-        else if (gameState.schwierigkeit === "extra_schwer") {
-            displayModus.textContent = "Modus: Moon God Tower";
-
-            const operatoren = ["+", "-", "×", "÷"];
-            operator = operatoren[Math.floor(Math.random() * operatoren.length)];
-
-            if (operator === "+") {
-                num1 = Math.floor(Math.random() * 200) + 1;
-                num2 = Math.floor(Math.random() * 200) + 1;
-            }
-
-            else if (operator === "-") {
-                num1 = Math.floor(Math.random() * 200) + 1;
-                num2 = Math.floor(Math.random() * num1) + 1;
-            }
-
-            else if (operator === "×") {
-                num1 = Math.floor(Math.random() * 20) + 1;
-                num2 = Math.floor(Math.random() * 20) + 1;
-            }
-
-            else if (operator === "÷") {
-                num2 = Math.floor(Math.random() * 20) + 1;
-                let ergebnis = Math.floor(Math.random() * 20) + 1;
-                num1 = num2 * ergebnis;
-            }
-        }
-
-        // Richtige Antwort berechnen
-        if (operator === "+") gameState.aktuelleAntwort = num1 + num2;
-        if (operator === "-") gameState.aktuelleAntwort = num1 - num2;
-        if (operator === "×") gameState.aktuelleAntwort = num1 * num2;
-        if (operator === "÷") gameState.aktuelleAntwort = num1 / num2;
-
-        displayAufgabe.textContent = `${num1} ${operator} ${num2} = ?`;
-        inputAntwort.value = "";
-        inputAntwort.focus();
-        starteTimer();
+    function stopTimer() {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        timerEl.className = "";
     }
 
-    // --- 10ER-ÜBERGANG: AUFGABE GENERIEREN ---
-    function generiereZehnerAufgabe() {
-        const zahl1 = Math.floor(Math.random() * 4) + 6; // 6 bis 9
-        const zahl2 = Math.floor(Math.random() * 5) + 5; // 5 bis 9
-
-        zehnerAntwort = zahl1 + zahl2;
-
-        displayZehnerAufgabe.textContent = `${zahl1} + ${zahl2} = ?`;
-        inputZehnerAntwort.value = "";
-        inputZehnerAntwort.focus();
+    // --- HEARTS ---
+    function updateHearts() {
+        heartsEl.querySelectorAll(".heart").forEach((h, i) => {
+            h.classList.toggle("lost", i >= state.lives);
+        });
     }
 
-    // --- 10ER-ÜBERGANG: ANTWORT PRÜFEN ---
-    function pruefeZehnerAntwort() {
-        const antwort = Number(inputZehnerAntwort.value);
+    // --- ENEMY EFFECTS ---
+    function shakeEnemy() {
+        enemyEl.classList.add("shake");
+        setTimeout(() => enemyEl.classList.remove("shake"), 350);
+    }
 
-        if (inputZehnerAntwort.value.trim() === "" || Number.isNaN(antwort)) {
-            displayZehnerNachricht.textContent = "Bitte gib eine gültige Zahl ein!";
-            displayZehnerNachricht.style.color = "orange";
-            return;
-        }
+    function showDamage(text) {
+        damagePop.textContent = text;
+        damagePop.classList.remove("hidden");
+        damagePop.style.animation = "none";
+        void damagePop.offsetHeight; // reflow to restart animation
+        damagePop.style.animation = "";
+        setTimeout(() => damagePop.classList.add("hidden"), 700);
+    }
 
-        if (antwort === zehnerAntwort) {
-            zehnerPunkte += 10;
-            displayZehnerPunkte.textContent = zehnerPunkte;
-            displayZehnerNachricht.textContent = "Richtig!";
-            displayZehnerNachricht.style.color = "lime";
+    // --- END GAME ---
+    function endGame(won) {
+        stopTimer();
+        if (won) {
+            feedbackEl.textContent = "🏆 Gewonnen! Du bist ein Mathe-Held!";
+            feedbackEl.style.color = "#fdcb6e";
+            enemyEl.textContent = "💀";
         } else {
-            displayZehnerNachricht.textContent = `Falsch! Richtig war: ${zehnerAntwort}`;
-            displayZehnerNachricht.style.color = "red";
+            feedbackEl.textContent = "😢 Game Over! Versuch es nochmal!";
+            feedbackEl.style.color = "#d63031";
         }
-
-        setTimeout(generiereZehnerAufgabe, 1200);
+        newGameBtn.classList.remove("hidden");
     }
 
-    // --- ANTWORT PRÜFEN & EXCEPTION HANDLING ---
-    btnCheck.addEventListener("click", pruefeAntwort);
-
-    // Ermöglicht die Bestätigung mit der Enter-Taste im Eingabefeld
-    inputAntwort.addEventListener("keypress", (e) => {
-        if (e.key === "Enter") pruefeAntwort();
-    });
-
-    btnZehnerCheck.addEventListener("click", pruefeZehnerAntwort);
-
-    inputZehnerAntwort.addEventListener("keypress", (e) => {
-        if (e.key === "Enter") pruefeZehnerAntwort();
-    });
-
-
-    btnZehnerZurueck.addEventListener("click", () => {
-        zehnerScreen.classList.add("hidden");
+    // --- NAVIGATION ---
+    newGameBtn.addEventListener("click", () => {
+        stopTimer();
+        document.body.className = "";
+        gameScreen.classList.add("hidden");
         startScreen.classList.remove("hidden");
-
-        spielAuswahlBereich.classList.remove("hidden");
-        btnWeiter.classList.remove("hidden");
-
-        dungeonAuswahlBereich.classList.add("hidden");
-        btnStart.classList.add("hidden");
-
-        displayZehnerNachricht.textContent = "";
-        inputZehnerAntwort.value = "";
+        nameInput.value = "";
     });
 
-    btnZurueckStart.addEventListener("click", () => {
-        stoppeTimer();
-
-        // Spielscreen verlassen
-        spielScreen.classList.add("hidden");
-
-        // Startscreen anzeigen
+    backBtn.addEventListener("click", () => {
+        stopTimer();
+        document.body.className = "";
+        gameScreen.classList.add("hidden");
         startScreen.classList.remove("hidden");
-
-        // Hintergrund zurücksetzen
-        document.body.className = "bg-standard";
-
-        // Spielauswahl anzeigen
-        spielAuswahlBereich.classList.remove("hidden");
-        btnWeiter.classList.remove("hidden");
-
-        // Dungeonauswahl verstecken
-        dungeonAuswahlBereich.classList.add("hidden");
-        btnStart.classList.add("hidden");
-
-        // Auswahl zurücksetzen
-        gewaehlterDungeon = "";
-
-        dungeonKarten.forEach(k => {
-            k.classList.remove("ausgewaehlt");
-            k.setAttribute("aria-checked", "false");
-        });
-
     });
 
+    // --- HELPERS ---
+    function rand(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
 
+    function pick(arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-    // --- KAMPFSYSTEM: MONSTER ERHÄLT SCHADEN ---
-    function monsterBekommtSchaden() {
-        const schaden = 10;
-
-        gameState.monsterLeben -= schaden;
-
-        if (gameState.monsterLeben < 0) {
-            gameState.monsterLeben = 0;
+    function shuffle(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
         }
-
-        monsterLebenBalken.style.width = gameState.monsterLeben + "%";
-
-        damageAnzeige.textContent = "-" + schaden + " Damage";
-        damageAnzeige.classList.remove("hidden");
-
-        monsterBild.classList.add("monster-wackelt");
-
-        setTimeout(() => {
-            monsterBild.classList.remove("monster-wackelt");
-            damageAnzeige.classList.add("hidden");
-        }, 700);
+        return arr;
     }
-
-    // --- SPIELERLEBEN VISUELL AKTUALISIEREN ---
-    function aktualisiereHerzen() {
-        herzen.forEach((herz, index) => {
-            if (index < gameState.leben) {
-                herz.classList.remove("verloren");
-            } else {
-                herz.classList.add("verloren");
-            }
-        });
-    }
-
-
-    function pruefeAntwort() {
-        try {
-            const spielerAntwort = Number(inputAntwort.value);
-
-            // Ausfallsicherheit: Verhindert Absturz oder Fehler bei leeren/falschen Eingaben
-            if (inputAntwort.value.trim() === "" || Number.isNaN(spielerAntwort)) {
-                //Ist das Feld leer oder ist die Eingabe keine Zahl?
-                displayNachricht.textContent = " Bitte gib eine gültige Zahl ein!";
-                displayNachricht.style.color = "orange";
-                return;
-            }
-
-            stoppeTimer();
-
-            // Auswertung
-            if (spielerAntwort === gameState.aktuelleAntwort) {
-                gameState.punkte += PUNKTE_PRO_RICHTIGE_ANTWORT;
-                displayPunkte.textContent = gameState.punkte;
-                monsterBekommtSchaden();
-
-
-                if (gameState.punkte > highscore) {
-                    highscore = gameState.punkte;
-                    localStorage.setItem(HIGHSCORE_KEY, highscore);
-                    displayHighscore.textContent = highscore;
-                }
-                displayNachricht.textContent = " Treffer! Das Monster verliert KP!";
-                displayNachricht.style.color = "lime";
-            } else {
-                gameState.leben--;
-                if (displayLeben) {
-                    displayLeben.textContent = gameState.leben;
-                }
-                aktualisiereHerzen();
-                displayNachricht.textContent = ` Autsch! Richtig war: ${gameState.aktuelleAntwort}`;
-                displayNachricht.style.color = "red";
-            }
-
-            // Spiel-Ende prüfen (Gewonnen bei 100 Punkten / Verloren bei 0 Leben)
-            if (gameState.punkte >= SIEG_PUNKTE || gameState.leben <= 0) {
-                if (gameState.punkte >= SIEG_PUNKTE) {
-                    displayNachricht.textContent = " Sieg! Du hast das Monster besiegt!";
-                    displayNachricht.style.color = "gold";
-                } else {
-                    displayNachricht.textContent = " Game Over! Du bist im Dungeon gefallen.";
-                    displayNachricht.style.color = "darkred";
-                }
-
-                // Buttons umschalten
-                btnCheck.classList.add("hidden");
-                inputAntwort.disabled = true;
-                btnNewGame.classList.remove("hidden");
-            } else {
-                // Nächste Aufgabe nach einer kurzen Pause laden (1,2 Sekunden)
-                setTimeout(generiereAufgabe, PAUSE_BIS_NAECHSTE_AUFGABE);
-            }
-
-        } catch (error) {
-            console.warn("Fehler bei der Eingabeverarbeitung abgefangen:", error);
-        }
-    }
-
-
 });
