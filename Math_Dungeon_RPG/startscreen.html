@@ -13,8 +13,8 @@
     <!-- STARTSCREEN -->
     <section id="start-screen" class="screen" aria-label="Startbildschirm">
         <article class="card start-card">
-            <h1>🧮 Mathe-Abenteuer!</h1>
-            <p class="subtitle">Werde zum Mathe-Helden! 🌟</p>
+            <h1>Mathe-Abenteuer!</h1>
+            <p class="subtitle">Werde zum Mathe-Helden!</p>
 
             <hr class="divider">
 
@@ -24,10 +24,21 @@
             <fieldset class="selection-group">
                 <legend class="section-label">Wähle deinen Helden:</legend>
                 <div class="char-grid">
-                    <button type="button" class="char-btn selected" data-char="🧙" aria-label="Zauberer auswählen">🧙</button>
-                    <button type="button" class="char-btn" data-char="🦸" aria-label="Superheld auswählen">🦸</button>
-                    <button type="button" class="char-btn" data-char="🥷" aria-label="Ninja auswählen">🥷</button>
-                    <button type="button" class="char-btn" data-char="🤖" aria-label="Roboter auswählen">🤖</button>
+                    <button type="button" class="char-btn selected" data-char="Ritter" aria-label="Ritter auswählen">
+                        <img src="Bilder/Char-1.png" alt="Ritter">
+                    </button>
+
+                    <button type="button" class="char-btn" data-char="Paladin" aria-label="Paladin auswählen">
+                        <img src="Bilder/Char-2.png" alt="Paladin">
+                    </button>
+
+                    <button type="button" class="char-btn" data-char="Magier" aria-label="Magier auswählen">
+                        <img src="Bilder/Char-3.png" alt="Magier">
+                    </button>
+
+                    <button type="button" class="char-btn" data-char="Samurai" aria-label="Samurai auswählen">
+                        <img src="Bilder/Char-4.png" alt="Samurai">
+                    </button>
                 </div>
             </fieldset>
 
@@ -35,40 +46,40 @@
                 <legend class="section-label">Wähle dein Level:</legend>
                 <div class="diff-grid">
                     <button type="button" class="diff-card selected" data-diff="einfach" aria-label="Level Wald leicht auswählen">
-                        <span class="diff-emoji">🌲</span>
+                        <img class="diff-icon" src="Bilder/tree-icon-removebg.png" alt="Wald">
                         <span class="diff-name">Wald</span>
                         <span class="diff-ops">+ und −</span>
                         <span class="diff-badge badge-easy">Leicht</span>
                     </button>
                     <button type="button" class="diff-card" data-diff="mittel" aria-label="Level Stadt mittel auswählen">
-                        <span class="diff-emoji">🏙️</span>
+                        <img class="diff-icon" src="Bilder/City-icon-removebg.png" alt="Stadt">
                         <span class="diff-name">Stadt</span>
                         <span class="diff-ops">× und ÷</span>
                         <span class="diff-badge badge-mittel">Mittel</span>
                     </button>
                     <button type="button" class="diff-card" data-diff="schwer" aria-label="Level Vulkan schwer auswählen">
-                        <span class="diff-emoji">🌋</span>
+                        <img class="diff-icon" src="Bilder/vulkan-icon-removebg.png" alt="Vulkan">
                         <span class="diff-name">Vulkan</span>
                         <span class="diff-ops">+ − × ÷</span>
                         <span class="diff-badge badge-schwer">Schwer</span>
                     </button>
-                    <button type="button" class="diff-card" data-diff="extra" aria-label="Level Mondturm Experte auswählen">
-                        <span class="diff-emoji">🌙</span>
-                        <span class="diff-name">Mondturm</span>
-                        <span class="diff-ops">Extra!</span>
-                        <span class="diff-badge badge-extra">Experte</span>
+                    <button type="button" class="diff-card" data-diff="extra" aria-label="Level 10er-Übergang auswählen">
+                        <img class="diff-icon" src="Bilder/math-icon.jpg" alt="10er-Übergang">
+                        <span class="diff-name">10er-Übergang</span>
+                        <span class="diff-ops">über den Zehner</span>
+                        <span class="diff-badge badge-extra">Pflicht</span>
                     </button>
                 </div>
             </fieldset>
 
-            <button type="button" id="start-btn" aria-label="Spiel starten">Los geht's! 🚀</button>
+            <button type="button" id="start-btn" aria-label="Spiel starten">Los geht's!</button>
         </article>
     </section>
 
     <!-- SPIELSCREEN -->
     <section id="game-screen" class="screen hidden" aria-label="Spielbildschirm">
         <header class="game-bar">
-            <span id="player-display">🧙 Held</span>
+            <span id="player-display">Held</span>
             <p id="hearts" aria-label="Leben">
                 <span class="heart">❤️</span>
                 <span class="heart">❤️</span>

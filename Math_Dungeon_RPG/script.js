@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const newGameBtn    = document.querySelector("#new-game-btn");
     const backBtn       = document.querySelector("#back-btn");
 
-    let selectedChar = "🚀";
+    let selectedChar = "Ritter";
     let selectedDiff = "einfach";
     let state = {};
     let timerInterval = null;
