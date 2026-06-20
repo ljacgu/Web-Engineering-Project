@@ -7,8 +7,8 @@
 body {
     font-family: 'Segoe UI', system-ui, sans-serif;
     min-height: 100vh;
-    background: url("Bilder/hintergrund.gif") center / cover fixed no-repeat;
-    transition: background 0.6s ease;
+    background: #10131f url("Bilder/hintergrund.gif") center / cover fixed no-repeat;
+    transition: background-image 0.6s ease;
 }
 /*Hintergrundbilder wechseln*/
 body.level-einfach {
