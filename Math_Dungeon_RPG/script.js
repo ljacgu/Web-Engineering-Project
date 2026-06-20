@@ -5,8 +5,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const WIN_PTS = 100;
     const NEXT_DELAY = 1200;
     const HS_KEY = "matheAbenteuerHS";
-    const TIMER_SECS = { einfach: 30, mittel: 20, schwer: 15, extra: 10 };
-    const ENEMIES   = { einfach: "👾", mittel: "🤖", schwer: "🐲", extra: "👹" };
+    const TIMER_SECS = { einfach: 30, mittel: 20, schwer: 15, zehner: 30 };
+    const ENEMIES = {
+        einfach: "Bilder/Wald-Pilzmonster.png",
+        mittel: "Bilder/Wald-Pilzmonster.png",
+        schwer: "Bilder/Wald-Pilzmonster.png",
+        zehner: "Bilder/Wald-Pilzmonster.png"
+    };
 
     // Screens
     const startScreen = document.querySelector("#start-screen");
@@ -23,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const lifeDisplay   = document.querySelector("#life-display");
     const scoreEl       = document.querySelector("#score");
     const hsEl          = document.querySelector("#highscore");
-    const enemyEl       = document.querySelector("#enemy-emoji");
+    const enemyEl       = document.querySelector("#enemy-image");
     const hpFill        = document.querySelector("#hp-fill");
     const damagePop     = document.querySelector("#damage-pop");
     const timerEl       = document.querySelector("#timer-ring");
@@ -68,7 +73,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         document.body.className = `level-${selectedLevel}`;
         playerDisplay.textContent = `${selectedChar} ${name}`;
-        enemyEl.textContent = ENEMIES[selectedLevel];
+        enemyEl.src = ENEMIES[selectedLevel];
+        enemyEl.style.opacity = "1";
         hpFill.style.width = "100%";
         scoreEl.textContent = 0;
         feedbackEl.textContent = "";
@@ -253,7 +259,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (won) {
             feedbackEl.textContent = "🏆 Gewonnen! Du bist ein Mathe-Held!";
             feedbackEl.style.color = "#fdcb6e";
-            enemyEl.textContent = "💀";
+            enemyEl.style.opacity = "0.4";
         } else {
             feedbackEl.textContent = "😢 Game Over! Versuch es nochmal!";
             feedbackEl.style.color = "#d63031";
