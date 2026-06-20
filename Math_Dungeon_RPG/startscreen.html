@@ -2,7 +2,9 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
+<!--    Handylayout-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--    Handylayout-->
     <title>Mathe-Abenteuer!</title>
     <link rel="stylesheet" href="style.css">
     <script src="script.js" defer></script>
@@ -14,81 +16,119 @@
     <section id="start-screen" class="screen" aria-label="Startbildschirm">
         <article class="card start-card">
             <h1>Mathe-Abenteuer!</h1>
-            <p class="subtitle">Werde zum Mathe-Helden!</p>
-
+            <p class="subtitle">Lass dich herausfordern!</p>
             <hr class="divider">
 
+        <!--Nameeingabe-->
             <label class="section-label" for="name-input">Dein Heldenname:</label>
             <input type="text" id="name-input" placeholder="Gib deinen Namen ein..." maxlength="20" autocomplete="off" aria-label="Heldenname eingeben">
 
+        <!--Figurenauswahl-->
             <fieldset class="selection-group">
+            <!--Überschrift für Auswahl-->
                 <legend class="section-label">Wähle deinen Helden:</legend>
-                <div class="char-grid">
-                    <button type="button" class="char-btn selected" data-char="Ritter" aria-label="Ritter auswählen">
-                        <img src="Bilder/Char-1.png" alt="Ritter">
-                    </button>
 
-                    <button type="button" class="char-btn" data-char="Paladin" aria-label="Paladin auswählen">
-                        <img src="Bilder/Char-2.png" alt="Paladin">
-                    </button>
+            <!--ungeordnete Liste für die Auswahlbuttons-->
+                <ul class="char-grid">
+                    <li>
+                        <button type="button" class="char-btn selected" data-char="Ritter" aria-label="Ritter auswählen">
+                            <img src="Bilder/Char-1.png" alt="Ritter">
+                        </button>
+                    </li>
 
-                    <button type="button" class="char-btn" data-char="Magier" aria-label="Magier auswählen">
-                        <img src="Bilder/Char-3.png" alt="Magier">
-                    </button>
+                    <li>
+                        <button type="button" class="char-btn" data-char="Paladin" aria-label="Paladin auswählen">
+                            <img src="Bilder/Char-2.png" alt="Paladin">
+                        </button>
+                    </li>
 
-                    <button type="button" class="char-btn" data-char="Samurai" aria-label="Samurai auswählen">
-                        <img src="Bilder/Char-4.png" alt="Samurai">
-                    </button>
-                </div>
+                    <li>
+                        <button type="button" class="char-btn" data-char="Magier" aria-label="Magier auswählen">
+                            <img src="Bilder/Char-3.png" alt="Magier">
+                        </button>
+                    </li>
+
+                    <li>
+                        <button type="button" class="char-btn" data-char="Samurai" aria-label="Samurai auswählen">
+                         <img src="Bilder/Char-4.png" alt="Samurai">
+                        </button>
+                    </li>
+                </ul>
             </fieldset>
 
+        <!--Level auswählen (Formularfelder)-->
             <fieldset class="selection-group">
+                <!--Überschrift für Auswahl-->
                 <legend class="section-label">Wähle dein Level:</legend>
-                <div class="diff-grid">
-                    <button type="button" class="diff-card selected" data-diff="einfach" aria-label="Level Wald leicht auswählen">
-                        <img class="diff-icon" src="Bilder/tree-icon-removebg.png" alt="Wald">
-                        <span class="diff-name">Wald</span>
-                        <span class="diff-ops">+ und −</span>
-                        <span class="diff-badge badge-easy">Leicht</span>
+
+                <!--ungeordnete Liste für die Auswahlbuttons-->
+                <ul class="level-grid">
+                    <li>
+                    <button type="button" class="level-card selected" data-level="einfach" aria-label="Level Wald leicht auswählen">
+                        <img class="level-icon" src="Bilder/tree-icon-removebg.png" alt="Wald">
+                        <span class="level-name">Wald</span>
+                        <span class="level-ops">+ und −</span>
+                        <span class="level-label label-easy">Leicht</span>
                     </button>
-                    <button type="button" class="diff-card" data-diff="mittel" aria-label="Level Stadt mittel auswählen">
-                        <img class="diff-icon" src="Bilder/City-icon-removebg.png" alt="Stadt">
-                        <span class="diff-name">Stadt</span>
-                        <span class="diff-ops">× und ÷</span>
-                        <span class="diff-badge badge-mittel">Mittel</span>
+                    </li>
+
+                    <li>
+                    <button type="button" class="level-card" data-level="mittel" aria-label="Level Stadt mittel auswählen">
+                        <img class="level-icon" src="Bilder/City-icon-removebg.png" alt="Stadt">
+                        <span class="level-name">Stadt</span>
+                        <span class="level-ops">× und ÷</span>
+                        <span class="level-label label-mittel">Mittel</span>
                     </button>
-                    <button type="button" class="diff-card" data-diff="schwer" aria-label="Level Vulkan schwer auswählen">
-                        <img class="diff-icon" src="Bilder/vulkan-icon-removebg.png" alt="Vulkan">
-                        <span class="diff-name">Vulkan</span>
-                        <span class="diff-ops">+ − × ÷</span>
-                        <span class="diff-badge badge-schwer">Schwer</span>
+                    </li>
+
+                    <li>
+                    <button type="button" class="level-card" data-level="schwer" aria-label="Level Vulkan schwer auswählen">
+                        <img class="level-icon" src="Bilder/vulkan-icon-removebg.png" alt="Vulkan">
+                        <span class="level-name">Vulkan</span>
+                        <span class="level-ops">+ − × ÷</span>
+                        <span class="level-label label-schwer">Schwer</span>
                     </button>
-                    <button type="button" class="diff-card" data-diff="extra" aria-label="Level 10er-Übergang auswählen">
-                        <img class="diff-icon" src="Bilder/math-icon.jpg" alt="10er-Übergang">
-                        <span class="diff-name">10er-Übergang</span>
-                        <span class="diff-ops">über den Zehner</span>
-                        <span class="diff-badge badge-extra">Pflicht</span>
+                    </li>
+
+                    <li>
+                    <button type="button" class="level-card" data-level="extra" aria-label="Level 10er-Übergang auswählen">
+                        <img class="level-icon" src="Bilder/math-icon.jpg" alt="10er-Übergang">
+                        <span class="level-name">10er-Übergang</span>
+                        <span class="level-ops">über den Zehner</span>
+                        <span class="level-label label-extra">Pflicht</span>
                     </button>
-                </div>
+                    </li>
+                </ul>
             </fieldset>
 
+        <!--Startbutton-->
             <button type="button" id="start-btn" aria-label="Spiel starten">Los geht's!</button>
         </article>
     </section>
 
     <!-- SPIELSCREEN -->
     <section id="game-screen" class="screen hidden" aria-label="Spielbildschirm">
+        <!--obere Leiste, soll namen, figure, Leben, Punkte und Highscore enthalten-->
         <header class="game-bar">
             <span id="player-display">Held</span>
-            <p id="hearts" aria-label="Leben">
-                <span class="heart">❤️</span>
-                <span class="heart">❤️</span>
-                <span class="heart">❤️</span>
-            </p>
-            <span aria-label="Punkte">⭐<span id="score">0</span></span>
-            <span aria-label="Highscore">🏆 <span id="highscore">0</span></span>
+            <!--Lebensymbol-->
+            <img id="life-display" src="Bilder/Leben3.png" alt="3 Leben" aria-label="Leben">
+
+            <!--Sternsymbol Punkte-->
+            <span class="bar-value" aria-label="Punkte">
+                <img class="bar-icon" src="Bilder/punkt.png" alt="Punkte">
+                <span id="score">0</span>
+            </span>
+
+            <!--Highscoresymbole Pokal-->
+            <span class="bar-value" aria-label="Highscore">
+                <img class="bar-icon" src="Bilder/Highscore.png" alt="Highscore">
+                <span id="highscore">0</span>
+            </span>
+
         </header>
 
+        <!--Gegener-->
         <section class="enemy-area" aria-label="Gegner">
             <div class="hp-bar-wrap" aria-label="Monster-Lebensbalken">
                 <div id="hp-fill"></div>
@@ -101,6 +141,7 @@
             <div id="timer-ring" aria-label="Verbleibende Zeit">30</div>
             <p id="question" aria-live="polite">5 + 3 = ?</p>
 
+            <!--Auswahl Antwort-->
             <section id="choice-grid" aria-label="Antwortauswahl">
                 <button type="button" class="choice-btn">1</button>
                 <button type="button" class="choice-btn">2</button>
@@ -108,20 +149,16 @@
                 <button type="button" class="choice-btn">4</button>
             </section>
 
-            <section id="text-mode" class="hidden" aria-label="Antwort eintippen">
-                <input type="number" id="text-input" placeholder="Antwort..." step="1" autocomplete="off" aria-label="Antwort eingeben">
-                <button type="button" id="check-btn" aria-label="Antwort prüfen">✅Prüfen</button>
-            </section>
-
-            <button type="button" id="toggle-mode-btn" aria-label="Eingabemodus wechseln">⌨️ Lieber eintippen?</button>
-
+        <!--Reaktion auf Antwort, richtig, falsch oder Zeit abgelaufen-->
             <p id="feedback" aria-live="polite"></p>
         </article>
 
+        <!--NAV für die Seiten (wenn Spiel beendet)-->
         <nav class="bottom-btns" aria-label="Spielnavigation">
             <button type="button" id="new-game-btn" class="hidden" aria-label="Neues Spiel starten">🔄 Neues Spiel</button>
             <button type="button" id="back-btn" aria-label="Zurück zum Startbildschirm">↩ Zurück</button>
         </nav>
+
     </section>
 </main>
 

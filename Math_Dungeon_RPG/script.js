@@ -15,12 +15,12 @@ document.addEventListener("DOMContentLoaded", () => {
     // Start screen
     const nameInput  = document.querySelector("#name-input");
     const charBtns   = document.querySelectorAll(".char-btn");
-    const diffCards  = document.querySelectorAll(".diff-card");
+    const levelCards = document.querySelectorAll(".level-card");
     const startBtn   = document.querySelector("#start-btn");
 
     // Game screen
     const playerDisplay = document.querySelector("#player-display");
-    const heartsEl      = document.querySelector("#hearts");
+    const lifeDisplay   = document.querySelector("#life-display");
     const scoreEl       = document.querySelector("#score");
     const hsEl          = document.querySelector("#highscore");
     const enemyEl       = document.querySelector("#enemy-emoji");
@@ -29,19 +29,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const timerEl       = document.querySelector("#timer-ring");
     const questionEl    = document.querySelector("#question");
     const choiceGrid    = document.querySelector("#choice-grid");
-    const textMode      = document.querySelector("#text-mode");
-    const textInput     = document.querySelector("#text-input");
-    const checkBtn      = document.querySelector("#check-btn");
-    const toggleModeBtn = document.querySelector("#toggle-mode-btn");
     const feedbackEl    = document.querySelector("#feedback");
     const newGameBtn    = document.querySelector("#new-game-btn");
     const backBtn       = document.querySelector("#back-btn");
 
     let selectedChar = "Ritter";
-    let selectedDiff = "einfach";
+    let selectedLevel = "einfach";
     let state = {};
     let timerInterval = null;
-    let inputMode = "choice";
     let highscore = Number(localStorage.getItem(HS_KEY)) || 0;
 
     hsEl.textContent = highscore;
@@ -55,22 +50,13 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // --- DIFFICULTY SELECTION ---
-    diffCards.forEach(card => {
+    // --- LEVEL SELECTION ---
+    levelCards.forEach(card => {
         card.addEventListener("click", () => {
-            diffCards.forEach(c => c.classList.remove("selected"));
+            levelCards.forEach(c => c.classList.remove("selected"));
             card.classList.add("selected");
-            selectedDiff = card.dataset.diff;
+            selectedLevel = card.dataset.level;
         });
-    });
-
-    // --- TOGGLE INPUT MODE ---
-    toggleModeBtn.addEventListener("click", () => {
-        inputMode = inputMode === "choice" ? "text" : "choice";
-        const isChoice = inputMode === "choice";
-        choiceGrid.classList.toggle("hidden", !isChoice);
-        textMode.classList.toggle("hidden", isChoice);
-        toggleModeBtn.textContent = isChoice ? "⌨️ Lieber eintippen?" : "🎯 Antworten wählen?";
     });
 
     // --- START GAME ---
@@ -78,17 +64,16 @@ document.addEventListener("DOMContentLoaded", () => {
         const name = nameInput.value.trim();
         if (!name) { alert("Bitte gib deinen Heldennamen ein!"); return; }
 
-        state = { name, diff: selectedDiff, pts: 0, lives: LIVES, answer: 0, monsterHp: 100 };
+        state = { name, level: selectedLevel, pts: 0, lives: LIVES, answer: 0, monsterHp: 100 };
 
-        document.body.className = `diff-${selectedDiff}`;
+        document.body.className = `level-${selectedLevel}`;
         playerDisplay.textContent = `${selectedChar} ${name}`;
-        enemyEl.textContent = ENEMIES[selectedDiff];
+        enemyEl.textContent = ENEMIES[selectedLevel];
         hpFill.style.width = "100%";
         scoreEl.textContent = 0;
         feedbackEl.textContent = "";
         newGameBtn.classList.add("hidden");
-        checkBtn.disabled = false;
-        updateHearts();
+        updateLifeDisplay();
 
         startScreen.classList.add("hidden");
         gameScreen.classList.remove("hidden");
@@ -98,13 +83,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- GENERATE QUESTION ---
     function generateQuestion() {
         let a, b, op;
-        const d = state.diff;
+        const level = state.level;
 
-        if (d === "einfach") {
+        if (level === "einfach") {
             op = Math.random() > 0.5 ? "+" : "−";
             a = rand(6, 9); b = rand(5, 9);
             if (op === "−" && a < b) [a, b] = [b, a];
-        } else if (d === "mittel") {
+        } else if (level === "mittel") {
             op = Math.random() > 0.5 ? "×" : "÷";
             if (op === "×") { a = rand(1, 10); b = rand(1, 10); }
             else { b = rand(1, 10); a = b * rand(1, 10); }
@@ -128,7 +113,6 @@ document.addEventListener("DOMContentLoaded", () => {
         else state.answer = a / b;
 
         questionEl.textContent = `${a} ${op} ${b} = ?`;
-        textInput.value = "";
         feedbackEl.textContent = "";
 
         const choices = makeChoices(state.answer);
@@ -138,7 +122,6 @@ document.addEventListener("DOMContentLoaded", () => {
             btn.disabled = false;
         });
 
-        checkBtn.disabled = false;
         startTimer();
     }
 
@@ -165,24 +148,9 @@ document.addEventListener("DOMContentLoaded", () => {
         checkAnswer(Number(btn.textContent), btn);
     });
 
-    // --- ANSWER CHECK (text input) ---
-    checkBtn.addEventListener("click", () => {
-        if (textInput.value.trim() === "") {
-            feedbackEl.textContent = "Bitte gib eine Zahl ein!";
-            feedbackEl.style.color = "#e17055";
-            return;
-        }
-        checkAnswer(Number(textInput.value));
-    });
-
-    textInput.addEventListener("keypress", e => {
-        if (e.key === "Enter") checkBtn.click();
-    });
-
     function checkAnswer(answer, clickedBtn = null) {
         stopTimer();
         document.querySelectorAll(".choice-btn").forEach(b => b.disabled = true);
-        checkBtn.disabled = true;
 
         if (answer === state.answer) {
             state.pts += PTS_CORRECT;
@@ -205,7 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
             feedbackEl.style.color = "#00b894";
         } else {
             state.lives--;
-            updateHearts();
+            updateLifeDisplay();
 
             document.querySelectorAll(".choice-btn").forEach(b => {
                 if (Number(b.textContent) === state.answer) b.classList.add("correct");
@@ -228,7 +196,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- TIMER ---
     function startTimer() {
         stopTimer();
-        const limit = TIMER_SECS[state.diff] || 30;
+        const limit = TIMER_SECS[state.level] || 30;
         let remaining = limit;
         timerEl.textContent = remaining;
         timerEl.className = "";
@@ -241,7 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (remaining <= 0) {
                 stopTimer();
                 state.lives--;
-                updateHearts();
+                updateLifeDisplay();
                 feedbackEl.textContent = "⏰ Zeit abgelaufen! Ein Leben weg!";
                 feedbackEl.style.color = "#d63031";
 
@@ -257,11 +225,11 @@ document.addEventListener("DOMContentLoaded", () => {
         timerEl.className = "";
     }
 
-    // --- HEARTS ---
-    function updateHearts() {
-        heartsEl.querySelectorAll(".heart").forEach((h, i) => {
-            h.classList.toggle("lost", i >= state.lives);
-        });
+    // --- LEBENSANZEIGE ---
+    function updateLifeDisplay() {
+        const lives = Math.max(0, Math.min(LIVES, state.lives));
+        lifeDisplay.src = lives === 0 ? "Bilder/leben0.png" : `Bilder/Leben${lives}.png`;
+        lifeDisplay.alt = `${lives} Leben`;
     }
 
     // --- ENEMY EFFECTS ---

@@ -102,12 +102,15 @@ h1 {
     box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
 }
 
-/* Character selection */
+
+/*Figurenauswahlleiste(UL, keine Punkte vor Icon und sowie keine Einrückung)*/
 .char-grid {
+    list-style: none;
     display: flex;
     justify-content: center;
     gap: 12px;
     margin-bottom: 20px;
+    padding: 0;
 }
 
 .char-btn {
@@ -144,15 +147,17 @@ h1 {
     box-shadow: 0 4px 14px rgba(108, 92, 231, 0.3);
 }
 
-/* Difficulty cards */
-.diff-grid {
+/* Levelawahl (UL, keine Punkte vor Icon und sowie keine Einrückung)*/
+.level-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
     margin-bottom: 22px;
+    list-style: none;
+    padding: 0;
 }
 
-.diff-card {
+.level-card {
     width: 100%;
     border: 2px solid #dfe6e9;
     border-radius: 16px;
@@ -164,20 +169,20 @@ h1 {
     font: inherit;
 }
 
-.diff-card:hover {
+.level-card:hover {
     transform: translateY(-3px);
     border-color: #b2bec3;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
-.diff-card.selected {
+.level-card.selected {
     border-color: #6c5ce7;
     background: #f0edff;
     box-shadow: 0 4px 16px rgba(108, 92, 231, 0.2);
     transform: translateY(-3px);
 }
 
-.diff-icon {
+.level-icon {
     width: 58px;
     height: 58px;
     object-fit: contain;
@@ -185,7 +190,7 @@ h1 {
     margin: 0 auto 6px;
 }
 
-.diff-name {
+.level-name {
     display: block;
     font-weight: 700;
     font-size: 0.95rem;
@@ -193,14 +198,14 @@ h1 {
     margin-bottom: 2px;
 }
 
-.diff-ops {
+.level-ops {
     display: block;
     font-size: 0.8rem;
     color: #636e72;
     margin-bottom: 8px;
 }
 
-.diff-badge {
+.level-label {
     display: inline-block;
     font-size: 0.65rem;
     font-weight: 700;
@@ -210,10 +215,10 @@ h1 {
     letter-spacing: 0.5px;
 }
 
-.badge-easy   { background: #d4f7e4; color: #00b894; }
-.badge-mittel { background: #dbeafe; color: #0984e3; }
-.badge-schwer { background: #fde8f0; color: #e84393; }
-.badge-extra  { background: #ede9ff; color: #6c5ce7; }
+.label-easy   { background: #d4f7e4; color: #00b894; }
+.label-mittel { background: #dbeafe; color: #0984e3; }
+.label-schwer { background: #fde8f0; color: #e84393; }
+.label-extra  { background: #ede9ff; color: #6c5ce7; }
 
 #start-btn {
     width: 100%;
@@ -262,10 +267,23 @@ h1 {
     flex-wrap: wrap;
 }
 
-#hearts { display: flex; gap: 2px; }
+#life-display {
+    width: 92px;
+    height: 30px;
+    object-fit: contain;
+}
 
-.heart { font-size: 1.3rem; transition: filter 0.3s, opacity 0.3s; }
-.heart.lost { filter: grayscale(1); opacity: 0.3; }
+.bar-value {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.bar-icon {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+}
 
 /* ========================
    ENEMY AREA
@@ -426,62 +444,6 @@ h1 {
     0%   { transform: scale(1); }
     50%  { transform: scale(1.1); }
     100% { transform: scale(1); }
-}
-
-/* ========================
-   TEXT INPUT MODE
-======================== */
-
-#text-mode {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 10px;
-}
-
-#text-input {
-    flex: 1;
-    padding: 12px 16px;
-    border: 2px solid #dfe6e9;
-    border-radius: 12px;
-    font-size: 1.1rem;
-    transition: border-color 0.2s;
-}
-
-#text-input:focus {
-    outline: none;
-    border-color: #6c5ce7;
-}
-
-#check-btn {
-    padding: 12px 20px;
-    background: linear-gradient(135deg, #6c5ce7, #a29bfe);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 1rem;
-    font-weight: 700;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.2s;
-}
-
-#check-btn:hover { box-shadow: 0 4px 12px rgba(108, 92, 231, 0.4); }
-
-#toggle-mode-btn {
-    background: none;
-    border: 1px dashed #b2bec3;
-    border-radius: 10px;
-    color: #636e72;
-    font-size: 0.85rem;
-    padding: 6px 14px;
-    cursor: pointer;
-    margin-bottom: 10px;
-    transition: all 0.2s;
-}
-
-#toggle-mode-btn:hover {
-    background: #f8f9fa;
-    border-color: #636e72;
 }
 
 /* ========================
