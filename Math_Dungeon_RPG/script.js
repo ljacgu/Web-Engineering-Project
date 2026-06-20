@@ -93,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
             op = Math.random() > 0.5 ? "×" : "÷";
             if (op === "×") { a = rand(1, 10); b = rand(1, 10); }
             else { b = rand(1, 10); a = b * rand(1, 10); }
-        } else if (d === "schwer") {
+        } else if (level === "schwer") {
             op = pick(["+", "−", "×", "÷"]);
             if (op === "+") { a = rand(1, 100); b = rand(1, 100); }
             else if (op === "−") { a = rand(10, 100); b = rand(1, a); }
