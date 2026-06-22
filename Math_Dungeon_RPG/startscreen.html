@@ -15,9 +15,10 @@
 <body>
 
 <main>
+
     <!-- STARTSCREEN -->
     <section id="start-screen" class="screen" aria-label="Startbildschirm">
-        <article class="card start-card">
+        <article class="place start-area">
             <h1>Mathe-Abenteuer!</h1>
             <p class="subtitle">Lass dich herausfordern!</p>
             <hr class="divider">
@@ -104,10 +105,13 @@
                 </ul>
             </fieldset>
 
-        <!--Startbutton-->
-            <button type="button" id="start-btn" aria-label="Spiel starten">Los geht's!</button>
+        <!--Spiel starten-->
+            <button type="button" id="start-btn" aria-label="Spiel starten">Spiel Starten</button>
+        <!--Rangliste anzeigen-->
+            <button type="button" id="ranking-btn" aria-label="Rangliste öffnen">Rangliste</button>
         </article>
     </section>
+
 
     <!-- SPIELSCREEN -->
     <section id="game-screen" class="screen hidden" aria-label="Spielbildschirm">
@@ -128,26 +132,27 @@
                 <img class="bar-icon" src="Bilder/Highscore.png" alt="Highscore">
                 <span id="highscore">0</span>
             </span>
-
         </header>
 
-        <!--Gegener-->
+        <!--Bereich über die Fragen, enthält Hero und Monster-->
         <section class="enemy-area" aria-label="Kampffeld">
-            <div class="hp-bar-wrap" aria-label="Monster-Lebensbalken">
-                <div id="hp-fill"></div>
-            </div>
-
-            <div class="battle-row">
+            <!-- HP Balken von monster-->
+            <progress id="monster-hp" value="100" max="100" aria-label="Monster-Lebensbalken"></progress>
+            <!--links Held rechts Monster-->
+            <figure class="battle-row" aria-label="Held und Monster">
                 <img id="hero-image" src="Bilder/Char-1.png" alt="Ausgewählter Held">
                 <img id="enemy-image" src="Bilder/Wald-Pilzmonster.png" alt="Pilzmonster">
-            </div>
-
-            <p id="damage-pop" class="hidden">-10 HP</p>
+            </figure>
+            <!--Monster gets hit Animation in CSS-->
+            <p id="damage" class="hidden">-10 HP</p>
         </section>
 
-        <article class="card game-card">
-            <div id="timer-ring" aria-label="Verbleibende Zeit">30</div>
-            <p id="question" aria-live="polite">5 + 3 = ?</p>
+        <!--Spielbereich mit einem Zähler und 4 zufällige Aufgaben zum Auswahl-->
+        <article class="place game-area">
+            <!--Zeitbegrenzung-->
+            <output id="countdown" aria-label="Verbleibende Zeit">30</output>
+            <!--Zufällige Fragen generieren mit Platzhalter-->
+            <p id="question" aria-live="polite">1111 + 1111 = ?</p>
 
             <!--Auswahl Antwort-->
             <section id="choice-grid" aria-label="Antwortauswahl">
@@ -164,10 +169,65 @@
         <!--NAV für die Seiten (wenn Spiel beendet)-->
         <nav class="bottom-btns" aria-label="Spielnavigation">
             <button type="button" id="new-game-btn" class="hidden" aria-label="Neues Spiel starten">Neues Spiel</button>
+            <button type="button" id="show-ranking-end-btn" class="hidden" aria-label="Rangliste anzeigen">Rangliste anzeigen</button>
             <button type="button" id="back-btn" aria-label="Zurück zum Startbildschirm">Zurück</button>
         </nav>
 
     </section>
+
+
+    <!-- HIGHSCORE-SCREEN -->
+    <section id="highscore-screen" class="screen hidden" aria-label="Rangliste">
+        <article class="place highscore-area">
+            <h1>Rangliste</h1>
+            <hr class="divider">
+
+            <!-- Highscore Auswahl (Wald, Stadt und Vulkan)-->
+            <fieldset class="selection-group">
+                <legend class="section-label">Level:</legend>
+                <ul class="level-grid highscore-level-grid">
+                    <li>
+                        <button type="button" class="level-card highscore-level-card selected" data-level="einfach" aria-label="Rangliste Wald leicht anzeigen">
+                            <img class="level-icon" src="Bilder/tree-icon-removebg.png" alt="Wald">
+                        </button>
+                    </li>
+
+                    <li>
+                        <button type="button" class="level-card highscore-level-card" data-level="mittel" aria-label="Rangliste Stadt mittel anzeigen">
+                            <img class="level-icon" src="Bilder/City-icon-removebg.png" alt="Stadt">
+                        </button>
+                    </li>
+
+                    <li>
+                        <button type="button" class="level-card highscore-level-card" data-level="schwer" aria-label="Rangliste Vulkan schwer anzeigen">
+                            <img class="level-icon" src="Bilder/vulkan-icon-removebg.png" alt="Vulkan">
+                        </button>
+                    </li>
+                </ul>
+            </fieldset>
+
+            <table id="highscore-table" aria-label="Highscore-Tabelle">
+                <!--4 Elemente für Zeilenkopf-->
+                <thead>
+                <tr>
+                    <th>Platz</th>
+                    <th>Name</th>
+                    <th>Punkte</th>
+                    <th>Zeit</th>
+                </tr>
+                </thead>
+                <!--4 Elemente für Body, wenn leer zeigt: Noch keine Einträge-->
+                <tbody id="highscore-table-body">
+                <tr>
+                    <td colspan="4" class="empty-highscore">Noch keine Einträge</td>
+                </tr>
+                </tbody>
+            </table>
+            <!--Nav zum Startbild-->
+            <button type="button" id="highscore-back-btn" aria-label="Zurück zum Startbildschirm">Zurück zum Start</button>
+        </article>
+    </section>
+
 </main>
 
 </body>

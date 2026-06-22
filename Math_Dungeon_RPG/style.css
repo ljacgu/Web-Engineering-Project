@@ -3,6 +3,10 @@
     margin: 0;
     padding: 0;
 }
+
+/* ========================
+   Hintergrund
+======================== */
 /*Standrad Hintergrundbild*/
 body {
     font-family: 'Segoe UI', system-ui, sans-serif;
@@ -23,6 +27,9 @@ body.level-schwer {
     background-image: url("Bilder/vulkan.gif");
 }
 
+/* ========================
+   Element mit der Klasse hidden wird nicht angezeigt.
+======================== */
 .hidden { display: none !important; }
 
 /* ========================
@@ -45,10 +52,10 @@ body.level-schwer {
 }
 
 /* ========================
-   CARD
+   PLACE
 ======================== */
 
-.card {
+.place {
     background: rgba(255, 255, 255, 0.78);
     backdrop-filter: blur(6px);
     border-radius: 24px;
@@ -65,7 +72,7 @@ body.level-schwer {
 
 h1 {
     font-size: 2.4rem;
-    color: #6c5ce7;
+    color: #008f7a;
     margin-bottom: 6px;
 }
 
@@ -110,8 +117,8 @@ h1 {
 
 #name-input:focus {
     outline: none;
-    border-color: #6c5ce7;
-    box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
+    border-color: #00b894;
+    box-shadow: 0 0 0 3px rgba(0, 184, 148, 0.15);
 }
 
 
@@ -153,10 +160,10 @@ h1 {
 }
 
 .char-btn.selected {
-    border-color: #6c5ce7;
-    background: #f0edff;
+    border-color: #00b894;
+    background: #e8fff7;
     transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 4px 14px rgba(108, 92, 231, 0.3);
+    box-shadow: 0 4px 14px rgba(0, 184, 148, 0.25);
 }
 
 /* Levelawahl (UL, keine Punkte vor Icon und sowie keine Einrückung)*/
@@ -188,9 +195,9 @@ h1 {
 }
 
 .level-card.selected {
-    border-color: #6c5ce7;
-    background: #f0edff;
-    box-shadow: 0 4px 16px rgba(108, 92, 231, 0.2);
+    border-color: #00b894;
+    background: #e8fff7;
+    box-shadow: 0 4px 16px rgba(0, 184, 148, 0.18);
     transform: translateY(-3px);
 }
 
@@ -230,15 +237,15 @@ h1 {
 .label-easy   { background: #d4f7e4; color: #00b894; }
 .label-mittel { background: #dbeafe; color: #0984e3; }
 .label-schwer { background: #fde8f0; color: #e84393; }
-.label-extra  { background: #ede9ff; color: #6c5ce7; }
+.label-extra  { background: #e8fff7; color: #008f7a; }
 
-#start-btn {
+#start-btn, #ranking-btn {
     width: 100%;
     padding: 16px;
     font-size: 1.2rem;
     font-weight: 700;
     color: white;
-    background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+    background: linear-gradient(135deg, #00b894, #00cec9);
     border: none;
     border-radius: 16px;
     cursor: pointer;
@@ -246,13 +253,89 @@ h1 {
     letter-spacing: 0.5px;
 }
 
-#start-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(108, 92, 231, 0.4);
+#ranking-btn {
+    margin-top: 10px;
 }
 
-#start-btn:active {
+#start-btn:hover, #ranking-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 184, 148, 0.35);
+}
+
+#start-btn:active, #ranking-btn:active {
     transform: translateY(0);
+}
+
+#highscore-back-btn {
+    width: 100%;
+    padding: 14px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #636e72;
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #dfe6e9;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+#highscore-back-btn:hover {
+    background: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* ========================
+   HIGHSCORE SCREEN
+======================== */
+
+.highscore-area {
+    max-width: 620px;
+}
+
+.highscore-level-grid {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+#highscore-table {
+    width: 100%;
+    display: block;
+    overflow-x: auto;
+    margin-bottom: 18px;
+    border-collapse: collapse;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.88);
+}
+
+#highscore-table thead,
+#highscore-table tbody {
+    display: table;
+    width: 100%;
+}
+
+#highscore-table th,
+#highscore-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid #dfe6e9;
+    text-align: center;
+    color: #2d3436;
+}
+
+#highscore-table th {
+    background: #e8fff7;
+    color: #008f7a;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#highscore-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.empty-highscore {
+    color: #636e72;
+    font-weight: 700;
 }
 
 /* ========================
@@ -327,35 +410,53 @@ h1 {
     filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
 }
 
-.hp-bar-wrap {
+#monster-hp {
     width: 220px;
     height: 18px;
-    background: #dfe6e9;
+    appearance: none;
+    -webkit-appearance: none;
     border-radius: 9px;
     overflow: hidden;
     margin: 0 0 12px 200px;
     border: 2px solid rgba(0,0,0,0.08);
 }
 
-#hp-fill {
-    height: 100%;
-    width: 100%;
+#monster-hp::-webkit-progress-bar {
+    background: #dfe6e9;
+}
+
+#monster-hp::-webkit-progress-value {
     background: linear-gradient(90deg, #ff7675, #d63031);
-    transition: width 0.4s ease;
     border-radius: 9px;
 }
 
-#enemy-image.shake {
-    animation: shake 0.35s ease;
+#monster-hp::-moz-progress-bar {
+    background: linear-gradient(90deg, #ff7675, #d63031);
+    border-radius: 9px;
 }
 
-@keyframes shake {
+#hero-image.hit,
+#enemy-image.hit {
+    animation: hit 0.35s ease;
+}
+
+#hero-image.fall-out,
+#enemy-image.fall-out {
+    animation: fallOut 1s ease-in forwards;
+}
+
+@keyframes hit {
     0%, 100% { transform: translateX(0); }
     20%       { transform: translateX(-12px) rotate(-5deg); }
     60%       { transform: translateX(12px) rotate(5deg); }
 }
 
-#damage-pop {
+@keyframes fallOut {
+    0%   { transform: translateY(0) rotate(0); opacity: 1; }
+    100% { transform: translateY(120vh) rotate(35deg); opacity: 0; }
+}
+
+#damage {
     font-size: 1.6rem;
     font-weight: 700;
     color: #d63031;
@@ -373,36 +474,36 @@ h1 {
 }
 
 /* ========================
-   GAME CARD
+   GAME AREA
 ======================== */
 
-.game-card {
+.game-area {
     max-width: 480px;
 }
 
-#timer-ring {
+#countdown {
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    border: 4px solid #6c5ce7;
-    background: #f0edff;
+    border: 4px solid #00b894;
+    background: #e8fff7;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.6rem;
     font-weight: 700;
-    color: #6c5ce7;
+    color: #008f7a;
     margin: 0 auto 16px;
     transition: border-color 0.3s, color 0.3s, background 0.3s;
 }
 
-#timer-ring.warn {
+#countdown.warn {
     border-color: #fdcb6e;
     color: #e17055;
     background: #fff8e1;
 }
 
-#timer-ring.danger {
+#countdown.danger {
     border-color: #d63031;
     color: #d63031;
     background: #fff0f0;
@@ -446,10 +547,10 @@ h1 {
 }
 
 .choice-btn:hover:not(:disabled) {
-    background: #f0edff;
-    border-color: #6c5ce7;
+    background: #e8fff7;
+    border-color: #00b894;
     transform: scale(1.04);
-    box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 184, 148, 0.18);
 }
 
 .choice-btn:disabled { cursor: default; }
@@ -494,7 +595,7 @@ h1 {
     justify-content: center;
 }
 
-#new-game-btn, #back-btn {
+#new-game-btn, #back-btn, #show-ranking-end-btn {
     padding: 12px 26px;
     border: none;
     border-radius: 14px;
@@ -504,13 +605,13 @@ h1 {
     transition: all 0.2s;
 }
 
-#new-game-btn {
-    background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+#new-game-btn, #show-ranking-end-btn {
+    background: linear-gradient(135deg, #00b894, #00cec9);
     color: white;
 }
 
-#new-game-btn:hover {
-    box-shadow: 0 4px 14px rgba(108, 92, 231, 0.4);
+#new-game-btn:hover, #show-ranking-end-btn:hover {
+    box-shadow: 0 4px 14px rgba(0, 184, 148, 0.35);
     transform: translateY(-2px);
 }
 
@@ -530,7 +631,7 @@ h1 {
 ======================== */
 
 @media (max-width: 480px) {
-    .card { padding: 20px 16px; }
+    .place { padding: 20px 16px; }
     h1 { font-size: 1.9rem; }
 
     .char-btn { width: 56px; height: 56px; font-size: 1.9rem; }
@@ -539,9 +640,10 @@ h1 {
     .choice-btn { padding: 14px 8px; font-size: 1.3rem; }
 
     .game-bar { gap: 12px; font-size: 0.9rem; padding: 8px 16px; }
+    .highscore-level-grid { grid-template-columns: 1fr; }
     #enemy-image {
         width: 110px;
         height: 110px;
     }
-    .hp-bar-wrap { width: 170px; }
+    #monster-hp { width: 170px; }
 }

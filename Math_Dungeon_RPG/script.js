@@ -4,7 +4,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const PTS_CORRECT = 10;
     const WIN_PTS = 100;
     const NEXT_DELAY = 1200;
-    const HS_KEY = "matheAbenteuerHS";
+    const HS_LIST_KEY = "matheAbenteuerHighscores";
+    const HIGHSCORE_LEVELS = ["einfach", "mittel", "schwer"];
+    const MAX_RANKING_PLACES = 5;
     const TIMER_SECS = { einfach: 30, mittel: 20, schwer: 15, zehner: 30 };
     const ENEMIES = {
         einfach: "Bilder/Wald-Pilzmonster.png",
@@ -23,12 +25,15 @@ document.addEventListener("DOMContentLoaded", () => {
     // Screens
     const startScreen = document.querySelector("#start-screen");
     const gameScreen  = document.querySelector("#game-screen");
+    const highscoreScreen = document.querySelector("#highscore-screen");
 
     // Start screen
     const nameInput  = document.querySelector("#name-input");
     const charBtns   = document.querySelectorAll(".char-btn");
-    const levelCards = document.querySelectorAll(".level-card");
+    const levelCards = document.querySelectorAll("#start-screen .level-card");
+    const highscoreLevelCards = document.querySelectorAll(".highscore-level-card");
     const startBtn   = document.querySelector("#start-btn");
+    const rankingBtn = document.querySelector("#ranking-btn");
 
     // Game screen
     const playerDisplay = document.querySelector("#player-display");
@@ -37,20 +42,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const hsEl          = document.querySelector("#highscore");
     const enemyEl       = document.querySelector("#enemy-image");
     const heroImage     = document.querySelector("#hero-image");
-    const hpFill        = document.querySelector("#hp-fill");
-    const damagePop     = document.querySelector("#damage-pop");
-    const timerEl       = document.querySelector("#timer-ring");
+    const monsterHpBar  = document.querySelector("#monster-hp");
+    const damageEl      = document.querySelector("#damage");
+    const countdownEl   = document.querySelector("#countdown");
     const questionEl    = document.querySelector("#question");
     const choiceGrid    = document.querySelector("#choice-grid");
     const feedbackEl    = document.querySelector("#feedback");
     const newGameBtn    = document.querySelector("#new-game-btn");
+    const showRankingEndBtn = document.querySelector("#show-ranking-end-btn");
     const backBtn       = document.querySelector("#back-btn");
+    const highscoreBackBtn = document.querySelector("#highscore-back-btn");
+    const highscoreTableBody = document.querySelector("#highscore-table-body");
 
     let selectedChar = "Ritter";
     let selectedLevel = "einfach";
+    let selectedHighscoreLevel = "einfach";
     let state = {};
     let timerInterval = null;
-    let highscore = Number(localStorage.getItem(HS_KEY)) || 0;
+    let highscore = getBestScore(selectedLevel);
 
     hsEl.textContent = highscore;
 
@@ -69,6 +78,15 @@ document.addEventListener("DOMContentLoaded", () => {
             levelCards.forEach(c => c.classList.remove("selected"));
             card.classList.add("selected");
             selectedLevel = card.dataset.level;
+            highscore = getBestScore(selectedLevel);
+            hsEl.textContent = highscore;
+        });
+    });
+
+    highscoreLevelCards.forEach(card => {
+        card.addEventListener("click", () => {
+            selectHighscoreLevel(card.dataset.level);
+            renderHighscores();
         });
     });
 
@@ -77,7 +95,16 @@ document.addEventListener("DOMContentLoaded", () => {
         const name = nameInput.value.trim();
         if (!name) { alert("Bitte gib deinen Heldennamen ein!"); return; }
 
-        state = { name, level: selectedLevel, pts: 0, lives: LIVES, answer: 0, monsterHp: 100 };
+        state = {
+            name,
+            level: selectedLevel,
+            pts: 0,
+            lives: LIVES,
+            answer: 0,
+            monsterHp: 100,
+            startedAt: Date.now(),
+            saved: false
+        };
 
         document.body.className = `level-${selectedLevel}`;
         playerDisplay.textContent = `${selectedChar} ${name}`;
@@ -85,15 +112,25 @@ document.addEventListener("DOMContentLoaded", () => {
         heroImage.alt = selectedChar;
         enemyEl.src = ENEMIES[selectedLevel];
         enemyEl.style.opacity = "1";
-        hpFill.style.width = "100%";
+        heroImage.classList.remove("fall-out", "hit");
+        enemyEl.classList.remove("fall-out", "hit");
+        monsterHpBar.value = 100;
         scoreEl.textContent = 0;
+        highscore = getBestScore(selectedLevel);
+        hsEl.textContent = highscore;
         feedbackEl.textContent = "";
         newGameBtn.classList.add("hidden");
+        showRankingEndBtn.classList.add("hidden");
         updateLifeDisplay();
 
         startScreen.classList.add("hidden");
+        highscoreScreen.classList.add("hidden");
         gameScreen.classList.remove("hidden");
         generateQuestion();
+    });
+
+    rankingBtn.addEventListener("click", () => {
+        showHighscoreScreen(selectedLevel);
     });
 
     // --- GENERATE QUESTION ---
@@ -174,16 +211,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (state.pts > highscore) {
                 highscore = state.pts;
-                localStorage.setItem(HS_KEY, highscore);
                 hsEl.textContent = highscore;
             }
 
             state.monsterHp = Math.max(0, state.monsterHp - 10);
-            hpFill.style.width = state.monsterHp + "%";
+            monsterHpBar.value = state.monsterHp;
 
             if (clickedBtn) clickedBtn.classList.add("correct");
             showDamage("-10 HP");
-            shakeEnemy();
+            enemyGetsHit();
 
             feedbackEl.textContent = "Richtig! Weiter so!";
             feedbackEl.style.color = "#00b894";
@@ -195,6 +231,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (Number(b.textContent) === state.answer) b.classList.add("correct");
             });
             if (clickedBtn) clickedBtn.classList.add("wrong");
+            heroGetsHit();
 
             feedbackEl.textContent = `Fast! Richtig war: ${state.answer}`;
             feedbackEl.style.color = "#d63031";
@@ -214,18 +251,19 @@ document.addEventListener("DOMContentLoaded", () => {
         stopTimer();
         const limit = TIMER_SECS[state.level] || 30;
         let remaining = limit;
-        timerEl.textContent = remaining;
-        timerEl.className = "";
+        countdownEl.textContent = remaining;
+        countdownEl.className = "";
 
         timerInterval = setInterval(() => {
             remaining--;
-            timerEl.textContent = remaining;
-            timerEl.className = remaining <= 5 ? "danger" : remaining <= Math.ceil(limit * 0.4) ? "warn" : "";
+            countdownEl.textContent = remaining;
+            countdownEl.className = remaining <= 5 ? "danger" : remaining <= Math.ceil(limit * 0.4) ? "warn" : "";
 
             if (remaining <= 0) {
                 stopTimer();
                 state.lives--;
                 updateLifeDisplay();
+                heroGetsHit();
                 feedbackEl.textContent = "Zeit abgelaufen! Leben weniger!";
                 feedbackEl.style.color = "#d63031";
 
@@ -238,7 +276,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function stopTimer() {
         clearInterval(timerInterval);
         timerInterval = null;
-        timerEl.className = "";
+        countdownEl.className = "";
     }
 
     // --- LEBENSANZEIGE ---
@@ -248,33 +286,57 @@ document.addEventListener("DOMContentLoaded", () => {
         lifeDisplay.alt = `${lives} Leben`;
     }
 
-    // --- ENEMY EFFECTS ---
-    function shakeEnemy() {
-        enemyEl.classList.add("shake");
-        setTimeout(() => enemyEl.classList.remove("shake"), 350);
+    // --- HIT EFFECTS ---
+    function enemyGetsHit() {
+        playHitAnimation(enemyEl);
+    }
+
+    function heroGetsHit() {
+        playHitAnimation(heroImage);
+    }
+
+    function playHitAnimation(characterEl) {
+        characterEl.classList.add("hit");
+        setTimeout(() => characterEl.classList.remove("hit"), 350);
+    }
+
+    function enemyFallsDown() {
+        playFallAnimation(enemyEl);
+    }
+
+    function heroFallsDown() {
+        playFallAnimation(heroImage);
+    }
+
+    function playFallAnimation(characterEl) {
+        playHitAnimation(characterEl);
+        setTimeout(() => characterEl.classList.add("fall-out"), 350);
     }
 
     function showDamage(text) {
-        damagePop.textContent = text;
-        damagePop.classList.remove("hidden");
-        damagePop.style.animation = "none";
-        void damagePop.offsetHeight; // reflow to restart animation
-        damagePop.style.animation = "";
-        setTimeout(() => damagePop.classList.add("hidden"), 700);
+        damageEl.textContent = text;
+        damageEl.classList.remove("hidden");
+        damageEl.style.animation = "none";
+        void damageEl.offsetHeight; // reflow to restart animation
+        damageEl.style.animation = "";
+        setTimeout(() => damageEl.classList.add("hidden"), 700);
     }
 
     // --- END GAME ---
     function endGame(won) {
         stopTimer();
+        saveHighscore();
         if (won) {
             feedbackEl.textContent = "Gewonnen! Du bist ein Mathe-Held!";
             feedbackEl.style.color = "#fdcb6e";
-            enemyEl.style.opacity = "0.4";
+            enemyFallsDown();
         } else {
             feedbackEl.textContent = "Game Over! Versuch es nochmal!";
             feedbackEl.style.color = "#d63031";
+            heroFallsDown();
         }
         newGameBtn.classList.remove("hidden");
+        showRankingEndBtn.classList.remove("hidden");
     }
 
     // --- NAVIGATION ---
@@ -282,16 +344,136 @@ document.addEventListener("DOMContentLoaded", () => {
         stopTimer();
         document.body.className = "";
         gameScreen.classList.add("hidden");
+        highscoreScreen.classList.add("hidden");
         startScreen.classList.remove("hidden");
         nameInput.value = "";
+    });
+
+    showRankingEndBtn.addEventListener("click", () => {
+        showHighscoreScreen(state.level || selectedLevel);
     });
 
     backBtn.addEventListener("click", () => {
         stopTimer();
         document.body.className = "";
         gameScreen.classList.add("hidden");
+        highscoreScreen.classList.add("hidden");
         startScreen.classList.remove("hidden");
     });
+
+    highscoreBackBtn.addEventListener("click", () => {
+        document.body.className = "";
+        highscoreScreen.classList.add("hidden");
+        gameScreen.classList.add("hidden");
+        startScreen.classList.remove("hidden");
+    });
+
+    // --- HIGHSCORES ---
+    function showHighscoreScreen(level) {
+        stopTimer();
+        document.body.className = "";
+        selectHighscoreLevel(HIGHSCORE_LEVELS.includes(level) ? level : "einfach");
+        renderHighscores();
+        startScreen.classList.add("hidden");
+        gameScreen.classList.add("hidden");
+        highscoreScreen.classList.remove("hidden");
+    }
+
+    function selectHighscoreLevel(level) {
+        selectedHighscoreLevel = level;
+        highscoreLevelCards.forEach(card => {
+            card.classList.toggle("selected", card.dataset.level === level);
+        });
+    }
+
+    function loadHighscoreLists() {
+        const emptyLists = { einfach: [], mittel: [], schwer: [] };
+
+        try {
+            const storedLists = JSON.parse(localStorage.getItem(HS_LIST_KEY)) || {};
+            const lists = { ...emptyLists, ...storedLists };
+
+            HIGHSCORE_LEVELS.forEach(level => {
+                if (!Array.isArray(lists[level])) lists[level] = [];
+            });
+
+            return lists;
+        } catch {
+            return emptyLists;
+        }
+    }
+
+    function saveHighscoreLists(lists) {
+        localStorage.setItem(HS_LIST_KEY, JSON.stringify(lists));
+    }
+
+    function saveHighscore() {
+        if (state.saved || !HIGHSCORE_LEVELS.includes(state.level)) return;
+
+        const lists = loadHighscoreLists();
+        const elapsedSeconds = Math.max(1, Math.round((Date.now() - state.startedAt) / 1000));
+        const entry = {
+            name: state.name,
+            points: state.pts,
+            time: elapsedSeconds
+        };
+
+        lists[state.level] = [...lists[state.level], entry]
+            .sort((a, b) => b.points - a.points || a.time - b.time)
+            .slice(0, MAX_RANKING_PLACES);
+
+        saveHighscoreLists(lists);
+        state.saved = true;
+        highscore = getBestScore(state.level);
+        hsEl.textContent = highscore;
+    }
+
+    function getBestScore(level) {
+        const scores = loadHighscoreLists()[level] || [];
+
+        return scores[0]?.points || 0;
+    }
+
+    function renderHighscores() {
+        const entries = loadHighscoreLists()[selectedHighscoreLevel] || [];
+        highscoreTableBody.innerHTML = "";
+
+        if (entries.length === 0) {
+            const row = document.createElement("tr");
+            row.innerHTML = '<td colspan="4" class="empty-highscore">Noch keine Einträge</td>';
+            highscoreTableBody.appendChild(row);
+            return;
+        }
+
+        entries.forEach((entry, index) => {
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${escapeHtml(entry.name)}</td>
+                <td>${entry.points}</td>
+                <td>${formatTime(entry.time)}</td>
+            `;
+            highscoreTableBody.appendChild(row);
+        });
+    }
+
+    function formatTime(totalSeconds) {
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+
+        return `${minutes}:${String(seconds).padStart(2, "0")}`;
+    }
+
+    function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, char => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        }[char]));
+    }
 
     // --- HELPERS ---
     function rand(min, max) {
