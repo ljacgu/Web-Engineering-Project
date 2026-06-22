@@ -13,6 +13,13 @@ document.addEventListener("DOMContentLoaded", () => {
         zehner: "Bilder/Wald-Pilzmonster.png"
     };
 
+    const HERO_IMAGES = {
+        Ritter: "Bilder/Char-1.png",
+        Paladin: "Bilder/Char-2.png",
+        Magier: "Bilder/Char-3.png",
+        Samurai: "Bilder/Char-4.png"
+    };
+
     // Screens
     const startScreen = document.querySelector("#start-screen");
     const gameScreen  = document.querySelector("#game-screen");
@@ -29,6 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const scoreEl       = document.querySelector("#score");
     const hsEl          = document.querySelector("#highscore");
     const enemyEl       = document.querySelector("#enemy-image");
+    const heroImage     = document.querySelector("#hero-image");
     const hpFill        = document.querySelector("#hp-fill");
     const damagePop     = document.querySelector("#damage-pop");
     const timerEl       = document.querySelector("#timer-ring");
@@ -73,6 +81,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         document.body.className = `level-${selectedLevel}`;
         playerDisplay.textContent = `${selectedChar} ${name}`;
+        heroImage.src = HERO_IMAGES[selectedChar];
+        heroImage.alt = selectedChar;
         enemyEl.src = ENEMIES[selectedLevel];
         enemyEl.style.opacity = "1";
         hpFill.style.width = "100%";
@@ -172,10 +182,10 @@ document.addEventListener("DOMContentLoaded", () => {
             hpFill.style.width = state.monsterHp + "%";
 
             if (clickedBtn) clickedBtn.classList.add("correct");
-            showDamage("-10 💥");
+            showDamage("-10 HP");
             shakeEnemy();
 
-            feedbackEl.textContent = "🎉 Richtig! Weiter so!";
+            feedbackEl.textContent = "Richtig! Weiter so!";
             feedbackEl.style.color = "#00b894";
         } else {
             state.lives--;
@@ -186,7 +196,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
             if (clickedBtn) clickedBtn.classList.add("wrong");
 
-            feedbackEl.textContent = `❌ Fast! Richtig war: ${state.answer}`;
+            feedbackEl.textContent = `Fast! Richtig war: ${state.answer}`;
             feedbackEl.style.color = "#d63031";
         }
 
@@ -216,7 +226,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 stopTimer();
                 state.lives--;
                 updateLifeDisplay();
-                feedbackEl.textContent = "⏰ Zeit abgelaufen! Ein Leben weg!";
+                feedbackEl.textContent = "Zeit abgelaufen! Leben weniger!";
                 feedbackEl.style.color = "#d63031";
 
                 if (state.lives <= 0) endGame(false);
@@ -257,11 +267,11 @@ document.addEventListener("DOMContentLoaded", () => {
     function endGame(won) {
         stopTimer();
         if (won) {
-            feedbackEl.textContent = "🏆 Gewonnen! Du bist ein Mathe-Held!";
+            feedbackEl.textContent = "Gewonnen! Du bist ein Mathe-Held!";
             feedbackEl.style.color = "#fdcb6e";
             enemyEl.style.opacity = "0.4";
         } else {
-            feedbackEl.textContent = "😢 Game Over! Versuch es nochmal!";
+            feedbackEl.textContent = "Game Over! Versuch es nochmal!";
             feedbackEl.style.color = "#d63031";
         }
         newGameBtn.classList.remove("hidden");

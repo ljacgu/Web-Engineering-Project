@@ -306,13 +306,34 @@ h1 {
     position: relative;
 }
 
+.battle-row {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 80px;
+}
+
+#hero-image{
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+}
+
+#enemy-image {
+    width: 180px;
+    height: 120px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+}
+
 .hp-bar-wrap {
     width: 220px;
     height: 18px;
     background: #dfe6e9;
     border-radius: 9px;
     overflow: hidden;
-    margin: 0 auto 10px;
+    margin: 0 0 12px 200px;
     border: 2px solid rgba(0,0,0,0.08);
 }
 
@@ -322,15 +343,6 @@ h1 {
     background: linear-gradient(90deg, #ff7675, #d63031);
     transition: width 0.4s ease;
     border-radius: 9px;
-}
-
-#enemy-image {
-    width: 140px;
-    height: 140px;
-    object-fit: contain;
-    display: block;
-    margin: 0 auto;
-    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
 }
 
 #enemy-image.shake {
@@ -350,8 +362,9 @@ h1 {
     text-shadow: 0 2px 6px rgba(0,0,0,0.15);
     animation: popUp 0.7s forwards;
     position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    top: 60px;
+    left: 370px;
+    /*transform: translateX(-50%);*/
 }
 
 @keyframes popUp {

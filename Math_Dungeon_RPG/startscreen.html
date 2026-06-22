@@ -132,12 +132,17 @@
         </header>
 
         <!--Gegener-->
-        <section class="enemy-area" aria-label="Gegner">
+        <section class="enemy-area" aria-label="Kampffeld">
             <div class="hp-bar-wrap" aria-label="Monster-Lebensbalken">
                 <div id="hp-fill"></div>
             </div>
-            <img id="enemy-image" src="Bilder/Wald-Pilzmonster.png" alt="Pilzmonster">
-            <p id="damage-pop" class="hidden">-10 💥</p>
+
+            <div class="battle-row">
+                <img id="hero-image" src="Bilder/Char-1.png" alt="Ausgewählter Held">
+                <img id="enemy-image" src="Bilder/Wald-Pilzmonster.png" alt="Pilzmonster">
+            </div>
+
+            <p id="damage-pop" class="hidden">-10 HP</p>
         </section>
 
         <article class="card game-card">
@@ -158,8 +163,8 @@
 
         <!--NAV für die Seiten (wenn Spiel beendet)-->
         <nav class="bottom-btns" aria-label="Spielnavigation">
-            <button type="button" id="new-game-btn" class="hidden" aria-label="Neues Spiel starten">🔄 Neues Spiel</button>
-            <button type="button" id="back-btn" aria-label="Zurück zum Startbildschirm">↩ Zurück</button>
+            <button type="button" id="new-game-btn" class="hidden" aria-label="Neues Spiel starten">Neues Spiel</button>
+            <button type="button" id="back-btn" aria-label="Zurück zum Startbildschirm">Zurück</button>
         </nav>
 
     </section>
