@@ -27,6 +27,10 @@ body.level-schwer {
     background-image: url("Bilder/vulkan.gif");
 }
 
+body.level-zehner {
+    background-image: url("Bilder/hintergrund.gif");
+}
+
 /* ========================
    Element mit der Klasse hidden wird nicht angezeigt.
 ======================== */
@@ -88,7 +92,7 @@ h1 {
     margin: 18px 0;
 }
 
-.section-label {
+.choice-label {
     display: block;
     font-size: 0.9rem;
     font-weight: 700;
@@ -176,7 +180,7 @@ h1 {
     padding: 0;
 }
 
-.level-card {
+.level-area {
     width: 100%;
     border: 2px solid #dfe6e9;
     border-radius: 16px;
@@ -188,13 +192,13 @@ h1 {
     font: inherit;
 }
 
-.level-card:hover {
+.level-area:hover {
     transform: translateY(-3px);
     border-color: #b2bec3;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
-.level-card.selected {
+.level-area.selected {
     border-color: #00b894;
     background: #e8fff7;
     box-shadow: 0 4px 16px rgba(0, 184, 148, 0.18);
@@ -286,6 +290,91 @@ h1 {
 }
 
 /* ========================
+   10ER-ÜBERGANG SCREEN
+======================== */
+
+.ten-area {
+    max-width: 520px;
+}
+
+.ten-score {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #008f7a;
+    margin-bottom: 14px;
+}
+
+.ten-question {
+    font-size: 2.6rem;
+    font-weight: 700;
+    color: #2d3436;
+    margin-bottom: 18px;
+}
+
+#ten-answer {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #dfe6e9;
+    border-radius: 12px;
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+#ten-answer:focus {
+    outline: none;
+    border-color: #00b894;
+    box-shadow: 0 0 0 3px rgba(0, 184, 148, 0.15);
+}
+
+#ten-submit-btn,
+#ten-tip-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 14px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+#ten-submit-btn {
+    color: white;
+    background: linear-gradient(135deg, #00b894, #00cec9);
+}
+
+#ten-tip-btn {
+    margin-top: 10px;
+    color: #008f7a;
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #dfe6e9;
+}
+
+#ten-submit-btn:hover,
+#ten-tip-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(0, 184, 148, 0.25);
+}
+
+#ten-tip-btn:disabled {
+    cursor: default;
+    opacity: 0.6;
+}
+
+.ten-tip {
+    margin-top: 12px;
+    color: #636e72;
+    font-weight: 700;
+}
+
+#ten-feedback {
+    min-height: 1.5em;
+    margin: 12px 0;
+    font-weight: 700;
+}
+
+/* ========================
    HIGHSCORE SCREEN
 ======================== */
 
@@ -299,18 +388,11 @@ h1 {
 
 #highscore-table {
     width: 100%;
-    display: block;
-    overflow-x: auto;
     margin-bottom: 18px;
     border-collapse: collapse;
+    table-layout: fixed;
     border-radius: 16px;
     background: rgba(255, 255, 255, 0.88);
-}
-
-#highscore-table thead,
-#highscore-table tbody {
-    display: table;
-    width: 100%;
 }
 
 #highscore-table th,
@@ -327,6 +409,23 @@ h1 {
     font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+}
+
+#highscore-table th:nth-child(1),
+#highscore-table td:nth-child(1) {
+    width: 18%;
+}
+
+#highscore-table th:nth-child(2),
+#highscore-table td:nth-child(2) {
+    width: 34%;
+}
+
+#highscore-table th:nth-child(3),
+#highscore-table td:nth-child(3),
+#highscore-table th:nth-child(4),
+#highscore-table td:nth-child(4) {
+    width: 24%;
 }
 
 #highscore-table tbody tr:last-child td {
@@ -595,7 +694,7 @@ h1 {
     justify-content: center;
 }
 
-#new-game-btn, #back-btn, #show-ranking-end-btn {
+#new-game-btn, #back-btn, #show-ranking-end-btn, #ten-restart-btn, #ten-back-btn {
     padding: 12px 26px;
     border: none;
     border-radius: 14px;
@@ -605,22 +704,22 @@ h1 {
     transition: all 0.2s;
 }
 
-#new-game-btn, #show-ranking-end-btn {
+#new-game-btn, #show-ranking-end-btn, #ten-restart-btn {
     background: linear-gradient(135deg, #00b894, #00cec9);
     color: white;
 }
 
-#new-game-btn:hover, #show-ranking-end-btn:hover {
+#new-game-btn:hover, #show-ranking-end-btn:hover, #ten-restart-btn:hover {
     box-shadow: 0 4px 14px rgba(0, 184, 148, 0.35);
     transform: translateY(-2px);
 }
 
-#back-btn {
+#back-btn, #ten-back-btn {
     background: rgba(255, 255, 255, 0.9);
     color: #636e72;
 }
 
-#back-btn:hover {
+#back-btn:hover, #ten-back-btn:hover {
     background: white;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     transform: translateY(-2px);

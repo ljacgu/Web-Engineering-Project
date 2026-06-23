@@ -24,13 +24,13 @@
             <hr class="divider">
 
         <!--Nameeingabe-->
-            <label class="section-label" for="name-input">Dein Heldenname:</label>
+            <label class="choice-label" for="name-input">Dein Heldenname:</label>
             <input type="text" id="name-input" placeholder="Gib deinen Namen ein..." maxlength="20" autocomplete="off" aria-label="Heldenname eingeben">
 
         <!--Figurenauswahl-->
             <fieldset class="selection-group">
-            <!--Überschrift für Auswahl-->
-                <legend class="section-label">Wähle deinen Helden:</legend>
+            <!--Überschrift Heldenauswahl-->
+                <legend class="choice-label">Wähle deinen Helden:</legend>
 
             <!--ungeordnete Liste für die Auswahlbuttons-->
                 <ul class="char-grid">
@@ -63,12 +63,12 @@
         <!--Level auswählen (Formularfelder)-->
             <fieldset class="selection-group">
                 <!--Überschrift für Auswahl-->
-                <legend class="section-label">Wähle dein Level:</legend>
+                <legend class="choice-label">Wähle dein Level:</legend>
 
                 <!--ungeordnete Liste für die Auswahlbuttons-->
                 <ul class="level-grid">
                     <li>
-                    <button type="button" class="level-card selected" data-level="einfach" aria-label="Level Wald leicht auswählen">
+                    <button type="button" class="level-area selected" data-level="einfach" aria-label="Level Wald leicht auswählen">
                         <img class="level-icon" src="Bilder/tree-icon-removebg.png" alt="Wald">
                         <span class="level-name">Wald</span>
                         <span class="level-ops">+ und −</span>
@@ -77,7 +77,7 @@
                     </li>
 
                     <li>
-                    <button type="button" class="level-card" data-level="mittel" aria-label="Level Stadt mittel auswählen">
+                    <button type="button" class="level-area" data-level="mittel" aria-label="Level Stadt mittel auswählen">
                         <img class="level-icon" src="Bilder/City-icon-removebg.png" alt="Stadt">
                         <span class="level-name">Stadt</span>
                         <span class="level-ops">× und ÷</span>
@@ -86,7 +86,7 @@
                     </li>
 
                     <li>
-                    <button type="button" class="level-card" data-level="schwer" aria-label="Level Vulkan schwer auswählen">
+                    <button type="button" class="level-area" data-level="schwer" aria-label="Level Vulkan schwer auswählen">
                         <img class="level-icon" src="Bilder/vulkan-icon-removebg.png" alt="Vulkan">
                         <span class="level-name">Vulkan</span>
                         <span class="level-ops">+ − × ÷</span>
@@ -95,10 +95,10 @@
                     </li>
 
                     <li>
-                    <button type="button" class="level-card" data-level="zehner" aria-label="Level 10er-Übergang auswählen">
+                    <button type="button" class="level-area" data-level="zehner" aria-label="Level 10er-Übergang auswählen">
                         <img class="level-icon" src="Bilder/math-icon.jpg" alt="10er-Übergang">
                         <span class="level-name">10er-Übergang</span>
-                        <span class="level-ops">über den Zehner</span>
+                        <span class="level-ops"> Pflichtaufgabe</span>
                         <span class="level-label label-extra">Pflicht</span>
                     </button>
                     </li>
@@ -184,22 +184,22 @@
 
             <!-- Highscore Auswahl (Wald, Stadt und Vulkan)-->
             <fieldset class="selection-group">
-                <legend class="section-label">Level:</legend>
+                <legend class="choice-label">Level:</legend>
                 <ul class="level-grid highscore-level-grid">
                     <li>
-                        <button type="button" class="level-card highscore-level-card selected" data-level="einfach" aria-label="Rangliste Wald leicht anzeigen">
+                        <button type="button" class="level-area highscore-level-area selected" data-level="einfach" aria-label="Rangliste Wald leicht anzeigen">
                             <img class="level-icon" src="Bilder/tree-icon-removebg.png" alt="Wald">
                         </button>
                     </li>
 
                     <li>
-                        <button type="button" class="level-card highscore-level-card" data-level="mittel" aria-label="Rangliste Stadt mittel anzeigen">
+                        <button type="button" class="level-area highscore-level-area" data-level="mittel" aria-label="Rangliste Stadt mittel anzeigen">
                             <img class="level-icon" src="Bilder/City-icon-removebg.png" alt="Stadt">
                         </button>
                     </li>
 
                     <li>
-                        <button type="button" class="level-card highscore-level-card" data-level="schwer" aria-label="Rangliste Vulkan schwer anzeigen">
+                        <button type="button" class="level-area highscore-level-area" data-level="schwer" aria-label="Rangliste Vulkan schwer anzeigen">
                             <img class="level-icon" src="Bilder/vulkan-icon-removebg.png" alt="Vulkan">
                         </button>
                     </li>
@@ -225,6 +225,39 @@
             </table>
             <!--Nav zum Startbild-->
             <button type="button" id="highscore-back-btn" aria-label="Zurück zum Startbildschirm">Zurück zum Start</button>
+        </article>
+    </section>
+
+    <!-- ZEHNERÜBERGANG-SCREEN -->
+    <section id="ten-screen" class="screen hidden" aria-label="10er-Übergang">
+        <article class="place ten-area">
+            <h1>10er-Übergang</h1>
+            <hr class="divider">
+
+            <!--Punkt anzeigen-->
+            <p class="ten-score" aria-label="Punkte">Punkte: <span id="ten-score">0</span></p>
+
+            <!--Frage mit Platzhalter-->
+            <p id="ten-question" class="ten-question" aria-live="polite">1111 + ? = 1112</p>
+
+            <!--Antwort eingeben-->
+            <label class="choice-label" for="ten-answer">Deine Antwort:</label>
+            <input type="number" id="ten-answer" inputmode="numeric" autocomplete="off" aria-label="Antwort eingeben">
+
+            <!--Buttons für Richtigkeitsprüfung und Tipp-->
+            <button type="button" id="ten-submit-btn">Antwort prüfen</button>
+            <button type="button" id="ten-tip-btn">Tipp anzeigen</button>
+
+            <!--Tip und Reaktion auf Lösung leer, Inhalt komm später aus js-->
+            <p id="ten-tip" class="ten-tip hidden" aria-live="polite"></p>
+            <p id="ten-feedback" aria-live="polite"></p>
+
+            <!--Buttons: neu Start und zurück zum Hauptmenu-->
+            <nav class="bottom-btns" aria-label="10er-Übergang Navigation">
+                <button type="button" id="ten-restart-btn" class="hidden">Neu starten</button>
+                <button type="button" id="ten-back-btn">Zurück zum Start</button>
+            </nav>
+
         </article>
     </section>
 

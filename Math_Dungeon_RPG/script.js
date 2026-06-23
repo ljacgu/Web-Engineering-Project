@@ -7,11 +7,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const HS_LIST_KEY = "matheAbenteuerHighscores";
     const HIGHSCORE_LEVELS = ["einfach", "mittel", "schwer"];
     const MAX_RANKING_PLACES = 5;
+    const ZAHLENRAUM_MIN = 1;
+    const ZAHLENRAUM_MAX = 100;
+    const TEN_STEP = 10;
+    const TEN_ADDEND_MAX = 20;
+    const TEN_PTS_WITHOUT_TIP = 10;
+    const TEN_PTS_WITH_TIP = 5;
+    const TEN_WIN_PTS = 100;
     const TIMER_SECS = { einfach: 30, mittel: 20, schwer: 15, zehner: 30 };
     const ENEMIES = {
         einfach: "Bilder/Wald-Pilzmonster.png",
-        mittel: "Bilder/Wald-Pilzmonster.png",
-        schwer: "Bilder/Wald-Pilzmonster.png",
+        mittel: "Bilder/robot.png",
+        schwer: "Bilder/monster.png",
         zehner: "Bilder/Wald-Pilzmonster.png"
     };
 
@@ -22,20 +29,20 @@ document.addEventListener("DOMContentLoaded", () => {
         Samurai: "Bilder/Char-4.png"
     };
 
-    // Screens
+    // --- SCREEN ELEMENTS ---
     const startScreen = document.querySelector("#start-screen");
     const gameScreen  = document.querySelector("#game-screen");
+    const tenScreen = document.querySelector("#ten-screen");
     const highscoreScreen = document.querySelector("#highscore-screen");
 
-    // Start screen
+    // --- STARTSCREEN ELEMENTS ---
     const nameInput  = document.querySelector("#name-input");
     const charBtns   = document.querySelectorAll(".char-btn");
-    const levelCards = document.querySelectorAll("#start-screen .level-card");
-    const highscoreLevelCards = document.querySelectorAll(".highscore-level-card");
+    const levelAreas = document.querySelectorAll("#start-screen .level-area");
     const startBtn   = document.querySelector("#start-btn");
     const rankingBtn = document.querySelector("#ranking-btn");
 
-    // Game screen
+    // --- NORMALER SPIELSCREEN ELEMENTS ---
     const playerDisplay = document.querySelector("#player-display");
     const lifeDisplay   = document.querySelector("#life-display");
     const scoreEl       = document.querySelector("#score");
@@ -51,19 +58,34 @@ document.addEventListener("DOMContentLoaded", () => {
     const newGameBtn    = document.querySelector("#new-game-btn");
     const showRankingEndBtn = document.querySelector("#show-ranking-end-btn");
     const backBtn       = document.querySelector("#back-btn");
+
+    // --- HIGHSCORE-SCREEN ELEMENTS ---
+    const highscoreLevelAreas = document.querySelectorAll(".highscore-level-area");
     const highscoreBackBtn = document.querySelector("#highscore-back-btn");
     const highscoreTableBody = document.querySelector("#highscore-table-body");
+
+    // --- 10ER-ÜBERGANG-SCREEN ELEMENTS ---
+    const tenScoreEl = document.querySelector("#ten-score");
+    const tenQuestionEl = document.querySelector("#ten-question");
+    const tenAnswerInput = document.querySelector("#ten-answer");
+    const tenSubmitBtn = document.querySelector("#ten-submit-btn");
+    const tenTipBtn = document.querySelector("#ten-tip-btn");
+    const tenTipEl = document.querySelector("#ten-tip");
+    const tenFeedbackEl = document.querySelector("#ten-feedback");
+    const tenRestartBtn = document.querySelector("#ten-restart-btn");
+    const tenBackBtn = document.querySelector("#ten-back-btn");
 
     let selectedChar = "Ritter";
     let selectedLevel = "einfach";
     let selectedHighscoreLevel = "einfach";
     let state = {};
+    let tenState = {};
     let timerInterval = null;
     let highscore = getBestScore(selectedLevel);
 
     hsEl.textContent = highscore;
 
-    // --- CHARACTER SELECTION ---
+    // --- STARTSCREEN: CHARACTER SELECTION ---
     charBtns.forEach(btn => {
         btn.addEventListener("click", () => {
             charBtns.forEach(b => b.classList.remove("selected"));
@@ -72,28 +94,33 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // --- LEVEL SELECTION ---
-    levelCards.forEach(card => {
-        card.addEventListener("click", () => {
-            levelCards.forEach(c => c.classList.remove("selected"));
-            card.classList.add("selected");
-            selectedLevel = card.dataset.level;
+    // --- STARTSCREEN: LEVEL SELECTION ---
+    levelAreas.forEach(area => {
+        area.addEventListener("click", () => {
+            levelAreas.forEach(a => a.classList.remove("selected"));
+            area.classList.add("selected");
+            selectedLevel = area.dataset.level;
             highscore = getBestScore(selectedLevel);
             hsEl.textContent = highscore;
         });
     });
 
-    highscoreLevelCards.forEach(card => {
-        card.addEventListener("click", () => {
-            selectHighscoreLevel(card.dataset.level);
+    highscoreLevelAreas.forEach(area => {
+        area.addEventListener("click", () => {
+            selectHighscoreLevel(area.dataset.level);
             renderHighscores();
         });
     });
 
-    // --- START GAME ---
+    // --- STARTSCREEN: START BUTTON ---
     startBtn.addEventListener("click", () => {
         const name = nameInput.value.trim();
         if (!name) { alert("Bitte gib deinen Heldennamen ein!"); return; }
+
+        if (selectedLevel === "zehner") {
+            startTenGame(name);
+            return;
+        }
 
         state = {
             name,
@@ -124,6 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
         updateLifeDisplay();
 
         startScreen.classList.add("hidden");
+        tenScreen.classList.add("hidden");
         highscoreScreen.classList.add("hidden");
         gameScreen.classList.remove("hidden");
         generateQuestion();
@@ -133,7 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
         showHighscoreScreen(selectedLevel);
     });
 
-    // --- GENERATE QUESTION ---
+    // --- NORMALER SPIELSCREEN: QUESTION GENERATION ---
     function generateQuestion() {
         let a, b, op;
         const level = state.level;
@@ -178,7 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
         startTimer();
     }
 
-    // --- GENERATE MULTIPLE CHOICE OPTIONS ---
+    // --- NORMALER SPIELSCREEN: MULTIPLE CHOICE OPTIONS ---
     function makeChoices(correct) {
         const set = new Set([correct]);
         const spread = Math.max(5, Math.ceil(Math.abs(correct) * 0.25));
@@ -194,7 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return shuffle([...set]);
     }
 
-    // --- ANSWER CHECK (choice buttons) ---
+    // --- NORMALER SPIELSCREEN: ANSWER CHECK ---
     choiceGrid.addEventListener("click", e => {
         const btn = e.target.closest(".choice-btn");
         if (!btn || btn.disabled) return;
@@ -246,7 +274,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // --- TIMER ---
+    // --- NORMALER SPIELSCREEN: TIMER ---
     function startTimer() {
         stopTimer();
         const limit = TIMER_SECS[state.level] || 30;
@@ -279,14 +307,14 @@ document.addEventListener("DOMContentLoaded", () => {
         countdownEl.className = "";
     }
 
-    // --- LEBENSANZEIGE ---
+    // --- NORMALER SPIELSCREEN: LEBENSANZEIGE ---
     function updateLifeDisplay() {
         const lives = Math.max(0, Math.min(LIVES, state.lives));
         lifeDisplay.src = lives === 0 ? "Bilder/leben0.png" : `Bilder/Leben${lives}.png`;
         lifeDisplay.alt = `${lives} Leben`;
     }
 
-    // --- HIT EFFECTS ---
+    // --- NORMALER SPIELSCREEN: HIT AND FALL EFFECTS ---
     function enemyGetsHit() {
         playHitAnimation(enemyEl);
     }
@@ -322,7 +350,7 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => damageEl.classList.add("hidden"), 700);
     }
 
-    // --- END GAME ---
+    // --- NORMALER SPIELSCREEN: END GAME ---
     function endGame(won) {
         stopTimer();
         saveHighscore();
@@ -339,11 +367,12 @@ document.addEventListener("DOMContentLoaded", () => {
         showRankingEndBtn.classList.remove("hidden");
     }
 
-    // --- NAVIGATION ---
+    // --- SCREEN NAVIGATION ---
     newGameBtn.addEventListener("click", () => {
         stopTimer();
         document.body.className = "";
         gameScreen.classList.add("hidden");
+        tenScreen.classList.add("hidden");
         highscoreScreen.classList.add("hidden");
         startScreen.classList.remove("hidden");
         nameInput.value = "";
@@ -357,6 +386,7 @@ document.addEventListener("DOMContentLoaded", () => {
         stopTimer();
         document.body.className = "";
         gameScreen.classList.add("hidden");
+        tenScreen.classList.add("hidden");
         highscoreScreen.classList.add("hidden");
         startScreen.classList.remove("hidden");
     });
@@ -365,10 +395,34 @@ document.addEventListener("DOMContentLoaded", () => {
         document.body.className = "";
         highscoreScreen.classList.add("hidden");
         gameScreen.classList.add("hidden");
+        tenScreen.classList.add("hidden");
         startScreen.classList.remove("hidden");
     });
 
-    // --- HIGHSCORES ---
+    tenSubmitBtn.addEventListener("click", checkTenAnswer);
+
+    tenAnswerInput.addEventListener("keydown", e => {
+        if (e.key === "Enter") checkTenAnswer();
+    });
+
+    tenTipBtn.addEventListener("click", () => {
+        tenState.hintUsed = true;
+        tenTipEl.textContent = tenState.hint;
+        tenTipEl.classList.remove("hidden");
+        tenTipBtn.disabled = true;
+    });
+
+    tenRestartBtn.addEventListener("click", () => {
+        startTenGame(tenState.name || nameInput.value.trim() || "Held");
+    });
+
+    tenBackBtn.addEventListener("click", () => {
+        document.body.className = "";
+        tenScreen.classList.add("hidden");
+        startScreen.classList.remove("hidden");
+    });
+
+    // --- HIGHSCORE-SCREEN ---
     function showHighscoreScreen(level) {
         stopTimer();
         document.body.className = "";
@@ -376,13 +430,163 @@ document.addEventListener("DOMContentLoaded", () => {
         renderHighscores();
         startScreen.classList.add("hidden");
         gameScreen.classList.add("hidden");
+        tenScreen.classList.add("hidden");
         highscoreScreen.classList.remove("hidden");
+    }
+
+    // --- 10ER-ÜBERGANG-SCREEN ---
+    function startTenGame(name) {
+        stopTimer();
+        document.body.className = "level-zehner";
+        tenState = { name, score: 0, answer: 0, hint: "", hintUsed: false, finished: false };
+        tenScoreEl.textContent = tenState.score;
+        tenRestartBtn.classList.add("hidden");
+        tenFeedbackEl.textContent = "";
+        tenTipEl.textContent = "";
+        tenTipEl.classList.add("hidden");
+        tenAnswerInput.disabled = false;
+        tenSubmitBtn.disabled = false;
+        tenTipBtn.disabled = false;
+
+        startScreen.classList.add("hidden");
+        gameScreen.classList.add("hidden");
+        highscoreScreen.classList.add("hidden");
+        tenScreen.classList.remove("hidden");
+        generateTenQuestion();
+    }
+
+    function generateTenQuestion() {
+        const task = createTenTask();
+        renderTenQuestion(task);
+    }
+
+    function renderTenQuestion(task) {
+        tenState.answer = task.answer;
+        tenState.hint = task.hint;
+        tenState.hintUsed = false;
+        tenQuestionEl.textContent = task.text;
+        tenAnswerInput.value = "";
+        tenTipEl.textContent = "";
+        tenTipEl.classList.add("hidden");
+        tenTipBtn.disabled = false;
+        tenFeedbackEl.textContent = "";
+        tenAnswerInput.focus();
+    }
+
+    function createTenTask() {
+        const base = createTenTransitionBase();
+        const op = pick(["+", "−"]);
+        const questionPosition = rand(1, 3);
+
+        if (op === "+") return createAdditionTenTask(base, questionPosition);
+        return createSubtractionTenTask(base, questionPosition);
+    }
+
+    function createTenTransitionBase() {
+        while (true) {
+            const start = rand(ZAHLENRAUM_MIN, ZAHLENRAUM_MAX - TEN_STEP - 1);
+            const nextTen = getNextTen(start);
+            const toNextTen = nextTen - start;
+            const maxAddend = Math.min(TEN_ADDEND_MAX, ZAHLENRAUM_MAX - start);
+
+            if (toNextTen + 1 <= maxAddend) {
+                const addend = rand(toNextTen + 1, maxAddend);
+                return {
+                    start,
+                    addend,
+                    result: start + addend,
+                    nextTen,
+                    toNextTen,
+                    afterNextTen: addend - toNextTen
+                };
+            }
+        }
+    }
+
+    function createAdditionTenTask(base, questionPosition) {
+        const hint = `${base.start} + ${base.toNextTen} = ${base.nextTen}, dann + ${base.afterNextTen} = ${base.result}`;
+
+        if (questionPosition === 1) {
+            return { text: `? + ${base.addend} = ${base.result}`, answer: base.start, hint };
+        }
+
+        if (questionPosition === 2) {
+            return { text: `${base.start} + ? = ${base.result}`, answer: base.addend, hint };
+        }
+
+        return { text: `${base.start} + ${base.addend} = ?`, answer: base.result, hint };
+    }
+
+    function createSubtractionTenTask(base, questionPosition) {
+        const hint = `${base.result} - ${base.afterNextTen} = ${base.nextTen}, dann - ${base.toNextTen} = ${base.start}`;
+
+        if (questionPosition === 1) {
+            return { text: `? - ${base.addend} = ${base.start}`, answer: base.result, hint };
+        }
+
+        if (questionPosition === 2) {
+            return { text: `${base.result} - ? = ${base.start}`, answer: base.addend, hint };
+        }
+
+        return { text: `${base.result} - ${base.addend} = ?`, answer: base.start, hint };
+    }
+
+    function checkTenAnswer() {
+        if (tenState.finished) return;
+
+        const inputValue = tenAnswerInput.value.trim();
+        if (!inputValue) {
+            tenFeedbackEl.textContent = "Bitte gib eine Antwort ein.";
+            tenFeedbackEl.style.color = "#d63031";
+            return;
+        }
+
+        const answer = Number(inputValue);
+        if (!Number.isInteger(answer)) {
+            tenFeedbackEl.textContent = "Bitte gib eine ganze Zahl ein.";
+            tenFeedbackEl.style.color = "#d63031";
+            return;
+        }
+
+        if (answer !== tenState.answer) {
+            tenFeedbackEl.textContent = "Leider falsch. Versuch es nochmal!";
+            tenFeedbackEl.style.color = "#d63031";
+            tenAnswerInput.select();
+            return;
+        }
+
+        const points = tenState.hintUsed ? TEN_PTS_WITH_TIP : TEN_PTS_WITHOUT_TIP;
+        tenState.score += points;
+        tenScoreEl.textContent = tenState.score;
+        tenFeedbackEl.textContent = tenState.hintUsed ? "Richtig! Du hast einen Tipp gebraucht. 👍" : "Super! 🎉";
+        tenFeedbackEl.style.color = "#00b894";
+
+        if (tenState.score >= TEN_WIN_PTS) {
+            finishTenGame();
+        } else {
+            setTimeout(generateTenQuestion, NEXT_DELAY);
+        }
+    }
+
+    function finishTenGame() {
+        tenState.finished = true;
+        tenQuestionEl.textContent = "Gewonnen!";
+        tenFeedbackEl.textContent = "Du hast den 10er-Übergang geschafft!";
+        tenFeedbackEl.style.color = "#00b894";
+        tenAnswerInput.disabled = true;
+        tenSubmitBtn.disabled = true;
+        tenTipBtn.disabled = true;
+        tenRestartBtn.classList.remove("hidden");
+    }
+
+    function getNextTen(number) {
+        return Math.floor(number / TEN_STEP) * TEN_STEP + TEN_STEP;
     }
 
     function selectHighscoreLevel(level) {
         selectedHighscoreLevel = level;
-        highscoreLevelCards.forEach(card => {
-            card.classList.toggle("selected", card.dataset.level === level);
+        highscoreLevelAreas.forEach(area => {
+            area.classList.toggle("selected", area.dataset.level === level);
         });
     }
 
