@@ -280,12 +280,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const limit = TIMER_SECS[state.level] || 30;
         let remaining = limit;
         countdownEl.textContent = remaining;
-        countdownEl.className = "";
 
         timerInterval = setInterval(() => {
             remaining--;
             countdownEl.textContent = remaining;
-            countdownEl.className = remaining <= 5 ? "danger" : remaining <= Math.ceil(limit * 0.4) ? "warn" : "";
 
             if (remaining <= 0) {
                 stopTimer();
@@ -304,7 +302,6 @@ document.addEventListener("DOMContentLoaded", () => {
     function stopTimer() {
         clearInterval(timerInterval);
         timerInterval = null;
-        countdownEl.className = "";
     }
 
     // --- NORMALER SPIELSCREEN: LEBENSANZEIGE ---

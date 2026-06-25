@@ -5,9 +5,10 @@
 }
 
 /* ========================
-   Hintergrund
+   allgemeine Einstellung
 ======================== */
-/*Standrad Hintergrundbild*/
+
+/*Hintergrund*/
 body {
     font-family: 'Segoe UI', system-ui, sans-serif;
     min-height: 100vh;
@@ -31,15 +32,12 @@ body.level-zehner {
     background-image: url("Bilder/hintergrund.gif");
 }
 
-/* ========================
-   Element mit der Klasse hidden wird nicht angezeigt.
-======================== */
-.hidden { display: none !important; }
+/*Elemente verstecken*/
+.hidden {
+    display: none !important;
+}
 
-/* ========================
-   SCREENS
-======================== */
-
+/*Allgemeine Screeneinstellung Inhalt mittig untereinander anzeigen */
 .screen {
     display: flex;
     flex-direction: column;
@@ -49,16 +47,7 @@ body.level-zehner {
     padding: 20px;
 }
 
-#game-screen {
-    justify-content: flex-start;
-    padding-top: 80px;
-    gap: 16px;
-}
-
-/* ========================
-   PLACE
-======================== */
-
+/*Allgemeiner Inhaltsbereich für Screens*/
 .place {
     background: rgba(255, 255, 255, 0.78);
     backdrop-filter: blur(6px);
@@ -70,9 +59,7 @@ body.level-zehner {
     text-align: center;
 }
 
-/* ========================
-   START SCREEN
-======================== */
+/*Allgemeine Texteinstellung*/
 
 h1 {
     font-size: 2.4rem;
@@ -85,13 +72,13 @@ h1 {
     font-size: 1rem;
     margin-bottom: 4px;
 }
-
+/*Trennlinie*/
 .divider {
     border: none;
     border-top: 2px solid #f0f0f0;
     margin: 18px 0;
 }
-
+/*Beschriftungen für Eingaben und Auswahl*/
 .choice-label {
     display: block;
     font-size: 0.9rem;
@@ -102,6 +89,7 @@ h1 {
     letter-spacing: 0.3px;
 }
 
+/*Level,Figuren sowie Highscoreauswahl ohne Standardstil, Inhalte werden einzeln definiert */
 .selection-group {
     border: 0;
     margin: 0;
@@ -109,6 +97,19 @@ h1 {
     min-inline-size: 0;
 }
 
+/*Allgemeine Navigationsbuttons*/
+.bottom-btns {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* ========================
+   Startscreen
+======================== */
+
+/*Namenseingabe*/
 #name-input {
     width: 100%;
     padding: 12px 16px;
@@ -119,14 +120,16 @@ h1 {
     transition: border-color 0.2s;
 }
 
+/*akive Namenseingabe*/
 #name-input:focus {
     outline: none;
     border-color: #00b894;
     box-shadow: 0 0 0 3px rgba(0, 184, 148, 0.15);
 }
 
+/*Heldenauswahl*/
 
-/*Figurenauswahlleiste(UL, keine Punkte vor Icon und sowie keine Einrückung)*/
+/*UL für die Figurenauswahl leiste ohne Listenpunkte*/
 .char-grid {
     list-style: none;
     display: flex;
@@ -135,7 +138,7 @@ h1 {
     margin-bottom: 20px;
     padding: 0;
 }
-
+/* Heldenbutton Größe, Rand, Hintergrund und Bild zentrieren */
 .char-btn {
     width: 82px;
     height: 82px;
@@ -145,24 +148,23 @@ h1 {
     cursor: pointer;
     transition: all 0.2s;
     line-height: 1;
-
     display: flex;
     justify-content: center;
     align-items: center;
 }
-
+/* Heldenbild feste Größe vollständig sichtbar */
 .char-btn img {
     width: 68px;
     height: 68px;
     object-fit: contain;
     display: block;
 }
-
+/*Button anheben*/
 .char-btn:hover {
     transform: translateY(-3px);
     border-color: #b2bec3;
 }
-
+/*markieren ausgewähltes*/
 .char-btn.selected {
     border-color: #00b894;
     background: #e8fff7;
@@ -170,7 +172,7 @@ h1 {
     box-shadow: 0 4px 14px rgba(0, 184, 148, 0.25);
 }
 
-/* Levelawahl (UL, keine Punkte vor Icon und sowie keine Einrückung)*/
+/*Ul für Levelauswahl zwei Spalten ohne Listenpunkte */
 .level-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -180,6 +182,7 @@ h1 {
     padding: 0;
 }
 
+/*levelbutton*/
 .level-area {
     width: 100%;
     border: 2px solid #dfe6e9;
@@ -191,20 +194,20 @@ h1 {
     text-align: center;
     font: inherit;
 }
-
+/*Levelbutton Überfahren anheben*/
 .level-area:hover {
     transform: translateY(-3px);
     border-color: #b2bec3;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
-
+/*Ausgewähltes Level markieren*/
 .level-area.selected {
     border-color: #00b894;
     background: #e8fff7;
     box-shadow: 0 4px 16px rgba(0, 184, 148, 0.18);
     transform: translateY(-3px);
 }
-
+/*Levelbild*/
 .level-icon {
     width: 58px;
     height: 58px;
@@ -212,7 +215,7 @@ h1 {
     display: block;
     margin: 0 auto 6px;
 }
-
+/*Levelname*/
 .level-name {
     display: block;
     font-weight: 700;
@@ -220,14 +223,14 @@ h1 {
     color: #2d3436;
     margin-bottom: 2px;
 }
-
+/*Rechenoperation*/
 .level-ops {
     display: block;
     font-size: 0.8rem;
     color: #636e72;
     margin-bottom: 8px;
 }
-
+/*Schwierigkeitslabel*/
 .level-label {
     display: inline-block;
     font-size: 0.65rem;
@@ -237,13 +240,29 @@ h1 {
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
+/*Fabe Schwierigkeitslabel*/
+.label-easy {
+    background: #d4f7e4;
+    color: #00b894;
+}
 
-.label-easy   { background: #d4f7e4; color: #00b894; }
-.label-mittel { background: #dbeafe; color: #0984e3; }
-.label-schwer { background: #fde8f0; color: #e84393; }
-.label-extra  { background: #e8fff7; color: #008f7a; }
+.label-mittel {
+    background: #dbeafe;
+    color: #0984e3;
+}
 
-#start-btn, #ranking-btn {
+.label-schwer {
+    background: #fde8f0;
+    color: #e84393;
+}
+
+.label-extra {
+    background: #e8fff7;
+    color: #008f7a;
+}
+
+/*Start- und Ranglistenbutton*/
+.startscreen-btn {
     width: 100%;
     padding: 16px;
     font-size: 1.2rem;
@@ -256,20 +275,357 @@ h1 {
     transition: all 0.2s;
     letter-spacing: 0.5px;
 }
+/*beim Überfahren leicht anheben*/
+.startscreen-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 184, 148, 0.35);
+}
+/*beim Klicken wieder normal*/
+.startscreen-btn:active {
+    transform: translateY(0);
+}
 
+/*Abstand zwischen zwei Buttons*/
 #ranking-btn {
     margin-top: 10px;
 }
 
-#start-btn:hover, #ranking-btn:hover {
+/* ========================
+   Spielscreen
+======================== */
+
+/*Spielscreen-Layout*/
+#game-screen {
+    justify-content: flex-start;
+    padding-top: 80px;
+    gap: 16px;
+}
+
+/*Obere Leiste für Name, Punkte, Leben und Zeit */
+.game-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 10px 24px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    font-weight: 700;
+    font-size: 1rem;
+    z-index: 100;
+    flex-wrap: wrap;
+}
+
+/*Bild für Lebensanzeige*/
+#life-display {
+    width: 92px;
+    height: 30px;
+    object-fit: contain;
+}
+
+/*Wert Spielleiste*/
+.bar-value {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/*Symbol Spielleiste*/
+.bar-icon {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+}
+
+/*Kampffeld*/
+.enemy-area {
+    text-align: center;
+    position: relative;
+}
+
+/*Held und Gegner nebeneinander*/
+.battle-row {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 80px;
+}
+
+#hero-image {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+}
+
+#enemy-image {
+    width: 180px;
+    height: 120px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+}
+
+/*Einstellung Monster Lebensbalken*/
+#monster-hp {
+    width: 220px;
+    height: 18px;
+    appearance: none;
+    -webkit-appearance: none;
+    border-radius: 9px;
+    overflow: hidden;
+    margin: 0 0 12px 200px;
+    border: 2px solid rgba(0,0,0,0.08);
+}
+
+/*Monster-Lebensbalken leer*/
+#monster-hp::-webkit-progress-bar {
+    background: #dfe6e9;
+}
+
+/*rot Monster-Lebensbalken*/
+#monster-hp::-webkit-progress-value {
+    background: linear-gradient(90deg, #ff7675, #d63031);
+    border-radius: 9px;
+}
+
+/*wackelt kurz*/
+#hero-image.hit,
+#enemy-image.hit {
+    animation: hit 0.35s ease;
+}
+
+/*aus dem Bildschirm fallen*/
+#hero-image.fall-out,
+#enemy-image.fall-out {
+    animation: fallOut 1s ease-in forwards;
+}
+
+/*Animation Figur wackelt kurz*/
+@keyframes hit {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-12px) rotate(-5deg); }
+    60% { transform: translateX(12px) rotate(5deg); }
+}
+
+/*Fallanimation Figur unterhalb Bildschirm und unsichtbar*/
+@keyframes fallOut {
+    0% { transform: translateY(0) rotate(0); opacity: 1; }
+    100% { transform: translateY(120vh) rotate(35deg); opacity: 0; }
+}
+
+/*Schadensanzeige roter Text erscheint kurz*/
+#damage {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #d63031;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    animation: popUp 0.7s forwards;
+    position: absolute;
+    top: 60px;
+    left: 370px;
+}
+
+/*Zahl nach oben und verschwinden */
+@keyframes popUp {
+    0% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-40px); }
+}
+
+/*Fragebereich*/
+.game-area {
+    max-width: 480px;
+}
+
+#countdown {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 4px solid #fd9800;
+    background: #fff3df;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #d96b00;
+    margin: 0 auto 16px;
+}
+
+/*Rechenaufgabe*/
+#question {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #2d3436;
+    margin-bottom: 22px;
+    letter-spacing: 1px;
+}
+
+/*Antwortbuttons*/
+#choice-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+/*Einstellung Antwortbutton*/
+.choice-btn {
+    padding: 18px 12px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    border: 3px solid #dfe6e9;
+    border-radius: 16px;
+    background: #f8f9fa;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: #2d3436;
+}
+
+/*anklickbaren Buttons mit Hover Effekt*/
+.choice-btn:hover:not(:disabled) {
+    background: #e8fff7;
+    border-color: #00b894;
+    transform: scale(1.04);
+    box-shadow: 0 4px 12px rgba(0, 184, 148, 0.18);
+}
+
+/*nicht anklickbar*/
+.choice-btn:disabled {
+    cursor: default;
+}
+
+/*Richtige Antwort mit Animation*/
+.choice-btn.correct {
+    background: #d4f7e4;
+    border-color: #00b894;
+    color: #00b894;
+    animation: correctPop 0.3s ease;
+}
+
+/*Falsche Antwort rot markieren*/
+.choice-btn.wrong {
+    background: #fde8e8;
+    border-color: #d63031;
+    color: #d63031;
+}
+
+/*kurz größer und wieder normal */
+@keyframes correctPop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Feedback zu Antworten*/
+#feedback {
+    font-size: 1.15rem;
+    font-weight: 700;
+    min-height: 1.5em;
+}
+
+/*Spielnavigation*/
+/*Buttons Neues Spiel, Rangliste und zurück*/
+#new-game-btn,
+#back-btn,
+#show-ranking-end-btn {
+    padding: 12px 26px;
+    border: none;
+    border-radius: 14px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+#new-game-btn,
+#show-ranking-end-btn {
+    background: linear-gradient(135deg, #00b894, #00cec9);
+    color: white;
+}
+
+#back-btn {
+    background: rgba(255, 255, 255, 0.9);
+    color: #636e72;
+}
+/*Hovereffekt*/
+#new-game-btn:hover,
+#back-btn:hover,
+#show-ranking-end-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 184, 148, 0.35);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+/* ========================
+   Highscore-Screen
+======================== */
+
+/*Highscore-Anzeigbereich*/
+.highscore-area {
+    max-width: 620px;
 }
 
-#start-btn:active, #ranking-btn:active {
-    transform: translateY(0);
+/*Levelauswahl der Rangliste*/
+.highscore-level-grid {
+    grid-template-columns: repeat(3, 1fr);
 }
 
+/*Highscore-Tabelle*/
+#highscore-table {
+    width: 100%;
+    margin-bottom: 18px;
+    border-collapse: collapse;
+    table-layout: fixed;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.88);
+}
+
+#highscore-table th,
+#highscore-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid #dfe6e9;
+    text-align: center;
+    color: #2d3436;
+}
+
+/*Tabellenkopf Überschrift*/
+#highscore-table th {
+    background: #e8fff7;
+    color: #008f7a;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/*Platz schmal, Name breiter, Punkte und Zeit gleich breit*/
+#highscore-table th:nth-child(1),
+#highscore-table td:nth-child(1) {
+    width: 18%;
+}
+
+#highscore-table th:nth-child(2),
+#highscore-table td:nth-child(2) {
+    width: 34%;
+}
+
+#highscore-table th:nth-child(3),
+#highscore-table td:nth-child(3),
+#highscore-table th:nth-child(4),
+#highscore-table td:nth-child(4) {
+    width: 24%;
+}
+
+/*Noch keine Einträge fett und grau*/
+.empty-highscore {
+    color: #636e72;
+    font-weight: 700;
+}
+
+/*Zurück-Button*/
 #highscore-back-btn {
     width: 100%;
     padding: 14px;
@@ -290,13 +646,15 @@ h1 {
 }
 
 /* ========================
-   10ER-ÜBERGANG SCREEN
+   10er-Übergang-Screen
 ======================== */
 
+/*10er-Anzeigbereich*/
 .ten-area {
     max-width: 520px;
 }
 
+/*Punkte */
 .ten-score {
     font-size: 1.15rem;
     font-weight: 700;
@@ -304,6 +662,7 @@ h1 {
     margin-bottom: 14px;
 }
 
+/*Aufgabe*/
 .ten-question {
     font-size: 2.6rem;
     font-weight: 700;
@@ -311,6 +670,7 @@ h1 {
     margin-bottom: 18px;
 }
 
+/*Antwortfeld*/
 #ten-answer {
     width: 100%;
     padding: 12px 16px;
@@ -321,12 +681,14 @@ h1 {
     text-align: center;
 }
 
+/*Antwortfeld aktiv*/
 #ten-answer:focus {
     outline: none;
     border-color: #00b894;
     box-shadow: 0 0 0 3px rgba(0, 184, 148, 0.15);
 }
 
+/*Prüfen und Tips*/
 #ten-submit-btn,
 #ten-tip-btn {
     width: 100%;
@@ -357,11 +719,13 @@ h1 {
     box-shadow: 0 4px 14px rgba(0, 184, 148, 0.25);
 }
 
+/*tip angeklickt*/
 #ten-tip-btn:disabled {
     cursor: default;
     opacity: 0.6;
 }
 
+/*Tips und Feedback Texte*/
 .ten-tip {
     margin-top: 12px;
     color: #636e72;
@@ -374,327 +738,9 @@ h1 {
     font-weight: 700;
 }
 
-/* ========================
-   HIGHSCORE SCREEN
-======================== */
-
-.highscore-area {
-    max-width: 620px;
-}
-
-.highscore-level-grid {
-    grid-template-columns: repeat(3, 1fr);
-}
-
-#highscore-table {
-    width: 100%;
-    margin-bottom: 18px;
-    border-collapse: collapse;
-    table-layout: fixed;
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.88);
-}
-
-#highscore-table th,
-#highscore-table td {
-    padding: 12px 10px;
-    border-bottom: 1px solid #dfe6e9;
-    text-align: center;
-    color: #2d3436;
-}
-
-#highscore-table th {
-    background: #e8fff7;
-    color: #008f7a;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-#highscore-table th:nth-child(1),
-#highscore-table td:nth-child(1) {
-    width: 18%;
-}
-
-#highscore-table th:nth-child(2),
-#highscore-table td:nth-child(2) {
-    width: 34%;
-}
-
-#highscore-table th:nth-child(3),
-#highscore-table td:nth-child(3),
-#highscore-table th:nth-child(4),
-#highscore-table td:nth-child(4) {
-    width: 24%;
-}
-
-#highscore-table tbody tr:last-child td {
-    border-bottom: none;
-}
-
-.empty-highscore {
-    color: #636e72;
-    font-weight: 700;
-}
-
-/* ========================
-   GAME BAR
-======================== */
-
-.game-bar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    padding: 10px 24px;
-    background: rgba(255, 255, 255, 0.92);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.6);
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-    font-weight: 700;
-    font-size: 1rem;
-    z-index: 100;
-    flex-wrap: wrap;
-}
-
-#life-display {
-    width: 92px;
-    height: 30px;
-    object-fit: contain;
-}
-
-.bar-value {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.bar-icon {
-    width: 26px;
-    height: 26px;
-    object-fit: contain;
-}
-
-/* ========================
-   ENEMY AREA
-======================== */
-
-.enemy-area {
-    text-align: center;
-    position: relative;
-}
-
-.battle-row {
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    gap: 80px;
-}
-
-#hero-image{
-    width: 120px;
-    height: 120px;
-    object-fit: contain;
-    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
-}
-
-#enemy-image {
-    width: 180px;
-    height: 120px;
-    object-fit: contain;
-    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
-}
-
-#monster-hp {
-    width: 220px;
-    height: 18px;
-    appearance: none;
-    -webkit-appearance: none;
-    border-radius: 9px;
-    overflow: hidden;
-    margin: 0 0 12px 200px;
-    border: 2px solid rgba(0,0,0,0.08);
-}
-
-#monster-hp::-webkit-progress-bar {
-    background: #dfe6e9;
-}
-
-#monster-hp::-webkit-progress-value {
-    background: linear-gradient(90deg, #ff7675, #d63031);
-    border-radius: 9px;
-}
-
-#monster-hp::-moz-progress-bar {
-    background: linear-gradient(90deg, #ff7675, #d63031);
-    border-radius: 9px;
-}
-
-#hero-image.hit,
-#enemy-image.hit {
-    animation: hit 0.35s ease;
-}
-
-#hero-image.fall-out,
-#enemy-image.fall-out {
-    animation: fallOut 1s ease-in forwards;
-}
-
-@keyframes hit {
-    0%, 100% { transform: translateX(0); }
-    20%       { transform: translateX(-12px) rotate(-5deg); }
-    60%       { transform: translateX(12px) rotate(5deg); }
-}
-
-@keyframes fallOut {
-    0%   { transform: translateY(0) rotate(0); opacity: 1; }
-    100% { transform: translateY(120vh) rotate(35deg); opacity: 0; }
-}
-
-#damage {
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: #d63031;
-    text-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    animation: popUp 0.7s forwards;
-    position: absolute;
-    top: 60px;
-    left: 370px;
-    /*transform: translateX(-50%);*/
-}
-
-@keyframes popUp {
-    0%   { opacity: 1; transform: translateX(-50%) translateY(0); }
-    100% { opacity: 0; transform: translateX(-50%) translateY(-40px); }
-}
-
-/* ========================
-   GAME AREA
-======================== */
-
-.game-area {
-    max-width: 480px;
-}
-
-#countdown {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    border: 4px solid #00b894;
-    background: #e8fff7;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: #008f7a;
-    margin: 0 auto 16px;
-    transition: border-color 0.3s, color 0.3s, background 0.3s;
-}
-
-#countdown.warn {
-    border-color: #fdcb6e;
-    color: #e17055;
-    background: #fff8e1;
-}
-
-#countdown.danger {
-    border-color: #d63031;
-    color: #d63031;
-    background: #fff0f0;
-    animation: timerPulse 0.4s ease-in-out infinite;
-}
-
-@keyframes timerPulse {
-    0%, 100% { transform: scale(1); }
-    50%       { transform: scale(1.12); }
-}
-
-#question {
-    font-size: 3rem;
-    font-weight: 700;
-    color: #2d3436;
-    margin-bottom: 22px;
-    letter-spacing: 1px;
-}
-
-/* ========================
-   CHOICE BUTTONS
-======================== */
-
-#choice-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 12px;
-}
-
-.choice-btn {
-    padding: 18px 12px;
-    font-size: 1.5rem;
-    font-weight: 700;
-    border: 3px solid #dfe6e9;
-    border-radius: 16px;
-    background: #f8f9fa;
-    cursor: pointer;
-    transition: all 0.15s;
-    color: #2d3436;
-}
-
-.choice-btn:hover:not(:disabled) {
-    background: #e8fff7;
-    border-color: #00b894;
-    transform: scale(1.04);
-    box-shadow: 0 4px 12px rgba(0, 184, 148, 0.18);
-}
-
-.choice-btn:disabled { cursor: default; }
-
-.choice-btn.correct {
-    background: #d4f7e4;
-    border-color: #00b894;
-    color: #00b894;
-    animation: correctPop 0.3s ease;
-}
-
-.choice-btn.wrong {
-    background: #fde8e8;
-    border-color: #d63031;
-    color: #d63031;
-}
-
-@keyframes correctPop {
-    0%   { transform: scale(1); }
-    50%  { transform: scale(1.1); }
-    100% { transform: scale(1); }
-}
-
-/* ========================
-   FEEDBACK
-======================== */
-
-#feedback {
-    font-size: 1.15rem;
-    font-weight: 700;
-    min-height: 1.5em;
-}
-
-/* ========================
-   BOTTOM BUTTONS
-======================== */
-
-.bottom-btns {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-#new-game-btn, #back-btn, #show-ranking-end-btn, #ten-restart-btn, #ten-back-btn {
+/*Navigation: Neustart und Zurück*/
+#ten-restart-btn,
+#ten-back-btn {
     padding: 12px 26px;
     border: none;
     border-radius: 14px;
@@ -704,45 +750,68 @@ h1 {
     transition: all 0.2s;
 }
 
-#new-game-btn, #show-ranking-end-btn, #ten-restart-btn {
+/*Neustart*/
+#ten-restart-btn {
     background: linear-gradient(135deg, #00b894, #00cec9);
     color: white;
 }
 
-#new-game-btn:hover, #show-ranking-end-btn:hover, #ten-restart-btn:hover {
+#ten-restart-btn:hover {
     box-shadow: 0 4px 14px rgba(0, 184, 148, 0.35);
     transform: translateY(-2px);
 }
 
-#back-btn, #ten-back-btn {
+/*Zurück*/
+#ten-back-btn {
     background: rgba(255, 255, 255, 0.9);
     color: #636e72;
 }
 
-#back-btn:hover, #ten-back-btn:hover {
+#ten-back-btn:hover {
     background: white;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     transform: translateY(-2px);
 }
 
 /* ========================
-   MOBILE
+   Mobile
 ======================== */
 
 @media (max-width: 480px) {
     .place { padding: 20px 16px; }
     h1 { font-size: 1.9rem; }
 
-    .char-btn { width: 56px; height: 56px; font-size: 1.9rem; }
+    .char-btn {
+        width: 56px;
+        height: 56px;
+        font-size: 1.9rem;
+    }
 
-    #question { font-size: 2.4rem; }
-    .choice-btn { padding: 14px 8px; font-size: 1.3rem; }
+    #question {
+        font-size: 2.4rem;
+    }
 
-    .game-bar { gap: 12px; font-size: 0.9rem; padding: 8px 16px; }
-    .highscore-level-grid { grid-template-columns: 1fr; }
+    .choice-btn {
+        padding: 14px 8px;
+        font-size: 1.3rem;
+    }
+
+    .game-bar {
+        gap: 12px;
+        font-size: 0.9rem;
+        padding: 8px 16px;
+    }
+
+    .highscore-level-grid {
+        grid-template-columns: 1fr;
+    }
+
     #enemy-image {
         width: 110px;
         height: 110px;
     }
-    #monster-hp { width: 170px; }
+
+    #monster-hp {
+        width: 170px;
+    }
 }

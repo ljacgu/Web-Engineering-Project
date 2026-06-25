@@ -106,9 +106,9 @@
             </fieldset>
 
         <!--Spiel starten-->
-            <button type="button" id="start-btn" aria-label="Spiel starten">Spiel Starten</button>
+            <button type="button" id="start-btn" class="startscreen-btn" aria-label="Spiel starten">Spiel Starten</button>
         <!--Rangliste anzeigen-->
-            <button type="button" id="ranking-btn" aria-label="Rangliste öffnen">Rangliste</button>
+            <button type="button" id="ranking-btn" class="startscreen-btn" aria-label="Rangliste öffnen">Rangliste</button>
         </article>
     </section>
 
@@ -143,7 +143,7 @@
                 <img id="hero-image" src="Bilder/Char-1.png" alt="Ausgewählter Held">
                 <img id="enemy-image" src="Bilder/Wald-Pilzmonster.png" alt="Pilzmonster">
             </figure>
-            <!--Monster gets hit Animation in CSS-->
+            <!--Monster gets hit Texte-->
             <p id="damage" class="hidden">-10 HP</p>
         </section>
 
@@ -240,9 +240,9 @@
             <!--Frage mit Platzhalter-->
             <p id="ten-question" class="ten-question" aria-live="polite">1111 + ? = 1112</p>
 
-            <!--Antwort eingeben-->
+            <!--Antwort eingeben(keine number wegen Pfeil)-->
             <label class="choice-label" for="ten-answer">Deine Antwort:</label>
-            <input type="number" id="ten-answer" inputmode="numeric" autocomplete="off" aria-label="Antwort eingeben">
+            <input type="text" id="ten-answer" inputmode="numeric" autocomplete="off" aria-label="Antwort eingeben">
 
             <!--Buttons für Richtigkeitsprüfung und Tipp-->
             <button type="button" id="ten-submit-btn">Antwort prüfen</button>
