@@ -1,20 +1,23 @@
+//warten bis alle HTML-Elemente geladen
 document.addEventListener("DOMContentLoaded", () => {
 
-    const LIVES = 3;
-    const PTS_CORRECT = 10;
-    const WIN_PTS = 100;
-    const NEXT_DELAY = 1200;
-    const HS_LIST_KEY = "matheAbenteuerHighscores";
-    const HIGHSCORE_LEVELS = ["einfach", "mittel", "schwer"];
-    const MAX_RANKING_PLACES = 5;
-    const ZAHLENRAUM_MIN = 1;
-    const ZAHLENRAUM_MAX = 100;
-    const TEN_STEP = 10;
-    const TEN_ADDEND_MAX = 20;
-    const TEN_PTS_WITHOUT_TIP = 10;
-    const TEN_PTS_WITH_TIP = 5;
-    const TEN_WIN_PTS = 100;
-    const TIMER_SECS = { einfach: 30, mittel: 20, schwer: 15, zehner: 30 };
+
+    //-----------------------
+    // allgemeine Einstellung
+    // -----------------------
+
+    //eigenes Spiel
+    const LIVES = 3;        //3 Versuche
+    const PTS_CORRECT = 10; // 10 Punkte für richtige Antwort
+    const WIN_PTS = 100;    // 100 Punkte gehabt dann endGame True
+    const NEXT_DELAY = 1500;//Wartezeit bis zur nächsten Aufgabe
+
+    const HIGHSCORE_LEVELS = ["einfach", "mittel", "schwer"]; //Highscores einfach, mittel und schwer
+    const MAX_RANKING_PLACES = 5; // Nur die beste 5 wird angezeigt
+    const HIGHSCORE_SAVE_KEY = "matheAbenteuerHighscores"; //Localstorage Name
+
+    const TIMER_SECS = { einfach: 30, mittel: 20, schwer: 15, zehner: 30 }; //Zeitbegrenzung
+
     const ENEMIES = {
         einfach: "Bilder/Wald-Pilzmonster.png",
         mittel: "Bilder/robot.png",
@@ -28,6 +31,19 @@ document.addEventListener("DOMContentLoaded", () => {
         Magier: "Bilder/Char-3.png",
         Samurai: "Bilder/Char-4.png"
     };
+
+    //Pflichtaufgabe 10Übergang
+    const ZAHLENRAUM_MIN = 1;   //Zahlbegrenzung
+    const ZAHLENRAUM_MAX = 100; //Zahlbegrenzung
+    const TEN_STEP = 10;        //Zehnerschritt
+    const TEN_ADDEND_MAX = 20;
+    const TEN_PTS_WITHOUT_TIP = 10; //10 Punkte ohne Tipp
+    const TEN_PTS_WITH_TIP = 5;     //5 Punkte mit Tipp
+    const TEN_WIN_PTS = 100;        //100 Punkte erreicht dann finishGame
+
+    //-----------------------
+    // Screen Elemente
+    // -----------------------
 
     // --- SCREEN ELEMENTS ---
     const startScreen = document.querySelector("#start-screen");
@@ -75,17 +91,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const tenRestartBtn = document.querySelector("#ten-restart-btn");
     const tenBackBtn = document.querySelector("#ten-back-btn");
 
+
     let selectedChar = "Ritter";
     let selectedLevel = "einfach";
     let selectedHighscoreLevel = "einfach";
-    let state = {};
-    let tenState = {};
+    let state = {};     // Speicher aktuellen Zustand
     let timerInterval = null;
-    let highscore = getBestScore(selectedLevel);
 
-    hsEl.textContent = highscore;
+    let highscore = getBestScore(selectedLevel); //Highscore von bestimmte Level
+    hsEl.textContent = highscore;               //Highscrore schreiben
 
-    // --- STARTSCREEN: CHARACTER SELECTION ---
+    let tenState = {};  //Speicher aktuellen Zustand 10 Übergag
+
+
+    //--------------------------
+    // Startscreen
+    // -------------------------
+
+    // Figurenauswahl: Figur anklickt,die alte Auswahl entfernen,neue markieren und speichern
     charBtns.forEach(btn => {
         btn.addEventListener("click", () => {
             charBtns.forEach(b => b.classList.remove("selected"));
@@ -94,27 +117,28 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // --- STARTSCREEN: LEVEL SELECTION ---
+    // Levelauswahl: Level anklickt,die alte Auswahl entfernen,neue markieren und speichern
     levelAreas.forEach(area => {
         area.addEventListener("click", () => {
             levelAreas.forEach(a => a.classList.remove("selected"));
             area.classList.add("selected");
             selectedLevel = area.dataset.level;
-            highscore = getBestScore(selectedLevel);
-            hsEl.textContent = highscore;
         });
     });
 
-    highscoreLevelAreas.forEach(area => {
-        area.addEventListener("click", () => {
-            selectHighscoreLevel(area.dataset.level);
-            renderHighscores();
-        });
-    });
-
-    // --- STARTSCREEN: START BUTTON ---
+    //  START BUTTON;
     startBtn.addEventListener("click", () => {
-        const name = nameInput.value.trim();
+        startSelectedGame();
+    });
+
+    //Rangliste button
+    rankingBtn.addEventListener("click", () => {
+        showHighscoreScreen(selectedLevel);
+    });
+
+    //unterscheiden: ob matheSpiel oder 10ner Übergang ausgewält wird
+    function startSelectedGame() {
+        const name = nameInput.value.trim(); //name holen, unnötige Leerzeichen entfernen
         if (!name) { alert("Bitte gib deinen Heldennamen ein!"); return; }
 
         if (selectedLevel === "zehner") {
@@ -122,81 +146,129 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        startGame(name);
+    }
+
+    //normales Mathespiel
+    function startGame(name) {
         state = {
             name,
             level: selectedLevel,
             pts: 0,
-            lives: LIVES,
-            answer: 0,
+            lives: LIVES, //3 lebens
+            answer: 0,    //Platzhalter für die richtige Lösung
             monsterHp: 100,
-            startedAt: Date.now(),
-            saved: false
+            startedAt: Date.now(),  //später Spielzeit für Rangliste
+            saved: false            //wird Status gespeichert?
         };
 
-        document.body.className = `level-${selectedLevel}`;
-        playerDisplay.textContent = `${selectedChar} ${name}`;
+        //Initialisierung
+        document.body.className = `level-${selectedLevel}`; //Hintergrund wechsel
+        playerDisplay.textContent = `${selectedChar} ${name}`; //Spielleiste oben
+
         heroImage.src = HERO_IMAGES[selectedChar];
         heroImage.alt = selectedChar;
         enemyEl.src = ENEMIES[selectedLevel];
-        enemyEl.style.opacity = "1";
-        heroImage.classList.remove("fall-out", "hit");
-        enemyEl.classList.remove("fall-out", "hit");
         monsterHpBar.value = 100;
+
         scoreEl.textContent = 0;
         highscore = getBestScore(selectedLevel);
         hsEl.textContent = highscore;
-        feedbackEl.textContent = "";
-        newGameBtn.classList.add("hidden");
-        showRankingEndBtn.classList.add("hidden");
-        updateLifeDisplay();
 
+        feedbackEl.textContent = "";
+        updateLifeDisplay(); //3,2,1 oder 0 Leben
+
+        heroImage.classList.remove("fall-out", "hit");//notwendig, sonst ab zweites Spiel sichbar
+        enemyEl.classList.remove("fall-out", "hit");//notwendig, sonst ab zweites Spiel sichbar
+
+        //von startScreen zu gameScreen
         startScreen.classList.add("hidden");
         tenScreen.classList.add("hidden");
         highscoreScreen.classList.add("hidden");
         gameScreen.classList.remove("hidden");
+
+        //anzeigen nur wenn Spiel vorbei ist
+        newGameBtn.classList.add("hidden");         //notwendig, sonst ab zweites Spiel sichbar
+        showRankingEndBtn.classList.add("hidden");  //notwendig, sonst ab zweites Spiel sichbar
+
         generateQuestion();
-    });
+    }
 
-    rankingBtn.addEventListener("click", () => {
-        showHighscoreScreen(selectedLevel);
-    });
 
-    // --- NORMALER SPIELSCREEN: QUESTION GENERATION ---
+
+    //----------------------
+    // Spielscreen
+    // ---------------------
+
+    //Rechenops zufällig auswählenm: Zufallszahl zwischen 1 0 mit länge mul und dan abrunden ->index
+    function pick(arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    // Fragegenerieren (nicht für 10ner Übergang)
     function generateQuestion() {
         let a, b, op;
         const level = state.level;
 
+        //Level Einfach + -
         if (level === "einfach") {
-            op = Math.random() > 0.5 ? "+" : "−";
-            a = rand(6, 9); b = rand(5, 9);
-            if (op === "−" && a < b) [a, b] = [b, a];
+            op = pick(["+", "−"]);
+            if (op === "+") {
+                //Zahlraum 1-100
+                a = rand(1, 99);
+                b = rand(1, 100 - a);
+            } else {
+                //a >b bei -
+                a = rand(1, 100);
+                b = rand(1, a);
+            }
+
+        //Level Mittel x /
         } else if (level === "mittel") {
-            op = Math.random() > 0.5 ? "×" : "÷";
-            if (op === "×") { a = rand(1, 10); b = rand(1, 10); }
-            else { b = rand(1, 10); a = b * rand(1, 10); }
+            op = pick(["×", "÷"]);
+            if (op === "×") {
+                //Zahlraum so damit sinnvolle Aufgaben generiert werden
+                a = rand(2, 10);
+                b = rand(2, Math.floor(100 / a));
+            } else {
+                // a ist immer viel fach von b und innerhalb Zahlraum
+                b = rand(2, 10);
+                a = b * rand(2, Math.floor(100 / b));
+            }
+
+        //Level Schwer
+        //Einfach Mittel kombinieren
         } else if (level === "schwer") {
             op = pick(["+", "−", "×", "÷"]);
-            if (op === "+") { a = rand(1, 100); b = rand(1, 100); }
-            else if (op === "−") { a = rand(10, 100); b = rand(1, a); }
-            else if (op === "×") { a = rand(1, 12); b = rand(1, 12); }
-            else { b = rand(1, 12); a = b * rand(1, 12); }
-        } else {
-            op = pick(["+", "−", "×", "÷"]);
-            if (op === "+") { a = rand(1, 200); b = rand(1, 200); }
-            else if (op === "−") { a = rand(10, 200); b = rand(1, a); }
-            else if (op === "×") { a = rand(1, 20); b = rand(1, 20); }
-            else { b = rand(1, 20); a = b * rand(1, 20); }
+            if (op === "+") {
+                a = rand(1, 99);
+                b = rand(1, 100 - a);
+            } else if (op === "−") {
+                a = rand(1, 100);
+                b = rand(1, a);
+            } else if (op === "×") {
+                a = rand(2, 20);
+                b = rand(2, Math.floor(100 / a));
+            } else {
+                b = rand(2, 20);
+                a = b * rand(2, Math.floor(100 / b));
+            }
         }
 
+        //richtige Lösung berechnen
         if (op === "+") state.answer = a + b;
         else if (op === "−") state.answer = a - b;
         else if (op === "×") state.answer = a * b;
         else state.answer = a / b;
 
+        //Fragen anzeigen und vorherige Feedback bereinigen
         questionEl.textContent = `${a} ${op} ${b} = ?`;
         feedbackEl.textContent = "";
 
+        //erstelle liste mit 4 Möglichkeiten
         const choices = makeChoices(state.answer);
+
+        //Jeder Button bekommt eine Antwort aus der choice
         document.querySelectorAll(".choice-btn").forEach((btn, i) => {
             btn.textContent = choices[i];
             btn.className = "choice-btn";
@@ -420,6 +492,15 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // --- HIGHSCORE-SCREEN ---
+
+    //Highscore zur passender Rangliste anzeigen
+    highscoreLevelAreas.forEach(area => {
+        area.addEventListener("click", () => {
+            selectHighscoreLevel(area.dataset.level);
+            renderHighscores();
+        });
+    });
+
     function showHighscoreScreen(level) {
         stopTimer();
         document.body.className = "";
@@ -430,6 +511,8 @@ document.addEventListener("DOMContentLoaded", () => {
         tenScreen.classList.add("hidden");
         highscoreScreen.classList.remove("hidden");
     }
+
+
 
     // --- 10ER-ÜBERGANG-SCREEN ---
     function startTenGame(name) {
@@ -591,7 +674,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const emptyLists = { einfach: [], mittel: [], schwer: [] };
 
         try {
-            const storedLists = JSON.parse(localStorage.getItem(HS_LIST_KEY)) || {};
+            const storedLists = JSON.parse(localStorage.getItem(HIGHSCORE_SAVE_KEY)) || {};
             const lists = { ...emptyLists, ...storedLists };
 
             HIGHSCORE_LEVELS.forEach(level => {
@@ -605,7 +688,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function saveHighscoreLists(lists) {
-        localStorage.setItem(HS_LIST_KEY, JSON.stringify(lists));
+        localStorage.setItem(HIGHSCORE_SAVE_KEY, JSON.stringify(lists));
     }
 
     function saveHighscore() {
@@ -681,9 +764,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    function pick(arr) {
-        return arr[Math.floor(Math.random() * arr.length)];
-    }
 
     function shuffle(arr) {
         for (let i = arr.length - 1; i > 0; i--) {
