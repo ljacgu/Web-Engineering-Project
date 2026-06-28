@@ -401,8 +401,8 @@ h1 {
 }
 
 /*aus dem Bildschirm fallen*/
-#hero-image.fall-out,
-#enemy-image.fall-out {
+#hero-image.fall,
+#enemy-image.fall {
     animation: fallOut 1s ease-in forwards;
 }
 
