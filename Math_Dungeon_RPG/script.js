@@ -638,7 +638,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const points = tenState.hintUsed ? TEN_PTS_WITH_TIP : TEN_PTS_WITHOUT_TIP;
         tenState.score += points;
         tenScoreEl.textContent = tenState.score;
-        tenFeedbackEl.textContent = tenState.hintUsed ? "Richtig! Du hast einen Tipp gebraucht. 👍" : "Super! 🎉";
+        tenFeedbackEl.textContent = tenState.hintUsed ? "Richtig! Du hast einen Tipp gebraucht." : "Super, Richtig!";
         tenFeedbackEl.style.color = "#00b894";
 
         if (tenState.score >= TEN_WIN_PTS) {
