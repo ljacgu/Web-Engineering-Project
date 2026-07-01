@@ -1,77 +1,45 @@
-# Web-Engineering-Project
-Uni Project
+# Math Dungeon RPG
 
+Kurze Beschreibung
 
-//2. Spielscreen
+Der Spieler gibt einen Namen ein, wählt einen Helden und entscheidet sich für ein Level. Danach werden Rechenaufgaben gelöst, um Monster zu besiegen, Punkte zu sammeln und eine Rangliste aufzubauen.
 
+## Überblick
 
-//3. High-Score
+- Startscreen mit Namenseingabe, Heldenauswahl und Levelauswahl
+- Spielscreen mit Aufgabe, Timer, Leben, Punkten und Monster-Lebensbalken
+- eigener Übungsmodus für den 10er-Übergang
+- Highscore-Seite mit Ranglisten für die Level
 
+## Spielablauf
 
-//4. 10er-Übergang
+1. Der Spieler gibt einen Namen ein und wählt Held und Level.
+2. Das Spiel startet und zeigt eine Matheaufgabe mit Antwortmöglichkeiten.
+3. Bei einer richtigen Antwort verliert das Monster Leben und die Punkte steigen.
+4. Bei einer falschen Antwort oder abgelaufener Zeit verliert der Spieler ein Leben.
+5. Das Spiel endet, wenn der Spieler gewinnt oder keine Leben mehr hat.
+6. Danach kann die Rangliste angezeigt oder ein neues Spiel gestartet werden.
 
+## Aufbau der App
 
+- `startscreen.html`: Grundstruktur der App mit Startscreen, Spielscreen, Highscore-Screen und 10er-Übergang
+- `style.css`: Layout, Farben, Buttons, Hintergründe und Animationen
+- `script.js`: Spiellogik, Aufgaben, Timer, Auswahl, Punkte und Highscore
 
-//Aufgaben:
+## Screens
 
+**Startscreen**  
+Enthält die Namenseingabe, Heldenauswahl, Levelauswahl sowie Buttons zum Starten und zur Rangliste.
 
-// 10er-Übung fertigstellen
+**Spielscreen**  
+Zeigt die aktuelle Aufgabe, vier Antwortmöglichkeiten, den Timer, die Leben, Punkte, Highscore und das Kampffeld mit Held und Monster.
 
-// 1 JavaScript Datei, und am Ende nur eine index.html-Datei
+**Highscore-Screen**  
+Zeigt gespeicherte Ergebnisse nach Level sortiert.
 
-// DOM erstellen
+**10er-Übergang**  
+Ein zusätzlicher Übungsmodus mit eigener Aufgabe, Eingabefeld, Tipp-Funktion und Punkteanzeige.
 
-//Icon ??
+## Spiellogik
 
-
-//Formatierung von Dropdown-Menu + Startscreen, div-Container
-
-//Zahlen-Eingabefeld (Spin Buttons) entfernen
-
-//Multiplikation, Addition, Subtraktion
-
-//Letztes Level, längere Gleichungen 
-
-// startButton ändern. Button, soll auf Startscreen verweisen
-
-
-
-Spiel-Aufbau
-
-Name des Spiels: Math Dungeon RPG 
-
-Ablauf des Spiels:          Spieler gibt Name ein
-                                        |
-                            Spiel startet
-                                        |
-                            Matheaufgabe erscheint
-                                        |
-                            richtige Antwort = Monster verliert / Punkte steigen
-                            falsche Antwort = Leben verlieren
-                                        |
-                            nach 10 richtige Aufgaben = gewonnen
-                            oder bei Leben = 0 verloren
-                                        |
-                            Highscore-Seite 
-
-
-Neuer Spielanblauf + Screen Aufteilung: 
-
-Screen 1: Startscreen
-
-    Enthält: Name, Charakterauswahl, große Spielauswahl-Karten: 10er Übergang, Math Dungeon RPG
-
-Screen 2: Spielauswahl / Modusauswahl
-
-    Enthält: Rechnungsart als große Buttons: 
-         Addition, Subtraktion, Multiplikation, Division, Gemischt
-
-Screen 3: Spielscreen
-
-    Enthält: Rechnungsart oben als Badge, Aufgabe riesig in der Mitte, 
-         Fortschritt: "Aufgabe 3 von 10", Leben, Timer, Monster-Lebensbalken
-
-Screen 4: Highscore / Ergebnis
-
-    Enthält: Name, Punkte, erreichte Stufe,
-         richtige Antworten, Button: "Nochmal spielen"
+Die Spiellogik liegt in `script.js`. Dort werden die Screens gewechselt, Aufgaben erzeugt, Antworten geprüft, Punkte und Leben aktualisiert und Highscores im Browser gespeichert.
