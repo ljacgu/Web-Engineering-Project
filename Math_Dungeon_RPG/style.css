@@ -9,12 +9,19 @@
 ======================== */
 
 /*Hintergrund*/
+html {
+    min-height: 100%;
+    overflow-x: hidden;
+}
+
 body {
     font-family: 'Segoe UI', system-ui, sans-serif;
     min-height: 100vh;
     background: #10131f url("Bilder/hintergrund.gif") center / cover fixed no-repeat;
     transition: background-image 0.6s ease;
+    overflow-x: hidden;
 }
+
 /*Hintergrundbilder wechseln*/
 body.level-einfach {
     background-image: url("Bilder/Forest.gif");
@@ -297,6 +304,9 @@ h1 {
 /*Spielscreen-Layout*/
 #game-screen {
     justify-content: flex-start;
+    height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
     padding-top: 80px;
     gap: 16px;
 }
@@ -401,9 +411,15 @@ h1 {
 }
 
 /*aus dem Bildschirm fallen*/
-#hero-image.fall-out,
-#enemy-image.fall-out {
+#hero-image.fall,
+#enemy-image.fall {
     animation: fallOut 1s ease-in forwards;
+}
+
+/*wegen bug hinzugefügt, figur soll nicht sichtbar aber ihre Platz noch behalten*/
+#hero-image.fall-hidden,
+#enemy-image.fall-hidden {
+    visibility: hidden;
 }
 
 /*Animation Figur wackelt kurz*/
@@ -416,7 +432,7 @@ h1 {
 /*Fallanimation Figur unterhalb Bildschirm und unsichtbar*/
 @keyframes fallOut {
     0% { transform: translateY(0) rotate(0); opacity: 1; }
-    100% { transform: translateY(120vh) rotate(35deg); opacity: 0; }
+    100% { transform: translateY(360px) rotate(30deg); opacity: 0; }
 }
 
 /*Schadensanzeige roter Text erscheint kurz*/

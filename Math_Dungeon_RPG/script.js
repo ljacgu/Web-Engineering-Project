@@ -1,7 +1,5 @@
 //warten bis alle HTML-Elemente geladen
 document.addEventListener("DOMContentLoaded", () => {
-
-
     //-----------------------
     // allgemeine Einstellung
     // -----------------------
@@ -36,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const ZAHLENRAUM_MIN = 1;   //Zahlbegrenzung
     const ZAHLENRAUM_MAX = 100; //Zahlbegrenzung
     const TEN_STEP = 10;        //Zehnerschritt
-    const TEN_ADDEND_MAX = 20;
+    const TEN_ADDEND_MAX = 30;  // zweite Zahl beschränken, damit nicht zu schwer
     const TEN_PTS_WITHOUT_TIP = 10; //10 Punkte ohne Tipp
     const TEN_PTS_WITH_TIP = 5;     //5 Punkte mit Tipp
     const TEN_WIN_PTS = 100;        //100 Punkte erreicht dann finishGame
@@ -81,6 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const highscoreTableBody = document.querySelector("#highscore-table-body");
 
     // --- 10ER-ÜBERGANG-SCREEN ELEMENTS ---
+    const tenPlayerEl = document.querySelector("#ten-player");
     const tenScoreEl = document.querySelector("#ten-score");
     const tenQuestionEl = document.querySelector("#ten-question");
     const tenAnswerInput = document.querySelector("#ten-answer");
@@ -96,13 +95,21 @@ document.addEventListener("DOMContentLoaded", () => {
     let selectedLevel = "einfach";
     let selectedHighscoreLevel = "einfach";
     let state = {};     // Speicher aktuellen Zustand
-    let timerInterval = null;
+    let countdownTimer = null;
 
     let highscore = getBestScore(selectedLevel); //Highscore von bestimmte Level
     hsEl.textContent = highscore;               //Highscrore schreiben
 
     let tenState = {};  //Speicher aktuellen Zustand 10 Übergag
 
+    //Hilfsfunktion
+    //zufällige Zahl zwischen min und max
+    function rand(min, max) {
+        //wie viele Zahlen möglich
+        const range = max - min + 1;
+        //zufällige Kommazahl, dann eine gannze Zahl und verschiebt die Zahl
+        return Math.floor(Math.random() * range) + min;
+    }
 
     //--------------------------
     // Startscreen
@@ -139,7 +146,10 @@ document.addEventListener("DOMContentLoaded", () => {
     //unterscheiden: ob matheSpiel oder 10ner Übergang ausgewält wird
     function startSelectedGame() {
         const name = nameInput.value.trim(); //name holen, unnötige Leerzeichen entfernen
-        if (!name) { alert("Bitte gib deinen Heldennamen ein!"); return; }
+        if (!name) {
+            alert("Bitte gib deinen Heldennamen ein!");
+            return;
+        }
 
         if (selectedLevel === "zehner") {
             startTenGame(name);
@@ -178,8 +188,8 @@ document.addEventListener("DOMContentLoaded", () => {
         feedbackEl.textContent = "";
         updateLifeDisplay(); //3,2,1 oder 0 Leben
 
-        heroImage.classList.remove("fall-out", "hit");//notwendig, sonst ab zweites Spiel sichbar
-        enemyEl.classList.remove("fall-out", "hit");//notwendig, sonst ab zweites Spiel sichbar
+        heroImage.classList.remove("fall", "hit", "fall-hidden");//notwendig, sonst ab zweites Spiel sichbar
+        enemyEl.classList.remove("fall", "hit", "fall-hidden");//notwendig, sonst ab zweites Spiel sichbar
 
         //von startScreen zu gameScreen
         startScreen.classList.add("hidden");
@@ -199,6 +209,16 @@ document.addEventListener("DOMContentLoaded", () => {
     //----------------------
     // Spielscreen
     // ---------------------
+
+    //geklickte Button in section choiceGrid finden und bewerten
+    choiceGrid.addEventListener("click", a => {
+        const btn = a.target.closest(".choice-btn");
+
+        if (!btn || btn.disabled) {//Verhindert mehrfaches klicken
+            return;
+        }
+        checkAnswer(Number(btn.textContent), btn);
+    });
 
     //Rechenops zufällig auswählenm: Zufallszahl zwischen 1 0 mit länge mul und dan abrunden ->index
     function pick(arr) {
@@ -256,10 +276,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         //richtige Lösung berechnen
-        if (op === "+") state.answer = a + b;
-        else if (op === "−") state.answer = a - b;
-        else if (op === "×") state.answer = a * b;
-        else state.answer = a / b;
+        if (op === "+") {
+            state.answer = a + b;
+        } else if (op === "−") {
+            state.answer = a - b;
+        } else if (op === "×") {
+            state.answer = a * b;
+        } else {
+            state.answer = a / b;
+        }
 
         //Fragen anzeigen und vorherige Feedback bereinigen
         questionEl.textContent = `${a} ${op} ${b} = ?`;
@@ -278,65 +303,92 @@ document.addEventListener("DOMContentLoaded", () => {
         startTimer();
     }
 
-    // --- NORMALER SPIELSCREEN: MULTIPLE CHOICE OPTIONS ---
+    //4 Antwortmöglichkeiten erstellen
     function makeChoices(correct) {
-        const set = new Set([correct]);
-        const spread = Math.max(5, Math.ceil(Math.abs(correct) * 0.25));
-        let tries = 0;
-        while (set.size < 4 && tries < 60) {
-            tries++;
-            const offset = rand(-spread, spread);
-            const w = correct + offset;
-            if (w !== correct && w >= 0) set.add(w);
+        const choices = new Set([correct]);
+
+        //Abweichung von der Lösung bestimmen
+        let spread = 5;
+        if (correct > 20) {
+            spread = 10;
         }
-        let n = 1;
-        while (set.size < 4) { if (!set.has(correct + n)) set.add(correct + n); n++; }
-        return shuffle([...set]);
+
+        if (correct > 50) {
+            spread = 20;
+        }
+
+        //Falsche Antworten generieren
+        let tries = 0;
+        while (choices.size < 4 && tries <1000) {
+            tries++;
+            const wrong = rand(-spread, spread);
+            const wrong_answer = correct + wrong;
+            if (wrong_answer !== correct && wrong_answer >= 0) {
+                choices.add(wrong_answer);
+            }
+        }
+
+        return mixAnswer([...choices]);
     }
 
-    // --- NORMALER SPIELSCREEN: ANSWER CHECK ---
-    choiceGrid.addEventListener("click", e => {
-        const btn = e.target.closest(".choice-btn");
-        if (!btn || btn.disabled) return;
-        checkAnswer(Number(btn.textContent), btn);
-    });
+    // Reihenfolgen von Antworten zufällig mischen
+    function mixAnswer(arr) {
+        //hinten nach vorne
+        for (let i = arr.length - 1; i > 0; i--) {
+            //0-1 mit i+1 mul und abrunden
+            const j = Math.floor(Math.random() * (i + 1));
+            //zufällige index mit i tauschen
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
 
     function checkAnswer(answer, clickedBtn = null) {
         stopTimer();
+        //deaktivieren alle Button, damit nicht mehrfach klicken
         document.querySelectorAll(".choice-btn").forEach(b => b.disabled = true);
 
+        //Richtig, dann Punkt erhöhen und anzeigen
         if (answer === state.answer) {
             state.pts += PTS_CORRECT;
             scoreEl.textContent = state.pts;
-
+            //Monster -10 HP
+            state.monsterHp = state.monsterHp - 10;
+            monsterHpBar.value = state.monsterHp;
+            //Wenn besser als bishertige Highscore, Highscore aktuallisieren
             if (state.pts > highscore) {
                 highscore = state.pts;
                 hsEl.textContent = highscore;
             }
-
-            state.monsterHp = Math.max(0, state.monsterHp - 10);
-            monsterHpBar.value = state.monsterHp;
-
-            if (clickedBtn) clickedBtn.classList.add("correct");
+            // ausgewaählt Button wird grün gezeigt (in CSS choice-btn.correct) und Animation sowie Feedback
+            if (clickedBtn) {
+                clickedBtn.classList.add("correct");
+            }
             showDamage("-10 HP");
             enemyGetsHit();
-
             feedbackEl.textContent = "Richtig! Weiter so!";
             feedbackEl.style.color = "#00b894";
+
+        //Falsch, dann live -1
         } else {
             state.lives--;
             updateLifeDisplay();
-
+            //die richtige Button herausfinden und markieren
             document.querySelectorAll(".choice-btn").forEach(b => {
-                if (Number(b.textContent) === state.answer) b.classList.add("correct");
+                    if (Number(b.textContent) === state.answer) {
+                        b.classList.add("correct");
+                    }
             });
-            if (clickedBtn) clickedBtn.classList.add("wrong");
+            //ausgewählte Button wird rot markiert + Animation +Feedback in rot
+            if (clickedBtn) {
+                clickedBtn.classList.add("wrong");
+            }
             heroGetsHit();
-
             feedbackEl.textContent = `Fast! Richtig war: ${state.answer}`;
             feedbackEl.style.color = "#d63031";
         }
 
+        //Spielbeendt wenn 100 Punkte oder keine Leben mehr, Timer abgelaufen nächste Frage
         if (state.pts >= WIN_PTS) {
             endGame(true);
         } else if (state.lives <= 0) {
@@ -346,44 +398,52 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // --- NORMALER SPIELSCREEN: TIMER ---
+    // Timer
     function startTimer() {
         stopTimer();
-        const limit = TIMER_SECS[state.level] || 30;
-        let remaining = limit;
-        countdownEl.textContent = remaining;
+        let remain = TIMER_SECS[state.level]; // einfach 30 mittel 20 schwer 15
+        countdownEl.textContent = remain;
 
-        timerInterval = setInterval(() => {
-            remaining--;
-            countdownEl.textContent = remaining;
-
-            if (remaining <= 0) {
+        countdownTimer = setInterval(() => {
+            remain--; //jeder Sekunde -1s
+            countdownEl.textContent = remain;
+            //Zeitabgelaufen dann timer stoppen, life-1, animation + Feedback
+            if (remain <= 0) {
                 stopTimer();
                 state.lives--;
                 updateLifeDisplay();
                 heroGetsHit();
                 feedbackEl.textContent = "Zeit abgelaufen! Leben weniger!";
                 feedbackEl.style.color = "#d63031";
-
-                if (state.lives <= 0) endGame(false);
-                else setTimeout(generateQuestion, NEXT_DELAY);
+            //Zeitabgelaufen wenn kein Leben mehr Spiel beenden oder nächste Frage
+                if (state.lives <= 0) {
+                    endGame(false);
+                } else {
+                    setTimeout(generateQuestion, NEXT_DELAY);
+                }
             }
-        }, 1000);
+        }, 1000); //1s
     }
 
+    //Timer stoppen und ID entfernen
     function stopTimer() {
-        clearInterval(timerInterval);
-        timerInterval = null;
+        clearInterval(countdownTimer);
+        countdownTimer = null;
     }
 
-    // --- NORMALER SPIELSCREEN: LEBENSANZEIGE ---
+    // 4 Bilder für das Leben wechseln
     function updateLifeDisplay() {
-        const lives = Math.max(0, Math.min(LIVES, state.lives));
-        lifeDisplay.src = lives === 0 ? "Bilder/leben0.png" : `Bilder/Leben${lives}.png`;
+        const lives = Math.max(0, Math.min(state.lives));//liegt 0-
+        if (lives === 0) {
+            lifeDisplay.src = "Bilder/leben0.png";
+        } else {
+            lifeDisplay.src = `Bilder/Leben${lives}.png`;
+        }
+
         lifeDisplay.alt = `${lives} Leben`;
     }
 
-    // --- NORMALER SPIELSCREEN: HIT AND FALL EFFECTS ---
+    // Hit Animation
     function enemyGetsHit() {
         playHitAnimation(enemyEl);
     }
@@ -394,9 +454,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function playHitAnimation(characterEl) {
         characterEl.classList.add("hit");
+        //0.35s später entfernt hit
         setTimeout(() => characterEl.classList.remove("hit"), 350);
     }
-
+    //Fall Animation
     function enemyFallsDown() {
         playFallAnimation(enemyEl);
     }
@@ -407,19 +468,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function playFallAnimation(characterEl) {
         playHitAnimation(characterEl);
-        setTimeout(() => characterEl.classList.add("fall-out"), 350);
+        //0.35s später entfernt fall
+        setTimeout(() => characterEl.classList.add("fall"), 350);
+        setTimeout(() => characterEl.classList.add("fall-hidden"), 1050);
     }
 
     function showDamage(text) {
         damageEl.textContent = text;
         damageEl.classList.remove("hidden");
-        damageEl.style.animation = "none";
-        void damageEl.offsetHeight; // reflow to restart animation
-        damageEl.style.animation = "";
+        damageEl.style.animation = "none";//Stoppt kurz die Animation
+        void damageEl.offsetHeight; // reflow (damit direkt beim nächsten Treffer wieder von vorne startet)
+        damageEl.style.animation = "";//Aktiviert CSS-Animation wieder.
         setTimeout(() => damageEl.classList.add("hidden"), 700);
     }
 
-    // --- NORMALER SPIELSCREEN: END GAME ---
+    // Spielbeenden (gewonnen oder verloren) ---
     function endGame(won) {
         stopTimer();
         saveHighscore();
@@ -436,7 +499,9 @@ document.addEventListener("DOMContentLoaded", () => {
         showRankingEndBtn.classList.remove("hidden");
     }
 
-    // --- SCREEN NAVIGATION ---
+    // ------------------------------
+    // SCREEN NAVIGATION
+    // ------------------------------
     newGameBtn.addEventListener("click", () => {
         stopTimer();
         document.body.className = "";
@@ -468,30 +533,10 @@ document.addEventListener("DOMContentLoaded", () => {
         startScreen.classList.remove("hidden");
     });
 
-    tenSubmitBtn.addEventListener("click", checkTenAnswer);
 
-    tenAnswerInput.addEventListener("keydown", e => {
-        if (e.key === "Enter") checkTenAnswer();
-    });
-
-    tenTipBtn.addEventListener("click", () => {
-        tenState.hintUsed = true;
-        tenTipEl.textContent = tenState.hint;
-        tenTipEl.classList.remove("hidden");
-        tenTipBtn.disabled = true;
-    });
-
-    tenRestartBtn.addEventListener("click", () => {
-        startTenGame(tenState.name || nameInput.value.trim() || "Held");
-    });
-
-    tenBackBtn.addEventListener("click", () => {
-        document.body.className = "";
-        tenScreen.classList.add("hidden");
-        startScreen.classList.remove("hidden");
-    });
-
-    // --- HIGHSCORE-SCREEN ---
+    // ----------------------
+    // HIGHSCORE-SCREEN
+    // ----------------------
 
     //Highscore zur passender Rangliste anzeigen
     highscoreLevelAreas.forEach(area => {
@@ -500,7 +545,7 @@ document.addEventListener("DOMContentLoaded", () => {
             renderHighscores();
         });
     });
-
+    //Nur das gewähltes Screen wird gezeigt
     function showHighscoreScreen(level) {
         stopTimer();
         document.body.className = "";
@@ -511,14 +556,186 @@ document.addEventListener("DOMContentLoaded", () => {
         tenScreen.classList.add("hidden");
         highscoreScreen.classList.remove("hidden");
     }
+    // gewählte Level bekommt das selected class
+    function selectHighscoreLevel(level) {
+        selectedHighscoreLevel = level;
+        highscoreLevelAreas.forEach(area => {
+            if (area.dataset.level === level) {
+                area.classList.add("selected");
+            } else {
+                area.classList.remove("selected");
+            }
+        });
+    }
+
+    function loadHighscoreLists() {
+        //drei getrennte Ranglisten
+        const emptyLists = { einfach: [], mittel: [], schwer: [] };
+
+        try {
+            //Daten ausholen
+            const storedLists = JSON.parse(localStorage.getItem(HIGHSCORE_SAVE_KEY)) || {};
+            //Die restelichen beide Liste bleibt
+            const lists = { ...emptyLists, ...storedLists };
+            //Absicherung gegen kaputte Daten
+            HIGHSCORE_LEVELS.forEach(level => {
+                if (!Array.isArray(lists[level])) {
+                    lists[level] = [];
+                }
+            });
+            return lists;
+        //Beim Fehler leere liste zurückgeben
+        } catch {
+            return emptyLists;
+        }
+    }
+    //Speichern in LocalStorage
+    function saveHighscoreLists(lists) {
+        try {
+            localStorage.setItem(HIGHSCORE_SAVE_KEY, JSON.stringify(lists));
+            return true;
+        } catch {
+            feedbackEl.textContent = "Highscore konnte nicht gespeichert werden.";
+            feedbackEl.style.color = "#d63031";
+            return false;
+        }
+    }
+
+    function saveHighscore() {
+        //ob schon gespeichert wurde
+        if (state.saved || !HIGHSCORE_LEVELS.includes(state.level)) {
+            return;
+        }
+
+        const lists = loadHighscoreLists();//aus dem LocalStorage laden
+        //Wie lange das Spiel gedauert hat; aktuelle Zeit - Startzeit
+        const timeUsed = Math.max(1, Math.round((Date.now() - state.startedAt) / 1000));
+
+        //ein neue Ranglisten-Eintrag.
+        const entry = {
+            name: state.name,
+            points: state.pts,
+            time: timeUsed
+        };
+        //bisherige Liste, fügt den neuen Eintrag hinzu.
+        lists[state.level] = [...lists[state.level], entry]
+            //sortieren zuerst nach Punkte, wenn
+            .sort((a, b) => b.points - a.points || a.time - b.time)
+            .slice(0, MAX_RANKING_PLACES);
+
+        saveHighscoreLists(lists);
+        state.saved = true;
+        //Aktualisiert die Highscore Anzeige
+        highscore = getBestScore(state.level);
+        hsEl.textContent = highscore;
+    }
+
+    function getBestScore(level) {
+        //Highscore Liste von  bestimmte Level wenn keine leer List und 0 ausgeben
+        const scores = loadHighscoreLists()[level] || [];
+
+        if (scores.length === 0) {
+            return 0;
+        }
+        //erste Eintrag zurückgeben
+        return scores[0].points;
+}
+
+    //Rangliste Tabelle HighscoreScreen anzeigen
+    function renderHighscores() {
+        const entries = loadHighscoreLists()[selectedHighscoreLevel] || [];
+        highscoreTableBody.innerHTML = "";//alte Tabelle leeren
+
+        if (entries.length === 0) {//Wenn die Liste leer ist
+            const row = document.createElement("tr");//neue Zeile
+            row.innerHTML = '<td colspan="4" class="empty-highscore">Noch keine Einträge</td>';//Zelle geht über alle 4
+            highscoreTableBody.appendChild(row);// Zeile in die Tabelle einfügen
+            return;
+        }
+
+        entries.forEach((entry, index) => {
+            const row = document.createElement("tr");//neue Zeile
+
+            //Zeile füllen mit: Platz, Name, Punkte und Zeit
+            //escapeHtml: nur als normaler Text anzeigen
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${escapeHtml(entry.name)}</td> 
+                <td>${entry.points}</td>
+                <td>${formatTime(entry.time)}</td> 
+            `;
+            highscoreTableBody.appendChild(row);
+        });
+    }
+
+    // Sekunden ->1:01
+    function formatTime(totalSeconds) {
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+
+        //padStart macht Seconds immer 2 Stellig wie 02 03 23;
+        return `${minutes}:${String(seconds).padStart(2, "0")}`;
+    }
+
+    //Browser Zeichen nur als Text zeigt und nicht als HTML-Code
+    function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, char => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        }[char]));
+    }
 
 
 
-    // --- 10ER-ÜBERGANG-SCREEN ---
+    // -----------------------
+    // 10ER-ÜBERGANG-SCREEN
+    // -----------------------
+
+    //Antwort prüfen (Button Klicken)
+    tenSubmitBtn.addEventListener("click", checkTenAnswer);
+    //Antwort prüfen mit Enter
+    tenAnswerInput.addEventListener("keydown", e => {
+        //Eingabe schützen, nur Zahlen eingeben können und maximale nur 3 stellen
+        const allowedKeys = ["Backspace", "Delete", "Tab", "Enter", "ArrowLeft", "ArrowRight"];
+        const isNumberKey = e.key >= "0" && e.key <= "9";
+
+        if (!isNumberKey && !allowedKeys.includes(e.key)) {
+            e.preventDefault();
+            return;
+        }
+
+        if (e.key === "Enter") {
+            checkTenAnswer();
+        }
+    });
+
+    //Tip benutzen dann: tip benutzt true, Inhalt anzeigen, tip button nicht mehr wählbar
+    tenTipBtn.addEventListener("click", () => {
+        tenState.hintUsed = true;
+        tenTipEl.textContent = tenState.hint;
+        tenTipEl.classList.remove("hidden");
+        tenTipBtn.disabled = true;
+    });
+
+    //Spiel neustarten nach Spielende
+    tenRestartBtn.addEventListener("click", () => {
+        startTenGame(tenState.name || nameInput.value.trim() || "Held");
+    });
+
+    //Zurück zum Hauptmenü
+    tenBackBtn.addEventListener("click", () => {
+        document.body.className = "";
+        tenScreen.classList.add("hidden");
+        startScreen.classList.remove("hidden");
+    });
+
     function startTenGame(name) {
-        stopTimer();
         document.body.className = "level-zehner";
         tenState = { name, score: 0, answer: 0, hint: "", hintUsed: false, finished: false };
+        tenPlayerEl.textContent = name;
         tenScoreEl.textContent = tenState.score;
         tenRestartBtn.classList.add("hidden");
         tenFeedbackEl.textContent = "";
@@ -537,10 +754,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function generateTenQuestion() {
         const task = createTenTask();
-        renderTenQuestion(task);
+        showTenQuestion(task);
     }
 
-    function renderTenQuestion(task) {
+    function createTenTask() {
+        const base = createTenValue();
+        const op = pick(["+", "−"]);
+        const questionPosition = rand(1, 3);
+
+        if (op === "+") {
+            return createAdditionTenTask(base, questionPosition);
+        }
+
+        return createSubtractionTenTask(base, questionPosition);
+    }
+
+    function showTenQuestion(task) {
         tenState.answer = task.answer;
         tenState.hint = task.hint;
         tenState.hintUsed = false;
@@ -553,22 +782,15 @@ document.addEventListener("DOMContentLoaded", () => {
         tenAnswerInput.focus();
     }
 
-    function createTenTask() {
-        const base = createTenTransitionBase();
-        const op = pick(["+", "−"]);
-        const questionPosition = rand(1, 3);
-
-        if (op === "+") return createAdditionTenTask(base, questionPosition);
-        return createSubtractionTenTask(base, questionPosition);
-    }
-
-    function createTenTransitionBase() {
+    function createTenValue() {
         while (true) {
+            //startwert (Platz verschaffen, damit über den nächsten Zehner gehen kann)
             const start = rand(ZAHLENRAUM_MIN, ZAHLENRAUM_MAX - TEN_STEP - 1);
-            const nextTen = getNextTen(start);
-            const toNextTen = nextTen - start;
-            const maxAddend = Math.min(TEN_ADDEND_MAX, ZAHLENRAUM_MAX - start);
+            const nextTen = getNextTen(start);// nächste 10ner; start 71 nextTen 80
+            const toNextTen = nextTen - start;//genau zum nächsten Zehner; S 71 toNT 9
+            const maxAddend = Math.min(TEN_ADDEND_MAX, ZAHLENRAUM_MAX - start);//Zweite Zahl beschränken
 
+            //wenn ein echter Zehnerübergang da ist
             if (toNextTen + 1 <= maxAddend) {
                 const addend = rand(toNextTen + 1, maxAddend);
                 return {
@@ -583,37 +805,48 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    //teilt mit 10, rundt nach unten ab, mit10 mul dann + 10
+    function getNextTen(number) {
+        return Math.floor(number / TEN_STEP) * TEN_STEP + TEN_STEP;
+    }
+
+    //Texte für Tipps und Aufgaben (+)
     function createAdditionTenTask(base, questionPosition) {
         const hint = `${base.start} + ${base.toNextTen} = ${base.nextTen}, dann + ${base.afterNextTen} = ${base.result}`;
-
+        //? an der Stelle1
         if (questionPosition === 1) {
             return { text: `? + ${base.addend} = ${base.result}`, answer: base.start, hint };
         }
-
+        //? an der Stelle 2
         if (questionPosition === 2) {
             return { text: `${base.start} + ? = ${base.result}`, answer: base.addend, hint };
         }
-
+        //? an der Stelle 3
         return { text: `${base.start} + ${base.addend} = ?`, answer: base.result, hint };
     }
-
+    //Texte für Tipps und Aufgaben (-)
     function createSubtractionTenTask(base, questionPosition) {
         const hint = `${base.result} - ${base.afterNextTen} = ${base.nextTen}, dann - ${base.toNextTen} = ${base.start}`;
 
+        //? an der Stelle1
         if (questionPosition === 1) {
             return { text: `? - ${base.addend} = ${base.start}`, answer: base.result, hint };
         }
-
+        //? an der Stelle 2
         if (questionPosition === 2) {
             return { text: `${base.result} - ? = ${base.start}`, answer: base.addend, hint };
         }
-
+        //? an der Stelle 3
         return { text: `${base.result} - ${base.addend} = ?`, answer: base.start, hint };
     }
 
     function checkTenAnswer() {
-        if (tenState.finished) return;
+        //Spielvorbei
+        if (tenState.finished) {
+            return;
+        }
 
+        //Wenn nichts eingegeben wird
         const inputValue = tenAnswerInput.value.trim();
         if (!inputValue) {
             tenFeedbackEl.textContent = "Bitte gib eine Antwort ein.";
@@ -621,13 +854,8 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        //Feedback zu falsche Antwort
         const answer = Number(inputValue);
-        if (!Number.isInteger(answer)) {
-            tenFeedbackEl.textContent = "Bitte gib eine ganze Zahl ein.";
-            tenFeedbackEl.style.color = "#d63031";
-            return;
-        }
-
         if (answer !== tenState.answer) {
             tenFeedbackEl.textContent = "Leider falsch. Versuch es nochmal!";
             tenFeedbackEl.style.color = "#d63031";
@@ -635,19 +863,35 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        const points = tenState.hintUsed ? TEN_PTS_WITH_TIP : TEN_PTS_WITHOUT_TIP;
+        // +10 wenn kein Tip, +5 wenn mit TIp
+        let points;
+        if (tenState.hintUsed) {
+            points = TEN_PTS_WITH_TIP;
+        } else {
+            points = TEN_PTS_WITHOUT_TIP;
+        }
         tenState.score += points;
         tenScoreEl.textContent = tenState.score;
+<<<<<<< HEAD
         tenFeedbackEl.textContent = tenState.hintUsed ? "Richtig! Du hast einen Tipp gebraucht." : "Super, Richtig!";
+=======
+
+        //Feedback wenn richtig
+        if (tenState.hintUsed) {
+            tenFeedbackEl.textContent = "Richtig! Du hast einen Tipp gebraucht. :|";
+        } else {
+            tenFeedbackEl.textContent = "Super! :)";
+        }
+>>>>>>> 7b0f6a722955afd2876bef79c6f5050de6e2cbfc
         tenFeedbackEl.style.color = "#00b894";
 
+        //wenn 100 Point erreicht spielvorbei
         if (tenState.score >= TEN_WIN_PTS) {
             finishTenGame();
-        } else {
-            setTimeout(generateTenQuestion, NEXT_DELAY);
         }
     }
 
+    //Screen zu Finishlayout umstellen
     function finishTenGame() {
         tenState.finished = true;
         tenQuestionEl.textContent = "Gewonnen!";
@@ -657,119 +901,5 @@ document.addEventListener("DOMContentLoaded", () => {
         tenSubmitBtn.disabled = true;
         tenTipBtn.disabled = true;
         tenRestartBtn.classList.remove("hidden");
-    }
-
-    function getNextTen(number) {
-        return Math.floor(number / TEN_STEP) * TEN_STEP + TEN_STEP;
-    }
-
-    function selectHighscoreLevel(level) {
-        selectedHighscoreLevel = level;
-        highscoreLevelAreas.forEach(area => {
-            area.classList.toggle("selected", area.dataset.level === level);
-        });
-    }
-
-    function loadHighscoreLists() {
-        const emptyLists = { einfach: [], mittel: [], schwer: [] };
-
-        try {
-            const storedLists = JSON.parse(localStorage.getItem(HIGHSCORE_SAVE_KEY)) || {};
-            const lists = { ...emptyLists, ...storedLists };
-
-            HIGHSCORE_LEVELS.forEach(level => {
-                if (!Array.isArray(lists[level])) lists[level] = [];
-            });
-
-            return lists;
-        } catch {
-            return emptyLists;
-        }
-    }
-
-    function saveHighscoreLists(lists) {
-        localStorage.setItem(HIGHSCORE_SAVE_KEY, JSON.stringify(lists));
-    }
-
-    function saveHighscore() {
-        if (state.saved || !HIGHSCORE_LEVELS.includes(state.level)) return;
-
-        const lists = loadHighscoreLists();
-        const elapsedSeconds = Math.max(1, Math.round((Date.now() - state.startedAt) / 1000));
-        const entry = {
-            name: state.name,
-            points: state.pts,
-            time: elapsedSeconds
-        };
-
-        lists[state.level] = [...lists[state.level], entry]
-            .sort((a, b) => b.points - a.points || a.time - b.time)
-            .slice(0, MAX_RANKING_PLACES);
-
-        saveHighscoreLists(lists);
-        state.saved = true;
-        highscore = getBestScore(state.level);
-        hsEl.textContent = highscore;
-    }
-
-    function getBestScore(level) {
-        const scores = loadHighscoreLists()[level] || [];
-
-        return scores[0]?.points || 0;
-    }
-
-    function renderHighscores() {
-        const entries = loadHighscoreLists()[selectedHighscoreLevel] || [];
-        highscoreTableBody.innerHTML = "";
-
-        if (entries.length === 0) {
-            const row = document.createElement("tr");
-            row.innerHTML = '<td colspan="4" class="empty-highscore">Noch keine Einträge</td>';
-            highscoreTableBody.appendChild(row);
-            return;
-        }
-
-        entries.forEach((entry, index) => {
-            const row = document.createElement("tr");
-
-            row.innerHTML = `
-                <td>${index + 1}</td>
-                <td>${escapeHtml(entry.name)}</td>
-                <td>${entry.points}</td>
-                <td>${formatTime(entry.time)}</td>
-            `;
-            highscoreTableBody.appendChild(row);
-        });
-    }
-
-    function formatTime(totalSeconds) {
-        const minutes = Math.floor(totalSeconds / 60);
-        const seconds = totalSeconds % 60;
-
-        return `${minutes}:${String(seconds).padStart(2, "0")}`;
-    }
-
-    function escapeHtml(value) {
-        return String(value).replace(/[&<>"']/g, char => ({
-            "&": "&amp;",
-            "<": "&lt;",
-            ">": "&gt;",
-            '"': "&quot;",
-            "'": "&#39;"
-        }[char]));
-    }
-
-    // --- HELPERS ---
-    function rand(min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-
-    function shuffle(arr) {
-        for (let i = arr.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [arr[i], arr[j]] = [arr[j], arr[i]];
-        }
-        return arr;
     }
 });
