@@ -872,9 +872,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         tenState.score += points;
         tenScoreEl.textContent = tenState.score;
-<<<<<<< HEAD
         tenFeedbackEl.textContent = tenState.hintUsed ? "Richtig! Du hast einen Tipp gebraucht." : "Super, Richtig!";
-=======
 
         //Feedback wenn richtig
         if (tenState.hintUsed) {
@@ -882,7 +880,6 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             tenFeedbackEl.textContent = "Super! :)";
         }
->>>>>>> 7b0f6a722955afd2876bef79c6f5050de6e2cbfc
         tenFeedbackEl.style.color = "#00b894";
 
         //wenn 100 Point erreicht spielvorbei
