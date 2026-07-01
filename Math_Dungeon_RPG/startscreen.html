@@ -234,6 +234,9 @@
             <h1>10er-Übergang</h1>
             <hr class="divider">
 
+            <!--Spielername anzeigen-->
+            <p class="ten-player">Spieler: <span id="ten-player">Held</span></p>
+
             <!--Punkt anzeigen-->
             <p class="ten-score" aria-label="Punkte">Punkte: <span id="ten-score">0</span></p>
 
@@ -242,7 +245,7 @@
 
             <!--Antwort eingeben(keine number wegen Pfeil)-->
             <label class="choice-label" for="ten-answer">Deine Antwort:</label>
-            <input type="text" id="ten-answer" inputmode="numeric" autocomplete="off" aria-label="Antwort eingeben">
+            <input type="text" id="ten-answer" inputmode="numeric" maxlength="3" autocomplete="off" aria-label="Antwort eingeben">
 
             <!--Buttons für Richtigkeitsprüfung und Tipp-->
             <button type="button" id="ten-submit-btn">Antwort prüfen</button>

@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const ZAHLENRAUM_MIN = 1;   //Zahlbegrenzung
     const ZAHLENRAUM_MAX = 100; //Zahlbegrenzung
     const TEN_STEP = 10;        //Zehnerschritt
-    const TEN_ADDEND_MAX = 20;
+    const TEN_ADDEND_MAX = 30;  // zweite Zahl beschränken, damit nicht zu schwer
     const TEN_PTS_WITHOUT_TIP = 10; //10 Punkte ohne Tipp
     const TEN_PTS_WITH_TIP = 5;     //5 Punkte mit Tipp
     const TEN_WIN_PTS = 100;        //100 Punkte erreicht dann finishGame
@@ -81,6 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const highscoreTableBody = document.querySelector("#highscore-table-body");
 
     // --- 10ER-ÜBERGANG-SCREEN ELEMENTS ---
+    const tenPlayerEl = document.querySelector("#ten-player");
     const tenScoreEl = document.querySelector("#ten-score");
     const tenQuestionEl = document.querySelector("#ten-question");
     const tenAnswerInput = document.querySelector("#ten-answer");
@@ -103,6 +104,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let tenState = {};  //Speicher aktuellen Zustand 10 Übergag
 
+    //Hilfsfunktion
+    //zufällige Zahl zwischen min und max
+    function rand(min, max) {
+        //wie viele Zahlen möglich
+        const range = max - min + 1;
+        //zufällige Kommazahl, dann eine gannze Zahl und verschiebt die Zahl
+        return Math.floor(Math.random() * range) + min;
+    }
 
     //--------------------------
     // Startscreen
@@ -181,8 +190,8 @@ document.addEventListener("DOMContentLoaded", () => {
         feedbackEl.textContent = "";
         updateLifeDisplay(); //3,2,1 oder 0 Leben
 
-        heroImage.classList.remove("fall", "hit");//notwendig, sonst ab zweites Spiel sichbar
-        enemyEl.classList.remove("fall", "hit");//notwendig, sonst ab zweites Spiel sichbar
+        heroImage.classList.remove("fall", "hit", "fall-hidden");//notwendig, sonst ab zweites Spiel sichbar
+        enemyEl.classList.remove("fall", "hit", "fall-hidden");//notwendig, sonst ab zweites Spiel sichbar
 
         //von startScreen zu gameScreen
         startScreen.classList.add("hidden");
@@ -394,8 +403,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Timer
     function startTimer() {
         stopTimer();
-        const limit = TIMER_SECS[state.level]; // einfach 30 mittel 20 schwer 15
-        let remain = limit;
+        let remain = TIMER_SECS[state.level]; // einfach 30 mittel 20 schwer 15
         countdownEl.textContent = remain;
 
         countdownTimer = setInterval(() => {
@@ -464,6 +472,7 @@ document.addEventListener("DOMContentLoaded", () => {
         playHitAnimation(characterEl);
         //0.35s später entfernt fall
         setTimeout(() => characterEl.classList.add("fall"), 350);
+        setTimeout(() => characterEl.classList.add("fall-hidden"), 1050);
     }
 
     function showDamage(text) {
@@ -679,14 +688,26 @@ document.addEventListener("DOMContentLoaded", () => {
     // -----------------------
     // 10ER-ÜBERGANG-SCREEN
     // -----------------------
-    tenSubmitBtn.addEventListener("click", checkTenAnswer);
 
+    //Antwort prüfen (Button Klicken)
+    tenSubmitBtn.addEventListener("click", checkTenAnswer);
+    //Antwort prüfen mit Enter
     tenAnswerInput.addEventListener("keydown", e => {
+        //Eingabe schützen, nur Zahlen eingeben können und maximale nur 3 stellen
+        const allowedKeys = ["Backspace", "Delete", "Tab", "Enter", "ArrowLeft", "ArrowRight"];
+        const isNumberKey = e.key >= "0" && e.key <= "9";
+
+        if (!isNumberKey && !allowedKeys.includes(e.key)) {
+            e.preventDefault();
+            return;
+        }
+
         if (e.key === "Enter") {
             checkTenAnswer();
         }
     });
 
+    //Tip benutzen dann: tip benutzt true, Inhalt anzeigen, tip button nicht mehr wählbar
     tenTipBtn.addEventListener("click", () => {
         tenState.hintUsed = true;
         tenTipEl.textContent = tenState.hint;
@@ -694,10 +715,12 @@ document.addEventListener("DOMContentLoaded", () => {
         tenTipBtn.disabled = true;
     });
 
+    //Spiel neustarten nach Spielende
     tenRestartBtn.addEventListener("click", () => {
         startTenGame(tenState.name || nameInput.value.trim() || "Held");
     });
 
+    //Zurück zum Hauptmenü
     tenBackBtn.addEventListener("click", () => {
         document.body.className = "";
         tenScreen.classList.add("hidden");
@@ -705,9 +728,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     function startTenGame(name) {
-        stopTimer();
         document.body.className = "level-zehner";
         tenState = { name, score: 0, answer: 0, hint: "", hintUsed: false, finished: false };
+        tenPlayerEl.textContent = name;
         tenScoreEl.textContent = tenState.score;
         tenRestartBtn.classList.add("hidden");
         tenFeedbackEl.textContent = "";
@@ -726,10 +749,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function generateTenQuestion() {
         const task = createTenTask();
-        renderTenQuestion(task);
+        showTenQuestion(task);
     }
 
-    function renderTenQuestion(task) {
+    function createTenTask() {
+        const base = createTenValue();
+        const op = pick(["+", "−"]);
+        const questionPosition = rand(1, 3);
+
+        if (op === "+") {
+            return createAdditionTenTask(base, questionPosition);
+        }
+
+        return createSubtractionTenTask(base, questionPosition);
+    }
+
+    function showTenQuestion(task) {
         tenState.answer = task.answer;
         tenState.hint = task.hint;
         tenState.hintUsed = false;
@@ -742,25 +777,15 @@ document.addEventListener("DOMContentLoaded", () => {
         tenAnswerInput.focus();
     }
 
-    function createTenTask() {
-        const base = createTenTransitionBase();
-        const op = pick(["+", "−"]);
-        const questionPosition = rand(1, 3);
-
-        if (op === "+") {
-            return createAdditionTenTask(base, questionPosition);
-        }
-
-        return createSubtractionTenTask(base, questionPosition);
-    }
-
-    function createTenTransitionBase() {
+    function createTenValue() {
         while (true) {
+            //startwert (Platz verschaffen, damit über den nächsten Zehner gehen kann)
             const start = rand(ZAHLENRAUM_MIN, ZAHLENRAUM_MAX - TEN_STEP - 1);
-            const nextTen = getNextTen(start);
-            const toNextTen = nextTen - start;
-            const maxAddend = Math.min(TEN_ADDEND_MAX, ZAHLENRAUM_MAX - start);
+            const nextTen = getNextTen(start);// nächste 10ner; start 71 nextTen 80
+            const toNextTen = nextTen - start;//genau zum nächsten Zehner; S 71 toNT 9
+            const maxAddend = Math.min(TEN_ADDEND_MAX, ZAHLENRAUM_MAX - start);//Zweite Zahl beschränken
 
+            //wenn ein echter Zehnerübergang da ist
             if (toNextTen + 1 <= maxAddend) {
                 const addend = rand(toNextTen + 1, maxAddend);
                 return {
@@ -775,39 +800,48 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    //teilt mit 10, rundt nach unten ab, mit10 mul dann + 10
+    function getNextTen(number) {
+        return Math.floor(number / TEN_STEP) * TEN_STEP + TEN_STEP;
+    }
+
+    //Texte für Tipps und Aufgaben (+)
     function createAdditionTenTask(base, questionPosition) {
         const hint = `${base.start} + ${base.toNextTen} = ${base.nextTen}, dann + ${base.afterNextTen} = ${base.result}`;
-
+        //? an der Stelle1
         if (questionPosition === 1) {
             return { text: `? + ${base.addend} = ${base.result}`, answer: base.start, hint };
         }
-
+        //? an der Stelle 2
         if (questionPosition === 2) {
             return { text: `${base.start} + ? = ${base.result}`, answer: base.addend, hint };
         }
-
+        //? an der Stelle 3
         return { text: `${base.start} + ${base.addend} = ?`, answer: base.result, hint };
     }
-
+    //Texte für Tipps und Aufgaben (-)
     function createSubtractionTenTask(base, questionPosition) {
         const hint = `${base.result} - ${base.afterNextTen} = ${base.nextTen}, dann - ${base.toNextTen} = ${base.start}`;
 
+        //? an der Stelle1
         if (questionPosition === 1) {
             return { text: `? - ${base.addend} = ${base.start}`, answer: base.result, hint };
         }
-
+        //? an der Stelle 2
         if (questionPosition === 2) {
             return { text: `${base.result} - ? = ${base.start}`, answer: base.addend, hint };
         }
-
+        //? an der Stelle 3
         return { text: `${base.result} - ${base.addend} = ?`, answer: base.start, hint };
     }
 
     function checkTenAnswer() {
+        //Spielvorbei
         if (tenState.finished) {
             return;
         }
 
+        //Wenn nichts eingegeben wird
         const inputValue = tenAnswerInput.value.trim();
         if (!inputValue) {
             tenFeedbackEl.textContent = "Bitte gib eine Antwort ein.";
@@ -815,13 +849,8 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        //Feedback zu falsche Antwort
         const answer = Number(inputValue);
-        if (!Number.isInteger(answer)) {
-            tenFeedbackEl.textContent = "Bitte gib eine ganze Zahl ein.";
-            tenFeedbackEl.style.color = "#d63031";
-            return;
-        }
-
         if (answer !== tenState.answer) {
             tenFeedbackEl.textContent = "Leider falsch. Versuch es nochmal!";
             tenFeedbackEl.style.color = "#d63031";
@@ -829,19 +858,31 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        const points = tenState.hintUsed ? TEN_PTS_WITH_TIP : TEN_PTS_WITHOUT_TIP;
+        // +10 wenn kein Tip, +5 wenn mit TIp
+        let points;
+        if (tenState.hintUsed) {
+            points = TEN_PTS_WITH_TIP;
+        } else {
+            points = TEN_PTS_WITHOUT_TIP;
+        }
         tenState.score += points;
         tenScoreEl.textContent = tenState.score;
-        tenFeedbackEl.textContent = tenState.hintUsed ? "Richtig! Du hast einen Tipp gebraucht. 👍" : "Super! 🎉";
+
+        //Feedback wenn richtig
+        if (tenState.hintUsed) {
+            tenFeedbackEl.textContent = "Richtig! Du hast einen Tipp gebraucht. :|";
+        } else {
+            tenFeedbackEl.textContent = "Super! :)";
+        }
         tenFeedbackEl.style.color = "#00b894";
 
+        //wenn 100 Point erreicht spielvorbei
         if (tenState.score >= TEN_WIN_PTS) {
             finishTenGame();
-        } else {
-            setTimeout(generateTenQuestion, NEXT_DELAY);
         }
     }
 
+    //Screen zu Finishlayout umstellen
     function finishTenGame() {
         tenState.finished = true;
         tenQuestionEl.textContent = "Gewonnen!";
@@ -852,16 +893,4 @@ document.addEventListener("DOMContentLoaded", () => {
         tenTipBtn.disabled = true;
         tenRestartBtn.classList.remove("hidden");
     }
-
-    function getNextTen(number) {
-        return Math.floor(number / TEN_STEP) * TEN_STEP + TEN_STEP;
-    }
-
-    // --- HELPERS ---
-    function rand(min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-
-
 });
