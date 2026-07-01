@@ -1,7 +1,5 @@
 //warten bis alle HTML-Elemente geladen
 document.addEventListener("DOMContentLoaded", () => {
-
-
     //-----------------------
     // allgemeine Einstellung
     // -----------------------
@@ -593,7 +591,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     //Speichern in LocalStorage
     function saveHighscoreLists(lists) {
-        localStorage.setItem(HIGHSCORE_SAVE_KEY, JSON.stringify(lists));
+        try {
+            localStorage.setItem(HIGHSCORE_SAVE_KEY, JSON.stringify(lists));
+            return true;
+        } catch {
+            feedbackEl.textContent = "Highscore konnte nicht gespeichert werden.";
+            feedbackEl.style.color = "#d63031";
+            return false;
+        }
     }
 
     function saveHighscore() {
