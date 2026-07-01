@@ -593,13 +593,15 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        const lists = loadHighscoreLists();
-        const elapsedSeconds = Math.max(1, Math.round((Date.now() - state.startedAt) / 1000));
+        const lists = loadHighscoreLists();//aus dem LocalStorage laden
+        //Wie lange das Spiel gedauert hat; aktuelle Zeit - Startzeit
+        const timeUsed = Math.max(1, Math.round((Date.now() - state.startedAt) / 1000));
+
         //ein neue Ranglisten-Eintrag.
         const entry = {
             name: state.name,
             points: state.pts,
-            time: elapsedSeconds
+            time: timeUsed
         };
         //bisherige Liste, fügt den neuen Eintrag hinzu.
         lists[state.level] = [...lists[state.level], entry]
@@ -609,47 +611,59 @@ document.addEventListener("DOMContentLoaded", () => {
 
         saveHighscoreLists(lists);
         state.saved = true;
+        //Aktualisiert die Highscore Anzeige
         highscore = getBestScore(state.level);
         hsEl.textContent = highscore;
     }
 
     function getBestScore(level) {
+        //Highscore Liste von  bestimmte Level wenn keine leer List und 0 ausgeben
         const scores = loadHighscoreLists()[level] || [];
 
-        return scores[0]?.points || 0;
-    }
+        if (scores.length === 0) {
+            return 0;
+        }
+        //erste Eintrag zurückgeben
+        return scores[0].points;
+}
 
+    //Rangliste Tabelle HighscoreScreen anzeigen
     function renderHighscores() {
         const entries = loadHighscoreLists()[selectedHighscoreLevel] || [];
-        highscoreTableBody.innerHTML = "";
+        highscoreTableBody.innerHTML = "";//alte Tabelle leeren
 
-        if (entries.length === 0) {
-            const row = document.createElement("tr");
-            row.innerHTML = '<td colspan="4" class="empty-highscore">Noch keine Einträge</td>';
-            highscoreTableBody.appendChild(row);
+        if (entries.length === 0) {//Wenn die Liste leer ist
+            const row = document.createElement("tr");//neue Zeile
+            row.innerHTML = '<td colspan="4" class="empty-highscore">Noch keine Einträge</td>';//Zelle geht über alle 4
+            highscoreTableBody.appendChild(row);// Zeile in die Tabelle einfügen
             return;
         }
 
         entries.forEach((entry, index) => {
-            const row = document.createElement("tr");
+            const row = document.createElement("tr");//neue Zeile
 
+            //Zeile füllen mit: Platz, Name, Punkte und Zeit
+            //escapeHtml: nur als normaler Text anzeigen
             row.innerHTML = `
                 <td>${index + 1}</td>
-                <td>${escapeHtml(entry.name)}</td>
+                <td>${escapeHtml(entry.name)}</td> 
                 <td>${entry.points}</td>
-                <td>${formatTime(entry.time)}</td>
+                <td>${formatTime(entry.time)}</td> 
             `;
             highscoreTableBody.appendChild(row);
         });
     }
 
+    // Sekunden ->1:01
     function formatTime(totalSeconds) {
         const minutes = Math.floor(totalSeconds / 60);
         const seconds = totalSeconds % 60;
 
+        //padStart macht Seconds immer 2 Stellig wie 02 03 23;
         return `${minutes}:${String(seconds).padStart(2, "0")}`;
     }
 
+    //Browser Zeichen nur als Text zeigt und nicht als HTML-Code
     function escapeHtml(value) {
         return String(value).replace(/[&<>"']/g, char => ({
             "&": "&amp;",
