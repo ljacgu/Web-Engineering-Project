@@ -896,6 +896,8 @@
         tenAnswerInput.value = "";
         tenTipEl.textContent = "";
         tenTipEl.classList.add("hidden");
+        tenAnswerInput.disabled = false;
+        tenSubmitBtn.disabled = false;
         tenTipBtn.disabled = false;
         tenFeedbackEl.textContent = "";
         tenAnswerInput.focus();
@@ -1000,6 +1002,8 @@
         //wenn 100 Point erreicht spielvorbei
         if (tenState.score >= TEN_WIN_PTS) {
             finishTenGame();
+        } else {
+            generateTenQuestion();
         }
     }
 
