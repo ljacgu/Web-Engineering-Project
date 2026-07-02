@@ -1,5 +1,4 @@
-//warten bis alle HTML-Elemente geladen
-document.addEventListener("DOMContentLoaded", () => {
+
     //-----------------------
     // allgemeine Einstellung
     // -----------------------
@@ -7,6 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //eigenes Spiel
     const LIVES = 3;        //3 Versuche
     const PTS_CORRECT = 10; // 10 Punkte für richtige Antwort
+    const MONSTER_DAMAGE = 10; //Monster verliert 10 HP pro richtiger Antwort
     const WIN_PTS = 100;    // 100 Punkte gehabt dann endGame True
     const NEXT_DELAY = 1500;//Wartezeit bis zur nächsten Aufgabe
 
@@ -15,6 +15,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const HIGHSCORE_SAVE_KEY = "matheAbenteuerHighscores"; //Localstorage Name
 
     const TIMER_SECS = { einfach: 30, mittel: 20, schwer: 15, zehner: 30 }; //Zeitbegrenzung
+
+    const COLOR_SUCCESS = "#00b894";
+    const COLOR_ERROR = "#d63031";
+    const COLOR_WIN = "#fdcb6e";
 
     const ENEMIES = {
         einfach: "Bilder/Wald-Pilzmonster.png",
@@ -90,6 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const tenRestartBtn = document.querySelector("#ten-restart-btn");
     const tenBackBtn = document.querySelector("#ten-back-btn");
 
+    const screens = [startScreen, gameScreen, tenScreen, highscoreScreen];
 
     let selectedChar = "Ritter";
     let selectedLevel = "einfach";
@@ -109,6 +114,31 @@ document.addEventListener("DOMContentLoaded", () => {
         const range = max - min + 1;
         //zufällige Kommazahl, dann eine gannze Zahl und verschiebt die Zahl
         return Math.floor(Math.random() * range) + min;
+    }
+
+    //Nur der gewünschte Screen bleibt sichtbar, alle anderen werden versteckt.
+    function showScreen(activeScreen) {
+        screens.forEach(screen => {
+            if (screen === activeScreen) {
+                screen.classList.remove("hidden");
+            } else {
+                screen.classList.add("hidden");
+            }
+        });
+    }
+
+    function goToStartScreen() {
+        document.body.className = "";
+        showScreen(startScreen);
+    }
+
+    function showFeedback(element, text, color) {
+        element.textContent = text;
+        element.style.color = color;
+    }
+
+    function resetCharacterAnimation(characterEl) {
+        characterEl.classList.remove("fall", "hit", "fall-hidden");
     }
 
     //--------------------------
@@ -161,47 +191,55 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //normales Mathespiel
     function startGame(name) {
-        state = {
+        state = createGameState(name);
+        setupGameBasic();
+        updateHighscoreForLevel(selectedLevel);
+        resetGameDisplay();
+        showScreen(gameScreen);
+        showNextQuestion();
+    }
+
+    //Erstellt den Startzustand für eine neue normale Spielrunde.
+    function createGameState(name) {
+        return {
             name,
             level: selectedLevel,
             pts: 0,
-            lives: LIVES, //3 lebens
-            answer: 0,    //Platzhalter für die richtige Lösung
+            lives: LIVES,
+            answer: 0,
             monsterHp: 100,
-            startedAt: Date.now(),  //später Spielzeit für Rangliste
-            saved: false            //wird Status gespeichert?
+            startedAt: Date.now(),
+            saved: false
         };
+    }
 
-        //Initialisierung
-        document.body.className = `level-${selectedLevel}`; //Hintergrund wechsel
-        playerDisplay.textContent = `${selectedChar} ${name}`; //Spielleiste oben
+    //Setzt Hintergrund, Spieleranzeige und Figurenbilder passend zur aktuellen Auswahl.
+    function setupGameBasic() {
+        document.body.className = `level-${selectedLevel}`;
+        playerDisplay.textContent = `${selectedChar} ${state.name}`;
 
         heroImage.src = HERO_IMAGES[selectedChar];
         heroImage.alt = selectedChar;
         enemyEl.src = ENEMIES[selectedLevel];
-        monsterHpBar.value = 100;
+    }
 
-        scoreEl.textContent = 0;
-        highscore = getBestScore(selectedLevel);
+    //Lädt den besten gespeicherten Punktestand für das gewählte Level.
+    function updateHighscoreForLevel(level) {
+        highscore = getBestScore(level);
         hsEl.textContent = highscore;
+    }
 
+    //Setzt alle sichtbaren Werte und Endzustände für eine neue Runde zurück.
+    function resetGameDisplay() {
+        scoreEl.textContent = 0;
+        monsterHpBar.value = state.monsterHp;
         feedbackEl.textContent = "";
-        updateLifeDisplay(); //3,2,1 oder 0 Leben
+        updateLifeDisplay();
 
-        heroImage.classList.remove("fall", "hit", "fall-hidden");//notwendig, sonst ab zweites Spiel sichbar
-        enemyEl.classList.remove("fall", "hit", "fall-hidden");//notwendig, sonst ab zweites Spiel sichbar
+        resetCharacterAnimation(heroImage);
+        resetCharacterAnimation(enemyEl);
 
-        //von startScreen zu gameScreen
-        startScreen.classList.add("hidden");
-        tenScreen.classList.add("hidden");
-        highscoreScreen.classList.add("hidden");
-        gameScreen.classList.remove("hidden");
-
-        //anzeigen nur wenn Spiel vorbei ist
-        newGameBtn.classList.add("hidden");         //notwendig, sonst ab zweites Spiel sichbar
-        showRankingEndBtn.classList.add("hidden");  //notwendig, sonst ab zweites Spiel sichbar
-
-        generateQuestion();
+        setEndButtonsVisible(false);
     }
 
 
@@ -225,110 +263,165 @@ document.addEventListener("DOMContentLoaded", () => {
         return arr[Math.floor(Math.random() * arr.length)];
     }
 
-    // Fragegenerieren (nicht für 10ner Übergang)
-    function generateQuestion() {
-        let a, b, op;
-        const level = state.level;
-
-        //Level Einfach + -
+    //Wählt passend zum Level aus, welche Aufgabenlogik benutzt wird.
+    function createQuestion(level) {
         if (level === "einfach") {
-            op = pick(["+", "−"]);
-            if (op === "+") {
-                //Zahlraum 1-100
-                a = rand(1, 99);
-                b = rand(1, 100 - a);
-            } else {
-                //a >b bei -
-                a = rand(1, 100);
-                b = rand(1, a);
-            }
-
-        //Level Mittel x /
-        } else if (level === "mittel") {
-            op = pick(["×", "÷"]);
-            if (op === "×") {
-                //Zahlraum so damit sinnvolle Aufgaben generiert werden
-                a = rand(2, 10);
-                b = rand(2, Math.floor(100 / a));
-            } else {
-                // a ist immer viel fach von b und innerhalb Zahlraum
-                b = rand(2, 10);
-                a = b * rand(2, Math.floor(100 / b));
-            }
-
-        //Level Schwer
-        //Einfach Mittel kombinieren
-        } else if (level === "schwer") {
-            op = pick(["+", "−", "×", "÷"]);
-            if (op === "+") {
-                a = rand(1, 99);
-                b = rand(1, 100 - a);
-            } else if (op === "−") {
-                a = rand(1, 100);
-                b = rand(1, a);
-            } else if (op === "×") {
-                a = rand(2, 20);
-                b = rand(2, Math.floor(100 / a));
-            } else {
-                b = rand(2, 20);
-                a = b * rand(2, Math.floor(100 / b));
-            }
+            return createEasyQuestion();
         }
 
-        //richtige Lösung berechnen
+        if (level === "mittel") {
+            return createMediumQuestion();
+        }
+
+        return createHardQuestion();
+    }
+
+    //Einfach: Plus und Minus im Zahlenraum bis 100.
+    function createEasyQuestion() {
+        const op = pick(["+", "−"]);
+        let a, b;
+
         if (op === "+") {
-            state.answer = a + b;
-        } else if (op === "−") {
-            state.answer = a - b;
-        } else if (op === "×") {
-            state.answer = a * b;
+            a = rand(1, 99);
+            b = rand(1, 100 - a);
         } else {
-            state.answer = a / b;
+            //Die erste Zahl ist größer, damit kein negatives Ergebnis entsteht.
+            a = rand(1, 100);
+            b = rand(1, a);
         }
 
-        //Fragen anzeigen und vorherige Feedback bereinigen
-        questionEl.textContent = `${a} ${op} ${b} = ?`;
+        return buildQuestion(a, b, op);
+    }
+
+    //Mittel: Mal und Geteilt mit sinnvollen ganzen Ergebnissen.
+    function createMediumQuestion() {
+        const op = pick(["×", "÷"]);
+        let a, b;
+
+        if (op === "×") {
+            a = rand(2, 10);
+            b = rand(2, Math.floor(100 / a));
+        } else {
+            //a ist ein Vielfaches von b, damit die Division glatt aufgeht.
+            b = rand(2, 10);
+            a = b * rand(2, Math.floor(100 / b));
+        }
+
+        return buildQuestion(a, b, op);
+    }
+
+    //Schwer: alle vier Rechenarten, bei Mal und Geteilt mit größerem Zahlenraum.
+    function createHardQuestion() {
+        const op = pick(["+", "−", "×", "÷"]);
+        let a, b;
+
+        if (op === "+") {
+            a = rand(1, 99);
+            b = rand(1, 100 - a);
+        } else if (op === "−") {
+            a = rand(1, 100);
+            b = rand(1, a);
+        } else if (op === "×") {
+            a = rand(2, 20);
+            b = rand(2, Math.floor(100 / a));
+        } else {
+            //a ist ein Vielfaches von b, damit die Division glatt aufgeht.
+            b = rand(2, 20);
+            a = b * rand(2, Math.floor(100 / b));
+        }
+
+        return buildQuestion(a, b, op);
+    }
+
+    //Baut aus Zahlen und Rechenzeichen das gemeinsame Aufgabenobjekt.
+    function buildQuestion(a, b, op) {
+        const answer = calculateAnswer(a, b, op);
+
+        return {
+            a,
+            b,
+            op,
+            answer,
+            text: `${a} ${op} ${b} = ?`
+        };
+    }
+
+    //Berechnet die Lösung unabhängig vom DOM. Dadurch ist die Funktion gut testbar.
+    function calculateAnswer(a, b, op) {
+        if (op === "+") {
+            return a + b;
+        }
+
+        if (op === "−") {
+            return a - b;
+        }
+
+        if (op === "×") {
+            return a * b;
+        }
+
+        return a / b;
+    }
+
+    //Zeigt die nächste Aufgabe auf dem Spielscreen und bereitet die Antworten vor.
+    function showNextQuestion() {
+        const question = createQuestion(state.level);
+
+        showQuestionText(question);
+        choiceButtons(makeChoices(question.answer));
+
+        startTimer();
+    }
+
+    //Speichert die richtige Lösung und zeigt den Fragetext im Spielscreen an.
+    function showQuestionText(question) {
+        state.answer = question.answer;
+        questionEl.textContent = question.text;
         feedbackEl.textContent = "";
+    }
 
-        //erstelle liste mit 4 Möglichkeiten
-        const choices = makeChoices(state.answer);
-
-        //Jeder Button bekommt eine Antwort aus der choice
+    function choiceButtons(choices) {
         document.querySelectorAll(".choice-btn").forEach((btn, i) => {
             btn.textContent = choices[i];
             btn.className = "choice-btn";
             btn.disabled = false;
         });
-
-        startTimer();
     }
 
     //4 Antwortmöglichkeiten erstellen
     function makeChoices(correct) {
         const choices = new Set([correct]);
-
-        //Abweichung von der Lösung bestimmen
-        let spread = 5;
-        if (correct > 20) {
-            spread = 10;
-        }
-
-        if (correct > 50) {
-            spread = 20;
-        }
+        const spread = getChoiceSpread(correct);
 
         //Falsche Antworten generieren
         let tries = 0;
         while (choices.size < 4 && tries <1000) {
             tries++;
-            const wrong = rand(-spread, spread);
-            const wrong_answer = correct + wrong;
-            if (wrong_answer !== correct && wrong_answer >= 0) {
-                choices.add(wrong_answer);
+            const wrongAnswer = createWrongChoice(correct, spread);
+            if (wrongAnswer !== correct && wrongAnswer >= 0) {
+                choices.add(wrongAnswer);
             }
         }
 
         return mixAnswer([...choices]);
+    }
+
+    //Bestimmt, wie weit falsche Antworten von der richtigen Lösung entfernt sein dürfen.
+    function getChoiceSpread(correct) {
+        if (correct > 50) {
+            return 20;
+        }
+
+        if (correct > 20) {
+            return 10;
+        }
+
+        return 5;
+    }
+
+    //Erzeugt eine einzelne falsche Antwort in der Nähe der richtigen Lösung.
+    function createWrongChoice(correct, spread) {
+        return correct + rand(-spread, spread);
     }
 
     // Reihenfolgen von Antworten zufällig mischen
@@ -345,56 +438,77 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function checkAnswer(answer, clickedBtn = null) {
         stopTimer();
-        //deaktivieren alle Button, damit nicht mehrfach klicken
-        document.querySelectorAll(".choice-btn").forEach(b => b.disabled = true);
+        setChoiceButtonsDisabled(true);
 
-        //Richtig, dann Punkt erhöhen und anzeigen
         if (answer === state.answer) {
-            state.pts += PTS_CORRECT;
-            scoreEl.textContent = state.pts;
-            //Monster -10 HP
-            state.monsterHp = state.monsterHp - 10;
-            monsterHpBar.value = state.monsterHp;
-            //Wenn besser als bishertige Highscore, Highscore aktuallisieren
-            if (state.pts > highscore) {
-                highscore = state.pts;
-                hsEl.textContent = highscore;
-            }
-            // ausgewaählt Button wird grün gezeigt (in CSS choice-btn.correct) und Animation sowie Feedback
-            if (clickedBtn) {
-                clickedBtn.classList.add("correct");
-            }
-            showDamage("-10 HP");
-            enemyGetsHit();
-            feedbackEl.textContent = "Richtig! Weiter so!";
-            feedbackEl.style.color = "#00b894";
-
-        //Falsch, dann live -1
+            answerIScorrect(clickedBtn);
         } else {
-            state.lives--;
-            updateLifeDisplay();
-            //die richtige Button herausfinden und markieren
-            document.querySelectorAll(".choice-btn").forEach(b => {
-                    if (Number(b.textContent) === state.answer) {
-                        b.classList.add("correct");
-                    }
-            });
-            //ausgewählte Button wird rot markiert + Animation +Feedback in rot
-            if (clickedBtn) {
-                clickedBtn.classList.add("wrong");
-            }
-            heroGetsHit();
-            feedbackEl.textContent = `Fast! Richtig war: ${state.answer}`;
-            feedbackEl.style.color = "#d63031";
+            answerISwrong(clickedBtn);
         }
 
-        //Spielbeendt wenn 100 Punkte oder keine Leben mehr, Timer abgelaufen nächste Frage
+        continueOrEndGame();
+    }
+
+    //Sperrt oder entsperrt alle Antwortbuttons, damit pro Aufgabe nur eine Antwort zählt.
+    function setChoiceButtonsDisabled(disabled) {
+        document.querySelectorAll(".choice-btn").forEach(button => {
+            button.disabled = disabled;
+        });
+    }
+
+    //Markiert den Button, der die richtige Antwort enthält.
+    function markCorrectChoice(correctAnswer) {
+        document.querySelectorAll(".choice-btn").forEach(button => {
+            if (Number(button.textContent) === correctAnswer) {
+                button.classList.add("correct");
+            }
+        });
+    }
+
+    //Verarbeitet eine richtige Antwort: Punkte, Monster-Schaden, Highscore und Feedback.
+    function answerIScorrect(clickedBtn) {
+        state.pts += PTS_CORRECT;
+        scoreEl.textContent = state.pts;
+
+        state.monsterHp = state.monsterHp - MONSTER_DAMAGE;
+        monsterHpBar.value = state.monsterHp;
+
+        if (state.pts > highscore) {
+            highscore = state.pts;
+            hsEl.textContent = highscore;
+        }
+
+        if (clickedBtn) {
+            clickedBtn.classList.add("correct");
+        }
+
+        showDamage(`-${MONSTER_DAMAGE} HP`);
+        enemyGetsHit();
+        showFeedback(feedbackEl, "Richtig! Weiter so!", COLOR_SUCCESS);
+    }
+
+    //Verarbeitet eine falsche Antwort: Leben abziehen, richtige Lösung zeigen und Feedback.
+    function answerISwrong(clickedBtn) {
+        state.lives--;
+        updateLifeDisplay();
+        markCorrectChoice(state.answer);
+
+        if (clickedBtn) {
+            clickedBtn.classList.add("wrong");
+        }
+
+        heroGetsHit();
+        showFeedback(feedbackEl, `Fast! Richtig war: ${state.answer}`, COLOR_ERROR);
+    }
+
+    //Entscheidet nach einer Antwort, ob das Spiel endet oder die nächste Aufgabe kommt.
+    function continueOrEndGame() {
         if (state.pts >= WIN_PTS) {
             endGame(true);
         } else if (state.lives <= 0) {
             endGame(false);
         } else {
-            setTimeout(generateQuestion, NEXT_DELAY);
+            setTimeout(showNextQuestion, NEXT_DELAY);
         }
     }
 
@@ -409,20 +523,19 @@ document.addEventListener("DOMContentLoaded", () => {
             countdownEl.textContent = remain;
             //Zeitabgelaufen dann timer stoppen, life-1, animation + Feedback
             if (remain <= 0) {
-                stopTimer();
-                state.lives--;
-                updateLifeDisplay();
-                heroGetsHit();
-                feedbackEl.textContent = "Zeit abgelaufen! Leben weniger!";
-                feedbackEl.style.color = "#d63031";
-            //Zeitabgelaufen wenn kein Leben mehr Spiel beenden oder nächste Frage
-                if (state.lives <= 0) {
-                    endGame(false);
-                } else {
-                    setTimeout(generateQuestion, NEXT_DELAY);
-                }
+                timeISout();
             }
         }, 1000); //1s
+    }
+
+    //Verarbeitet den Fall, dass die Zeit für eine Aufgabe abgelaufen ist.
+    function timeISout() {
+        stopTimer();
+        state.lives--;
+        updateLifeDisplay();
+        heroGetsHit();
+        showFeedback(feedbackEl, "Zeit abgelaufen! Leben weniger!", COLOR_ERROR);
+        continueOrEndGame();
     }
 
     //Timer stoppen und ID entfernen
@@ -486,17 +599,34 @@ document.addEventListener("DOMContentLoaded", () => {
     function endGame(won) {
         stopTimer();
         saveHighscore();
+        showGameResult(won);
+        showEndButtons();
+    }
+
+    //Zeigt Text und Fallanimation passend zu Sieg oder Niederlage.
+    function showGameResult(won) {
         if (won) {
-            feedbackEl.textContent = "Gewonnen! Du bist ein Mathe-Held!";
-            feedbackEl.style.color = "#fdcb6e";
+            showFeedback(feedbackEl, "Gewonnen! Du bist ein Mathe-Held!", COLOR_WIN);
             enemyFallsDown();
         } else {
-            feedbackEl.textContent = "Game Over! Versuch es nochmal!";
-            feedbackEl.style.color = "#d63031";
+            showFeedback(feedbackEl, "Game Over! Versuch es nochmal!", COLOR_ERROR);
             heroFallsDown();
         }
-        newGameBtn.classList.remove("hidden");
-        showRankingEndBtn.classList.remove("hidden");
+    }
+
+    //Macht die Buttons sichtbar, die erst nach dem Spielende gebraucht werden.
+    function showEndButtons() {
+        setEndButtonsVisible(true);
+    }
+
+    function setEndButtonsVisible(visible) {
+        if (visible) {
+            newGameBtn.classList.remove("hidden");
+            showRankingEndBtn.classList.remove("hidden");
+        } else {
+            newGameBtn.classList.add("hidden");
+            showRankingEndBtn.classList.add("hidden");
+        }
     }
 
     // ------------------------------
@@ -504,11 +634,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ------------------------------
     newGameBtn.addEventListener("click", () => {
         stopTimer();
-        document.body.className = "";
-        gameScreen.classList.add("hidden");
-        tenScreen.classList.add("hidden");
-        highscoreScreen.classList.add("hidden");
-        startScreen.classList.remove("hidden");
+        goToStartScreen();
         nameInput.value = "";
     });
 
@@ -518,19 +644,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     backBtn.addEventListener("click", () => {
         stopTimer();
-        document.body.className = "";
-        gameScreen.classList.add("hidden");
-        tenScreen.classList.add("hidden");
-        highscoreScreen.classList.add("hidden");
-        startScreen.classList.remove("hidden");
+        goToStartScreen();
     });
 
     highscoreBackBtn.addEventListener("click", () => {
-        document.body.className = "";
-        highscoreScreen.classList.add("hidden");
-        gameScreen.classList.add("hidden");
-        tenScreen.classList.add("hidden");
-        startScreen.classList.remove("hidden");
+        goToStartScreen();
     });
 
 
@@ -551,10 +669,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.body.className = "";
         selectHighscoreLevel(HIGHSCORE_LEVELS.includes(level) ? level : "einfach");
         renderHighscores();
-        startScreen.classList.add("hidden");
-        gameScreen.classList.add("hidden");
-        tenScreen.classList.add("hidden");
-        highscoreScreen.classList.remove("hidden");
+        showScreen(highscoreScreen);
     }
     // gewählte Level bekommt das selected class
     function selectHighscoreLevel(level) {
@@ -595,8 +710,7 @@ document.addEventListener("DOMContentLoaded", () => {
             localStorage.setItem(HIGHSCORE_SAVE_KEY, JSON.stringify(lists));
             return true;
         } catch {
-            feedbackEl.textContent = "Highscore konnte nicht gespeichert werden.";
-            feedbackEl.style.color = "#d63031";
+            showFeedback(feedbackEl, "Highscore konnte nicht gespeichert werden.", COLOR_ERROR);
             return false;
         }
     }
@@ -608,26 +722,36 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const lists = loadHighscoreLists();//aus dem LocalStorage laden
-        //Wie lange das Spiel gedauert hat; aktuelle Zeit - Startzeit
-        const timeUsed = Math.max(1, Math.round((Date.now() - state.startedAt) / 1000));
+        const entry = createHighscoreEntry();
 
-        //ein neue Ranglisten-Eintrag.
-        const entry = {
-            name: state.name,
-            points: state.pts,
-            time: timeUsed
-        };
-        //bisherige Liste, fügt den neuen Eintrag hinzu.
-        lists[state.level] = [...lists[state.level], entry]
-            //sortieren zuerst nach Punkte, wenn
-            .sort((a, b) => b.points - a.points || a.time - b.time)
-            .slice(0, MAX_RANKING_PLACES);
+        lists[state.level] = addHighscoreEntry(lists[state.level], entry);
 
         saveHighscoreLists(lists);
         state.saved = true;
         //Aktualisiert die Highscore Anzeige
         highscore = getBestScore(state.level);
         hsEl.textContent = highscore;
+    }
+
+    //Erstellt den Ranglisten-Eintrag aus dem aktuellen Spielstand.
+    function createHighscoreEntry() {
+        return {
+            name: state.name,
+            points: state.pts,
+            time: getPlayTime()
+        };
+    }
+
+    //Berechnet die bisherige Spielzeit in Sekunden.
+    function getPlayTime() {
+        return Math.max(1, Math.round((Date.now() - state.startedAt) / 1000));
+    }
+
+    //Fügt einen Eintrag sortiert hinzu und behält nur die besten Plätze.
+    function addHighscoreEntry(entries, entry) {
+        return [...entries, entry]
+            .sort((a, b) => b.points - a.points || a.time - b.time)
+            .slice(0, MAX_RANKING_PLACES);
     }
 
     function getBestScore(level) {
@@ -727,9 +851,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //Zurück zum Hauptmenü
     tenBackBtn.addEventListener("click", () => {
-        document.body.className = "";
-        tenScreen.classList.add("hidden");
-        startScreen.classList.remove("hidden");
+        goToStartScreen();
     });
 
     function startTenGame(name) {
@@ -745,10 +867,7 @@ document.addEventListener("DOMContentLoaded", () => {
         tenSubmitBtn.disabled = false;
         tenTipBtn.disabled = false;
 
-        startScreen.classList.add("hidden");
-        gameScreen.classList.add("hidden");
-        highscoreScreen.classList.add("hidden");
-        tenScreen.classList.remove("hidden");
+        showScreen(tenScreen);
         generateTenQuestion();
     }
 
@@ -849,16 +968,14 @@ document.addEventListener("DOMContentLoaded", () => {
         //Wenn nichts eingegeben wird
         const inputValue = tenAnswerInput.value.trim();
         if (!inputValue) {
-            tenFeedbackEl.textContent = "Bitte gib eine Antwort ein.";
-            tenFeedbackEl.style.color = "#d63031";
+            showFeedback(tenFeedbackEl, "Bitte gib eine Antwort ein.", COLOR_ERROR);
             return;
         }
 
         //Feedback zu falsche Antwort
         const answer = Number(inputValue);
         if (answer !== tenState.answer) {
-            tenFeedbackEl.textContent = "Leider falsch. Versuch es nochmal!";
-            tenFeedbackEl.style.color = "#d63031";
+            showFeedback(tenFeedbackEl, "Leider falsch. Versuch es nochmal!", COLOR_ERROR);
             tenAnswerInput.select();
             return;
         }
@@ -872,15 +989,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         tenState.score += points;
         tenScoreEl.textContent = tenState.score;
-        tenFeedbackEl.textContent = tenState.hintUsed ? "Richtig! Du hast einen Tipp gebraucht." : "Super, Richtig!";
 
         //Feedback wenn richtig
         if (tenState.hintUsed) {
-            tenFeedbackEl.textContent = "Richtig! Du hast einen Tipp gebraucht. :|";
+            showFeedback(tenFeedbackEl, "Richtig! Du hast einen Tipp gebraucht. :|", COLOR_SUCCESS);
         } else {
-            tenFeedbackEl.textContent = "Super! :)";
+            showFeedback(tenFeedbackEl, "Super! :)", COLOR_SUCCESS);
         }
-        tenFeedbackEl.style.color = "#00b894";
 
         //wenn 100 Point erreicht spielvorbei
         if (tenState.score >= TEN_WIN_PTS) {
@@ -892,11 +1007,9 @@ document.addEventListener("DOMContentLoaded", () => {
     function finishTenGame() {
         tenState.finished = true;
         tenQuestionEl.textContent = "Gewonnen!";
-        tenFeedbackEl.textContent = "Du hast den 10er-Übergang geschafft!";
-        tenFeedbackEl.style.color = "#00b894";
+        showFeedback(tenFeedbackEl, "Du hast den 10er-Übergang geschafft!", COLOR_SUCCESS);
         tenAnswerInput.disabled = true;
         tenSubmitBtn.disabled = true;
         tenTipBtn.disabled = true;
         tenRestartBtn.classList.remove("hidden");
     }
-});
