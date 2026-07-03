@@ -1,4 +1,3 @@
-
     //-----------------------
     // allgemeine Einstellung
     // -----------------------
@@ -20,11 +19,10 @@
     const COLOR_ERROR = "#d63031";
     const COLOR_WIN = "#fdcb6e";
 
-    const ENEMIES = {
+    const ENEMY_IMAGES = {
         einfach: "Bilder/Wald-Pilzmonster.png",
         mittel: "Bilder/robot.png",
         schwer: "Bilder/monster.png",
-        zehner: "Bilder/Wald-Pilzmonster.png"
     };
 
     const HERO_IMAGES = {
@@ -66,7 +64,7 @@
     const scoreEl       = document.querySelector("#score");
     const hsEl          = document.querySelector("#highscore");
     const enemyEl       = document.querySelector("#enemy-image");
-    const heroImage     = document.querySelector("#hero-image");
+    const heroEl        = document.querySelector("#hero-image");
     const monsterHpBar  = document.querySelector("#monster-hp");
     const damageEl      = document.querySelector("#damage");
     const countdownEl   = document.querySelector("#countdown");
@@ -107,12 +105,15 @@
 
     let tenState = {};  //Speicher aktuellen Zustand 10 Übergag
 
-    //Hilfsfunktion
+    //------------------
+    // Hilfsfunktion
+    // -----------------
+
     //zufällige Zahl zwischen min und max
     function rand(min, max) {
-        //wie viele Zahlen möglich
+        //wie viele mögliche Zahlen es gibt
         const range = max - min + 1;
-        //zufällige Kommazahl, dann eine gannze Zahl und verschiebt die Zahl
+        //Zahlbereich berechnen und dann verschieben
         return Math.floor(Math.random() * range) + min;
     }
 
@@ -140,6 +141,39 @@
     function resetCharacterAnimation(characterEl) {
         characterEl.classList.remove("fall", "hit", "fall-hidden");
     }
+
+    //Browser Zeichen nur als Text zeigt und nicht als HTML-Code
+    function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, char => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        }[char]));
+    }
+
+    // ------------------------------
+    // SCREEN NAVIGATION
+    // ------------------------------
+    newGameBtn.addEventListener("click", () => {
+        stopTimer();
+        goToStartScreen();
+        nameInput.value = "";
+    });
+
+    showRankingEndBtn.addEventListener("click", () => {
+        showHighscoreScreen(state.level || selectedLevel);
+    });
+
+    backBtn.addEventListener("click", () => {
+        stopTimer();
+        goToStartScreen();
+    });
+
+    highscoreBackBtn.addEventListener("click", () => {
+        goToStartScreen();
+    });
 
     //--------------------------
     // Startscreen
@@ -217,10 +251,9 @@
     function setupGameBasic() {
         document.body.className = `level-${selectedLevel}`;
         playerDisplay.textContent = `${selectedChar} ${state.name}`;
-
-        heroImage.src = HERO_IMAGES[selectedChar];
-        heroImage.alt = selectedChar;
-        enemyEl.src = ENEMIES[selectedLevel];
+        heroEl.src = HERO_IMAGES[selectedChar];
+        heroEl.alt = selectedChar;
+        enemyEl.src = ENEMY_IMAGES[selectedLevel];
     }
 
     //Lädt den besten gespeicherten Punktestand für das gewählte Level.
@@ -232,20 +265,16 @@
     //Setzt alle sichtbaren Werte und Endzustände für eine neue Runde zurück.
     function resetGameDisplay() {
         scoreEl.textContent = 0;
-        monsterHpBar.value = state.monsterHp;
+        monsterHpBar.value = state.monsterHp; //aktualisiert den sichtbaren Lebensbalken
         feedbackEl.textContent = "";
         updateLifeDisplay();
-
-        resetCharacterAnimation(heroImage);
+        resetCharacterAnimation(heroEl);
         resetCharacterAnimation(enemyEl);
-
         setEndButtonsVisible(false);
     }
 
-
-
     //----------------------
-    // Spielscreen
+    // Spielscreen: Teil 1 Aufgabe generieren
     // ---------------------
 
     //geklickte Button in section choiceGrid finden und bewerten
@@ -258,12 +287,17 @@
         checkAnswer(Number(btn.textContent), btn);
     });
 
-    //Rechenops zufällig auswählenm: Zufallszahl zwischen 1 0 mit länge mul und dan abrunden ->index
-    function pick(arr) {
-        return arr[Math.floor(Math.random() * arr.length)];
+    //Zeigt die nächste Aufgabe auf dem Spielscreen und bereitet die Antworten vor.
+    function showNextQuestion() {
+        const question = createQuestion(state.level);
+
+        showQuestionText(question);
+        choiceButtons(makeChoices(question.answer));
+
+        startTimer();
     }
 
-    //Wählt passend zum Level aus, welche Aufgabenlogik benutzt wird.
+    //Aufgaben zu passende Niveau generieren.
     function createQuestion(level) {
         if (level === "einfach") {
             return createEasyQuestion();
@@ -276,7 +310,12 @@
         return createHardQuestion();
     }
 
-    //Einfach: Plus und Minus im Zahlenraum bis 100.
+    //Rechenops zufällig auswählenm: Zufällige Index von Array auswählebn
+    function pick(arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    //Einfach Plus und Minus
     function createEasyQuestion() {
         const op = pick(["+", "−"]);
         let a, b;
@@ -293,7 +332,7 @@
         return buildQuestion(a, b, op);
     }
 
-    //Mittel: Mal und Geteilt mit sinnvollen ganzen Ergebnissen.
+    //Mittel Mal und Geteilt
     function createMediumQuestion() {
         const op = pick(["×", "÷"]);
         let a, b;
@@ -310,7 +349,7 @@
         return buildQuestion(a, b, op);
     }
 
-    //Schwer: alle vier Rechenarten, bei Mal und Geteilt mit größerem Zahlenraum.
+    //Schwer Einfacch mit Mittel kombinieren und größere Zahlbereich bei Mal und Geteilt
     function createHardQuestion() {
         const op = pick(["+", "−", "×", "÷"]);
         let a, b;
@@ -333,10 +372,9 @@
         return buildQuestion(a, b, op);
     }
 
-    //Baut aus Zahlen und Rechenzeichen das gemeinsame Aufgabenobjekt.
+    //Objekt zurückgeben
     function buildQuestion(a, b, op) {
         const answer = calculateAnswer(a, b, op);
-
         return {
             a,
             b,
@@ -346,31 +384,17 @@
         };
     }
 
-    //Berechnet die Lösung unabhängig vom DOM. Dadurch ist die Funktion gut testbar.
     function calculateAnswer(a, b, op) {
         if (op === "+") {
             return a + b;
         }
-
         if (op === "−") {
             return a - b;
         }
-
         if (op === "×") {
             return a * b;
         }
-
         return a / b;
-    }
-
-    //Zeigt die nächste Aufgabe auf dem Spielscreen und bereitet die Antworten vor.
-    function showNextQuestion() {
-        const question = createQuestion(state.level);
-
-        showQuestionText(question);
-        choiceButtons(makeChoices(question.answer));
-
-        startTimer();
     }
 
     //Speichert die richtige Lösung und zeigt den Fragetext im Spielscreen an.
@@ -380,25 +404,26 @@
         feedbackEl.textContent = "";
     }
 
+    //Schreibt die Antwortmöglichkeiten in die vier Button
     function choiceButtons(choices) {
         document.querySelectorAll(".choice-btn").forEach((btn, i) => {
             btn.textContent = choices[i];
-            btn.className = "choice-btn";
+            btn.className = "choice-btn"; //correct oder wrong entfernen
             btn.disabled = false;
         });
     }
 
-    //4 Antwortmöglichkeiten erstellen
-    function makeChoices(correct) {
-        const choices = new Set([correct]);
-        const spread = getChoiceSpread(correct);
+    //4 Antwortmöglichkeiten erstellen: choice hat[answer; 3 falsche Antwort] und dann mix
+    function makeChoices(answer) {
+        const choices = new Set([answer]);
+        const spread = getChoiceSpread(answer);
 
         //Falsche Antworten generieren
         let tries = 0;
         while (choices.size < 4 && tries <1000) {
             tries++;
-            const wrongAnswer = createWrongChoice(correct, spread);
-            if (wrongAnswer !== correct && wrongAnswer >= 0) {
+            const wrongAnswer = createWrongChoice(answer, spread);
+            if (wrongAnswer !== answer && wrongAnswer >= 0) {
                 choices.add(wrongAnswer);
             }
         }
@@ -406,22 +431,20 @@
         return mixAnswer([...choices]);
     }
 
-    //Bestimmt, wie weit falsche Antworten von der richtigen Lösung entfernt sein dürfen.
-    function getChoiceSpread(correct) {
-        if (correct > 50) {
+    //abhängige Abweichung anhand wie groß die Lösung ist
+    function getChoiceSpread(answer) {
+        if (answer > 50) {
             return 20;
         }
-
-        if (correct > 20) {
+        if (answer > 20) {
             return 10;
         }
-
         return 5;
     }
 
-    //Erzeugt eine einzelne falsche Antwort in der Nähe der richtigen Lösung.
-    function createWrongChoice(correct, spread) {
-        return correct + rand(-spread, spread);
+    //falsche Antworte= richtige Antwort + zufällige Abweichung
+    function createWrongChoice(answer, spread) {
+        return answer + rand(-spread, spread);
     }
 
     // Reihenfolgen von Antworten zufällig mischen
@@ -435,7 +458,11 @@
         }
         return arr;
     }
+    //----------------------
+    // Spielscreen: Teil 2 Aufgaben bewerten und Feedback
+    // ---------------------
 
+    //Lösung prüfen und auswerten: Weiter oder Spielvorbei
     function checkAnswer(answer, clickedBtn = null) {
         stopTimer();
         setChoiceButtonsDisabled(true);
@@ -449,19 +476,10 @@
         continueOrEndGame();
     }
 
-    //Sperrt oder entsperrt alle Antwortbuttons, damit pro Aufgabe nur eine Antwort zählt.
+    //pro Aufgabe nur eine Antwort
     function setChoiceButtonsDisabled(disabled) {
         document.querySelectorAll(".choice-btn").forEach(button => {
             button.disabled = disabled;
-        });
-    }
-
-    //Markiert den Button, der die richtige Antwort enthält.
-    function markCorrectChoice(correctAnswer) {
-        document.querySelectorAll(".choice-btn").forEach(button => {
-            if (Number(button.textContent) === correctAnswer) {
-                button.classList.add("correct");
-            }
         });
     }
 
@@ -501,6 +519,15 @@
         showFeedback(feedbackEl, `Fast! Richtig war: ${state.answer}`, COLOR_ERROR);
     }
 
+    //Markiert den richtigen Button.
+    function markCorrectChoice(correctAnswer) {
+        document.querySelectorAll(".choice-btn").forEach(button => {
+            if (Number(button.textContent) === correctAnswer) {
+                button.classList.add("correct");
+            }
+        });
+    }
+
     //Entscheidet nach einer Antwort, ob das Spiel endet oder die nächste Aufgabe kommt.
     function continueOrEndGame() {
         if (state.pts >= WIN_PTS) {
@@ -508,11 +535,101 @@
         } else if (state.lives <= 0) {
             endGame(false);
         } else {
-            setTimeout(showNextQuestion, NEXT_DELAY);
+            setTimeout(showNextQuestion, NEXT_DELAY); //1.5s warten, dann neue Frage generieren
         }
     }
 
-    // Timer
+    // Spielbeenden (gewonnen oder verloren) ---
+    function endGame(won) {
+        stopTimer();
+        saveHighscore();
+        showGameResult(won);
+        showEndButtons();
+    }
+
+    //Macht die Buttons sichtbar, die erst nach dem Spielende gebraucht werden.
+    function showEndButtons() {
+        setEndButtonsVisible(true);
+    }
+    //------------------
+    // Spielscreen Teil 3 : Visuelle Effekt
+    // -----------------
+
+    // 4 Bilder für das Leben wechseln
+    function updateLifeDisplay() {
+        const lives = Math.max(0, Math.min(state.lives));//liegt 0-
+        if (lives === 0) {
+            lifeDisplay.src = "Bilder/leben0.png";
+        } else {
+            lifeDisplay.src = `Bilder/Leben${lives}.png`;
+        }
+
+        lifeDisplay.alt = `${lives} Leben`;
+    }
+
+    // Hit Animation
+    function enemyGetsHit() {
+        playHitAnimation(enemyEl);
+    }
+
+    function heroGetsHit() {
+        playHitAnimation(heroEl);
+    }
+
+    function playHitAnimation(characterEl) {
+        characterEl.classList.add("hit");
+        //0.35s später entfernt hit
+        setTimeout(() => characterEl.classList.remove("hit"), 350);
+    }
+    //Fall Animation
+
+    function enemyFallsDown() {
+        playFallAnimation(enemyEl);
+    }
+
+    function heroFallsDown() {
+        playFallAnimation(heroEl);
+    }
+
+    function playFallAnimation(characterEl) {
+        playHitAnimation(characterEl);
+        setTimeout(() => characterEl.classList.add("fall"), 350);
+        setTimeout(() => characterEl.classList.add("fall-hidden"), 1050);
+    }
+
+    function showDamage(text) {
+        damageEl.textContent = text;
+        damageEl.classList.remove("hidden");
+        damageEl.style.animation = "none";//Stoppt kurz die Animation
+        void damageEl.offsetHeight; // reflow (damit direkt beim nächsten Treffer wieder von vorne startet)
+        damageEl.style.animation = "";//Aktiviert CSS-Animation wieder.
+        setTimeout(() => damageEl.classList.add("hidden"), 700);
+    }
+
+    //Zeigt Text und Fallanimation passend zu Sieg oder Niederlage.
+    function showGameResult(won) {
+        if (won) {
+            showFeedback(feedbackEl, "Gewonnen! Du bist ein Mathe-Held!", COLOR_WIN);
+            enemyFallsDown();
+        } else {
+            showFeedback(feedbackEl, "Game Over! Versuch es nochmal!", COLOR_ERROR);
+            heroFallsDown();
+        }
+    }
+
+    function setEndButtonsVisible(visible) {
+        if (visible) {
+            newGameBtn.classList.remove("hidden");
+            showRankingEndBtn.classList.remove("hidden");
+        } else {
+            newGameBtn.classList.add("hidden");
+            showRankingEndBtn.classList.add("hidden");
+        }
+    }
+
+    //--------------------------
+    // Spielscreen Teil 4: Timer
+    // -------------------------
     function startTimer() {
         stopTimer();
         let remain = TIMER_SECS[state.level]; // einfach 30 mittel 20 schwer 15
@@ -544,114 +661,6 @@
         countdownTimer = null;
     }
 
-    // 4 Bilder für das Leben wechseln
-    function updateLifeDisplay() {
-        const lives = Math.max(0, Math.min(state.lives));//liegt 0-
-        if (lives === 0) {
-            lifeDisplay.src = "Bilder/leben0.png";
-        } else {
-            lifeDisplay.src = `Bilder/Leben${lives}.png`;
-        }
-
-        lifeDisplay.alt = `${lives} Leben`;
-    }
-
-    // Hit Animation
-    function enemyGetsHit() {
-        playHitAnimation(enemyEl);
-    }
-
-    function heroGetsHit() {
-        playHitAnimation(heroImage);
-    }
-
-    function playHitAnimation(characterEl) {
-        characterEl.classList.add("hit");
-        //0.35s später entfernt hit
-        setTimeout(() => characterEl.classList.remove("hit"), 350);
-    }
-    //Fall Animation
-    function enemyFallsDown() {
-        playFallAnimation(enemyEl);
-    }
-
-    function heroFallsDown() {
-        playFallAnimation(heroImage);
-    }
-
-    function playFallAnimation(characterEl) {
-        playHitAnimation(characterEl);
-        //0.35s später entfernt fall
-        setTimeout(() => characterEl.classList.add("fall"), 350);
-        setTimeout(() => characterEl.classList.add("fall-hidden"), 1050);
-    }
-
-    function showDamage(text) {
-        damageEl.textContent = text;
-        damageEl.classList.remove("hidden");
-        damageEl.style.animation = "none";//Stoppt kurz die Animation
-        void damageEl.offsetHeight; // reflow (damit direkt beim nächsten Treffer wieder von vorne startet)
-        damageEl.style.animation = "";//Aktiviert CSS-Animation wieder.
-        setTimeout(() => damageEl.classList.add("hidden"), 700);
-    }
-
-    // Spielbeenden (gewonnen oder verloren) ---
-    function endGame(won) {
-        stopTimer();
-        saveHighscore();
-        showGameResult(won);
-        showEndButtons();
-    }
-
-    //Zeigt Text und Fallanimation passend zu Sieg oder Niederlage.
-    function showGameResult(won) {
-        if (won) {
-            showFeedback(feedbackEl, "Gewonnen! Du bist ein Mathe-Held!", COLOR_WIN);
-            enemyFallsDown();
-        } else {
-            showFeedback(feedbackEl, "Game Over! Versuch es nochmal!", COLOR_ERROR);
-            heroFallsDown();
-        }
-    }
-
-    //Macht die Buttons sichtbar, die erst nach dem Spielende gebraucht werden.
-    function showEndButtons() {
-        setEndButtonsVisible(true);
-    }
-
-    function setEndButtonsVisible(visible) {
-        if (visible) {
-            newGameBtn.classList.remove("hidden");
-            showRankingEndBtn.classList.remove("hidden");
-        } else {
-            newGameBtn.classList.add("hidden");
-            showRankingEndBtn.classList.add("hidden");
-        }
-    }
-
-    // ------------------------------
-    // SCREEN NAVIGATION
-    // ------------------------------
-    newGameBtn.addEventListener("click", () => {
-        stopTimer();
-        goToStartScreen();
-        nameInput.value = "";
-    });
-
-    showRankingEndBtn.addEventListener("click", () => {
-        showHighscoreScreen(state.level || selectedLevel);
-    });
-
-    backBtn.addEventListener("click", () => {
-        stopTimer();
-        goToStartScreen();
-    });
-
-    highscoreBackBtn.addEventListener("click", () => {
-        goToStartScreen();
-    });
-
-
     // ----------------------
     // HIGHSCORE-SCREEN
     // ----------------------
@@ -660,15 +669,15 @@
     highscoreLevelAreas.forEach(area => {
         area.addEventListener("click", () => {
             selectHighscoreLevel(area.dataset.level);
-            renderHighscores();
+            showHighscores();
         });
     });
+
     //Nur das gewähltes Screen wird gezeigt
     function showHighscoreScreen(level) {
-        stopTimer();
         document.body.className = "";
         selectHighscoreLevel(HIGHSCORE_LEVELS.includes(level) ? level : "einfach");
-        renderHighscores();
+        showHighscores();
         showScreen(highscoreScreen);
     }
     // gewählte Level bekommt das selected class
@@ -683,6 +692,33 @@
         });
     }
 
+    //Rangliste Tabelle HighscoreScreen anzeigen
+    function showHighscores() {
+        const selectedEntries = loadHighscoreLists()[selectedHighscoreLevel] || [];
+        highscoreTableBody.innerHTML = "";//alte Tabelle leeren
+
+        if (selectedEntries.length === 0) {//Wenn die Liste leer ist
+            const row = document.createElement("tr");//neue Zeile
+            row.innerHTML = '<td colspan="4" class="empty-highscore">Noch keine Einträge</td>';//Zelle geht über alle 4
+            highscoreTableBody.appendChild(row);// Zeile in die Tabelle einfügen
+            return;
+        }
+
+        selectedEntries.forEach((entry, index) => {
+            const row = document.createElement("tr");//neue Zeile
+
+            //Zeile füllen mit: Platz, Name, Punkte und Zeit
+            //escapeHtml: nur als normaler Text anzeigen
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${escapeHtml(entry.name)}</td> 
+                <td>${entry.points}</td>
+                <td>${formatTime(entry.time)}</td> 
+            `;
+            highscoreTableBody.appendChild(row);
+        });
+    }
+
     function loadHighscoreLists() {
         //drei getrennte Ranglisten
         const emptyLists = { einfach: [], mittel: [], schwer: [] };
@@ -690,7 +726,7 @@
         try {
             //Daten ausholen
             const storedLists = JSON.parse(localStorage.getItem(HIGHSCORE_SAVE_KEY)) || {};
-            //Die restelichen beide Liste bleibt
+            //überschreibe Leere liste mit gespeicherten Highscoredaten
             const lists = { ...emptyLists, ...storedLists };
             //Absicherung gegen kaputte Daten
             HIGHSCORE_LEVELS.forEach(level => {
@@ -702,16 +738,6 @@
         //Beim Fehler leere liste zurückgeben
         } catch {
             return emptyLists;
-        }
-    }
-    //Speichern in LocalStorage
-    function saveHighscoreLists(lists) {
-        try {
-            localStorage.setItem(HIGHSCORE_SAVE_KEY, JSON.stringify(lists));
-            return true;
-        } catch {
-            showFeedback(feedbackEl, "Highscore konnte nicht gespeichert werden.", COLOR_ERROR);
-            return false;
         }
     }
 
@@ -733,7 +759,18 @@
         hsEl.textContent = highscore;
     }
 
-    //Erstellt den Ranglisten-Eintrag aus dem aktuellen Spielstand.
+    //Speichern in LocalStorage
+    function saveHighscoreLists(lists) {
+        try {
+            localStorage.setItem(HIGHSCORE_SAVE_KEY, JSON.stringify(lists));
+            return true;
+        } catch {
+            showFeedback(feedbackEl, "Highscore konnte nicht gespeichert werden.", COLOR_ERROR);
+            return false;
+        }
+    }
+
+    //Erstellt den Ranglisten Eintrag
     function createHighscoreEntry() {
         return {
             name: state.name,
@@ -748,10 +785,11 @@
     }
 
     //Fügt einen Eintrag sortiert hinzu und behält nur die besten Plätze.
-    function addHighscoreEntry(entries, entry) {
-        return [...entries, entry]
+    //Punkten absteigend, wenn Punkte gleich Zeit aufsteigend.
+    function addHighscoreEntry(old, entry) {
+        return [...old, entry]
             .sort((a, b) => b.points - a.points || a.time - b.time)
-            .slice(0, MAX_RANKING_PLACES);
+            .slice(0, MAX_RANKING_PLACES);//zeige nur die beste 5
     }
 
     function getBestScore(level) {
@@ -765,33 +803,6 @@
         return scores[0].points;
 }
 
-    //Rangliste Tabelle HighscoreScreen anzeigen
-    function renderHighscores() {
-        const entries = loadHighscoreLists()[selectedHighscoreLevel] || [];
-        highscoreTableBody.innerHTML = "";//alte Tabelle leeren
-
-        if (entries.length === 0) {//Wenn die Liste leer ist
-            const row = document.createElement("tr");//neue Zeile
-            row.innerHTML = '<td colspan="4" class="empty-highscore">Noch keine Einträge</td>';//Zelle geht über alle 4
-            highscoreTableBody.appendChild(row);// Zeile in die Tabelle einfügen
-            return;
-        }
-
-        entries.forEach((entry, index) => {
-            const row = document.createElement("tr");//neue Zeile
-
-            //Zeile füllen mit: Platz, Name, Punkte und Zeit
-            //escapeHtml: nur als normaler Text anzeigen
-            row.innerHTML = `
-                <td>${index + 1}</td>
-                <td>${escapeHtml(entry.name)}</td> 
-                <td>${entry.points}</td>
-                <td>${formatTime(entry.time)}</td> 
-            `;
-            highscoreTableBody.appendChild(row);
-        });
-    }
-
     // Sekunden ->1:01
     function formatTime(totalSeconds) {
         const minutes = Math.floor(totalSeconds / 60);
@@ -800,19 +811,6 @@
         //padStart macht Seconds immer 2 Stellig wie 02 03 23;
         return `${minutes}:${String(seconds).padStart(2, "0")}`;
     }
-
-    //Browser Zeichen nur als Text zeigt und nicht als HTML-Code
-    function escapeHtml(value) {
-        return String(value).replace(/[&<>"']/g, char => ({
-            "&": "&amp;",
-            "<": "&lt;",
-            ">": "&gt;",
-            '"': "&quot;",
-            "'": "&#39;"
-        }[char]));
-    }
-
-
 
     // -----------------------
     // 10ER-ÜBERGANG-SCREEN
