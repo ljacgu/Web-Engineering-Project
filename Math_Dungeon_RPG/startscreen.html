@@ -122,15 +122,15 @@
             <img id="life-display" src="Bilder/Leben3.png" alt="3 Leben" aria-label="Leben">
 
             <!--Sternsymbol Punkte-->
-            <span class="bar-value" aria-label="Punkte">
+            <span class="bar-value">
                 <img class="bar-icon" src="Bilder/punkt.png" alt="Punkte">
-                <span id="score">0</span>
+                <output id="score" aria-label="Aktueller Punktestand">0</output>
             </span>
 
             <!--Highscoresymbole Pokal-->
-            <span class="bar-value" aria-label="Highscore">
+            <span class="bar-value">
                 <img class="bar-icon" src="Bilder/Highscore.png" alt="Highscore">
-                <span id="highscore">0</span>
+                <output id="highscore" aria-label="Bester Punktestand">0</output>
             </span>
         </header>
 
@@ -149,6 +149,7 @@
 
         <!--Spielbereich mit einem Zähler und 4 zufällige Aufgaben zum Auswahl-->
         <article class="place game-area">
+            <h2>Rechenaufgabe</h2>
             <!--Zeitbegrenzung-->
             <output id="countdown" aria-label="Verbleibende Zeit">30</output>
             <!--Zufällige Fragen generieren mit Platzhalter-->
@@ -179,7 +180,7 @@
     <!-- HIGHSCORE-SCREEN -->
     <section id="highscore-screen" class="screen hidden" aria-label="Rangliste">
         <article class="place highscore-area">
-            <h1>Rangliste</h1>
+            <h2>Rangliste</h2>
             <hr class="divider">
 
             <!-- Highscore Auswahl (Wald, Stadt und Vulkan)-->
@@ -231,14 +232,16 @@
     <!-- ZEHNERÜBERGANG-SCREEN -->
     <section id="ten-screen" class="screen hidden" aria-label="10er-Übergang">
         <article class="place ten-area">
-            <h1>10er-Übergang</h1>
+            <h2>10er-Übergang</h2>
             <hr class="divider">
 
             <!--Spielername anzeigen-->
             <p class="ten-player">Spieler: <span id="ten-player">Held</span></p>
 
             <!--Punkt anzeigen-->
-            <p class="ten-score" aria-label="Punkte">Punkte: <span id="ten-score">0</span></p>
+            <p class="ten-score">
+                Punkte: <output id="ten-score" aria-label="Punktestand im 10er-Übergang">0</output>
+            </p>
 
             <!--Frage mit Platzhalter-->
             <p id="ten-question" class="ten-question" aria-live="polite">1111 + ? = 1112</p>

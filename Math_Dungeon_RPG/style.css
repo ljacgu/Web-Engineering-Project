@@ -68,7 +68,7 @@ body.level-zehner {
 
 /*Allgemeine Texteinstellung*/
 
-h1 {
+h1, h2 {
     font-size: 2.4rem;
     color: #008f7a;
     margin-bottom: 6px;
@@ -795,7 +795,7 @@ h1 {
 
 @media (max-width: 480px) {
     .place { padding: 20px 16px; }
-    h1 { font-size: 1.9rem; }
+    h1, h2 { font-size: 1.9rem; }
 
     .char-btn {
         width: 56px;
