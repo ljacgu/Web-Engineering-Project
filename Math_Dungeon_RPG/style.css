@@ -26,18 +26,23 @@ body {
 body.level-einfach {
     background-image: url("Bilder/Forest.gif");
 }
+/*Quelle: Wallpaper engine (SneakySnek) (Forest)*/
 
 body.level-mittel {
     background-image: url("Bilder/city.gif");
 }
+/*Quelle: Wallpaper engine (alphiwe ツ) (Night Pixel City)*/
 
 body.level-schwer {
     background-image: url("Bilder/vulkan.gif");
 }
+/*Quelle: Wallpaper engine (Dr. Shrimp Puerto Rico) (Pixel Art Volcano)*/
 
 body.level-zehner {
     background-image: url("Bilder/hintergrund.gif");
 }
+/*Quelle: Wallpaper engine (Pelmenisexual) (Tes Oblivion Pixel)*/
+
 
 /*Elemente verstecken*/
 .hidden {

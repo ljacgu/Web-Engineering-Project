@@ -109,14 +109,6 @@
     // Hilfsfunktion
     // -----------------
 
-    //zufällige Zahl zwischen min und max
-    function rand(min, max) {
-        //wie viele mögliche Zahlen es gibt
-        const range = max - min + 1;
-        //Zahlbereich berechnen und dann verschieben
-        return Math.floor(Math.random() * range) + min;
-    }
-
     //Nur der gewünschte Screen bleibt sichtbar, alle anderen werden versteckt.
     function showScreen(activeScreen) {
         screens.forEach(screen => {
@@ -292,109 +284,9 @@
         const question = createQuestion(state.level);
 
         showQuestionText(question);
-        choiceButtons(makeChoices(question.answer));
+        choiceButtons(createAnswerChoices(question.answer));
 
         startTimer();
-    }
-
-    //Aufgaben zu passende Niveau generieren.
-    function createQuestion(level) {
-        if (level === "einfach") {
-            return createEasyQuestion();
-        }
-
-        if (level === "mittel") {
-            return createMediumQuestion();
-        }
-
-        return createHardQuestion();
-    }
-
-    //Rechenops zufällig auswählenm: Zufällige Index von Array auswählebn
-    function pick(arr) {
-        return arr[Math.floor(Math.random() * arr.length)];
-    }
-
-    //Einfach Plus und Minus
-    function createEasyQuestion() {
-        const op = pick(["+", "−"]);
-        let a, b;
-
-        if (op === "+") {
-            a = rand(1, 99);
-            b = rand(1, 100 - a);
-        } else {
-            //Die erste Zahl ist größer, damit kein negatives Ergebnis entsteht.
-            a = rand(1, 100);
-            b = rand(1, a);
-        }
-
-        return buildQuestion(a, b, op);
-    }
-
-    //Mittel Mal und Geteilt
-    function createMediumQuestion() {
-        const op = pick(["×", "÷"]);
-        let a, b;
-
-        if (op === "×") {
-            a = rand(2, 10);
-            b = rand(2, Math.floor(100 / a));
-        } else {
-            //a ist ein Vielfaches von b, damit die Division glatt aufgeht.
-            b = rand(2, 10);
-            a = b * rand(2, Math.floor(100 / b));
-        }
-
-        return buildQuestion(a, b, op);
-    }
-
-    //Schwer Einfacch mit Mittel kombinieren und größere Zahlbereich bei Mal und Geteilt
-    function createHardQuestion() {
-        const op = pick(["+", "−", "×", "÷"]);
-        let a, b;
-
-        if (op === "+") {
-            a = rand(1, 99);
-            b = rand(1, 100 - a);
-        } else if (op === "−") {
-            a = rand(1, 100);
-            b = rand(1, a);
-        } else if (op === "×") {
-            a = rand(2, 20);
-            b = rand(2, Math.floor(100 / a));
-        } else {
-            //a ist ein Vielfaches von b, damit die Division glatt aufgeht.
-            b = rand(2, 20);
-            a = b * rand(2, Math.floor(100 / b));
-        }
-
-        return buildQuestion(a, b, op);
-    }
-
-    //Objekt zurückgeben
-    function buildQuestion(a, b, op) {
-        const answer = calculateAnswer(a, b, op);
-        return {
-            a,
-            b,
-            op,
-            answer,
-            text: `${a} ${op} ${b} = ?`
-        };
-    }
-
-    function calculateAnswer(a, b, op) {
-        if (op === "+") {
-            return a + b;
-        }
-        if (op === "−") {
-            return a - b;
-        }
-        if (op === "×") {
-            return a * b;
-        }
-        return a / b;
     }
 
     //Speichert die richtige Lösung und zeigt den Fragetext im Spielscreen an.
@@ -413,51 +305,6 @@
         });
     }
 
-    //4 Antwortmöglichkeiten erstellen: choice hat[answer; 3 falsche Antwort] und dann mix
-    function makeChoices(answer) {
-        const choices = new Set([answer]);
-        const spread = getChoiceSpread(answer);
-
-        //Falsche Antworten generieren
-        let tries = 0;
-        while (choices.size < 4 && tries <1000) {
-            tries++;
-            const wrongAnswer = createWrongChoice(answer, spread);
-            if (wrongAnswer !== answer && wrongAnswer >= 0) {
-                choices.add(wrongAnswer);
-            }
-        }
-
-        return mixAnswer([...choices]);
-    }
-
-    //abhängige Abweichung anhand wie groß die Lösung ist
-    function getChoiceSpread(answer) {
-        if (answer > 50) {
-            return 20;
-        }
-        if (answer > 20) {
-            return 10;
-        }
-        return 5;
-    }
-
-    //falsche Antworte= richtige Antwort + zufällige Abweichung
-    function createWrongChoice(answer, spread) {
-        return answer + rand(-spread, spread);
-    }
-
-    // Reihenfolgen von Antworten zufällig mischen
-    function mixAnswer(arr) {
-        //hinten nach vorne
-        for (let i = arr.length - 1; i > 0; i--) {
-            //0-1 mit i+1 mul und abrunden
-            const j = Math.floor(Math.random() * (i + 1));
-            //zufällige index mit i tauschen
-            [arr[i], arr[j]] = [arr[j], arr[i]];
-        }
-        return arr;
-    }
     //----------------------
     // Spielscreen: Teil 2 Aufgaben bewerten und Feedback
     // ---------------------
@@ -694,7 +541,7 @@
 
     //Rangliste Tabelle HighscoreScreen anzeigen
     function showHighscores() {
-        const selectedEntries = loadHighscoreLists()[selectedHighscoreLevel] || [];
+        const selectedEntries = loadHighscoreLists(localStorage)[selectedHighscoreLevel] || [];
         highscoreTableBody.innerHTML = "";//alte Tabelle leeren
 
         if (selectedEntries.length === 0) {//Wenn die Liste leer ist
@@ -719,55 +566,25 @@
         });
     }
 
-    function loadHighscoreLists() {
-        //drei getrennte Ranglisten
-        const emptyLists = { einfach: [], mittel: [], schwer: [] };
-
-        try {
-            //Daten ausholen
-            const storedLists = JSON.parse(localStorage.getItem(HIGHSCORE_SAVE_KEY)) || {};
-            //überschreibe Leere liste mit gespeicherten Highscoredaten
-            const lists = { ...emptyLists, ...storedLists };
-            //Absicherung gegen kaputte Daten
-            HIGHSCORE_LEVELS.forEach(level => {
-                if (!Array.isArray(lists[level])) {
-                    lists[level] = [];
-                }
-            });
-            return lists;
-        //Beim Fehler leere liste zurückgeben
-        } catch {
-            return emptyLists;
-        }
-    }
-
     function saveHighscore() {
         //ob schon gespeichert wurde
         if (state.saved || !HIGHSCORE_LEVELS.includes(state.level)) {
             return;
         }
 
-        const lists = loadHighscoreLists();//aus dem LocalStorage laden
+        const lists = loadHighscoreLists(localStorage);//aus dem LocalStorage laden
         const entry = createHighscoreEntry();
 
         lists[state.level] = addHighscoreEntry(lists[state.level], entry);
 
-        saveHighscoreLists(lists);
+        if (!saveHighscoreLists(localStorage, lists)) {
+            showFeedback(feedbackEl, "Highscore konnte nicht gespeichert werden.", COLOR_ERROR);
+            return;
+        }
         state.saved = true;
         //Aktualisiert die Highscore Anzeige
         highscore = getBestScore(state.level);
         hsEl.textContent = highscore;
-    }
-
-    //Speichern in LocalStorage
-    function saveHighscoreLists(lists) {
-        try {
-            localStorage.setItem(HIGHSCORE_SAVE_KEY, JSON.stringify(lists));
-            return true;
-        } catch {
-            showFeedback(feedbackEl, "Highscore konnte nicht gespeichert werden.", COLOR_ERROR);
-            return false;
-        }
     }
 
     //Erstellt den Ranglisten Eintrag
@@ -784,33 +601,11 @@
         return Math.max(1, Math.round((Date.now() - state.startedAt) / 1000));
     }
 
-    //Fügt einen Eintrag sortiert hinzu und behält nur die besten Plätze.
-    //Punkten absteigend, wenn Punkte gleich Zeit aufsteigend.
-    function addHighscoreEntry(old, entry) {
-        return [...old, entry]
-            .sort((a, b) => b.points - a.points || a.time - b.time)
-            .slice(0, MAX_RANKING_PLACES);//zeige nur die beste 5
-    }
-
     function getBestScore(level) {
         //Highscore Liste von  bestimmte Level wenn keine leer List und 0 ausgeben
-        const scores = loadHighscoreLists()[level] || [];
-
-        if (scores.length === 0) {
-            return 0;
-        }
-        //erste Eintrag zurückgeben
-        return scores[0].points;
+        const scores = loadHighscoreLists(localStorage)[level] || [];
+        return getBestScoreFromList(scores);
 }
-
-    // Sekunden ->1:01
-    function formatTime(totalSeconds) {
-        const minutes = Math.floor(totalSeconds / 60);
-        const seconds = totalSeconds % 60;
-
-        //padStart macht Seconds immer 2 Stellig wie 02 03 23;
-        return `${minutes}:${String(seconds).padStart(2, "0")}`;
-    }
 
     // -----------------------
     // 10ER-ÜBERGANG-SCREEN
@@ -876,7 +671,7 @@
 
     function createTenTask() {
         const base = createTenValue();
-        const op = pick(["+", "−"]);
+        const op = pickOp(["+", "−"]);
         const questionPosition = rand(1, 3);
 
         if (op === "+") {
