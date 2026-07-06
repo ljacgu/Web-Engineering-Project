@@ -33,10 +33,6 @@
     };
 
     //Pflichtaufgabe 10Übergang
-    const ZAHLENRAUM_MIN = 1;   //Zahlbegrenzung
-    const ZAHLENRAUM_MAX = 100; //Zahlbegrenzung
-    const TEN_STEP = 10;        //Zehnerschritt
-    const TEN_ADDEND_MAX = 30;  // zweite Zahl beschränken, damit nicht zu schwer
     const TEN_PTS_WITHOUT_TIP = 10; //10 Punkte ohne Tipp
     const TEN_PTS_WITH_TIP = 5;     //5 Punkte mit Tipp
     const TEN_WIN_PTS = 100;        //100 Punkte erreicht dann finishGame
@@ -669,18 +665,6 @@
         showTenQuestion(task);
     }
 
-    function createTenTask() {
-        const base = createTenValue();
-        const op = pickOp(["+", "−"]);
-        const questionPosition = rand(1, 3);
-
-        if (op === "+") {
-            return createAdditionTenTask(base, questionPosition);
-        }
-
-        return createSubtractionTenTask(base, questionPosition);
-    }
-
     function showTenQuestion(task) {
         tenState.answer = task.answer;
         tenState.hint = task.hint;
@@ -694,64 +678,6 @@
         tenTipBtn.disabled = false;
         tenFeedbackEl.textContent = "";
         tenAnswerInput.focus();
-    }
-
-    function createTenValue() {
-        while (true) {
-            //startwert (Platz verschaffen, damit über den nächsten Zehner gehen kann)
-            const start = rand(ZAHLENRAUM_MIN, ZAHLENRAUM_MAX - TEN_STEP - 1);
-            const nextTen = getNextTen(start);// nächste 10ner; start 71 nextTen 80
-            const toNextTen = nextTen - start;//genau zum nächsten Zehner; S 71 toNT 9
-            const maxAddend = Math.min(TEN_ADDEND_MAX, ZAHLENRAUM_MAX - start);//Zweite Zahl beschränken
-
-            //wenn ein echter Zehnerübergang da ist
-            if (toNextTen + 1 <= maxAddend) {
-                const addend = rand(toNextTen + 1, maxAddend);
-                return {
-                    start,
-                    addend,
-                    result: start + addend,
-                    nextTen,
-                    toNextTen,
-                    afterNextTen: addend - toNextTen
-                };
-            }
-        }
-    }
-
-    //teilt mit 10, rundt nach unten ab, mit10 mul dann + 10
-    function getNextTen(number) {
-        return Math.floor(number / TEN_STEP) * TEN_STEP + TEN_STEP;
-    }
-
-    //Texte für Tipps und Aufgaben (+)
-    function createAdditionTenTask(base, questionPosition) {
-        const hint = `${base.start} + ${base.toNextTen} = ${base.nextTen}, dann + ${base.afterNextTen} = ${base.result}`;
-        //? an der Stelle1
-        if (questionPosition === 1) {
-            return { text: `? + ${base.addend} = ${base.result}`, answer: base.start, hint };
-        }
-        //? an der Stelle 2
-        if (questionPosition === 2) {
-            return { text: `${base.start} + ? = ${base.result}`, answer: base.addend, hint };
-        }
-        //? an der Stelle 3
-        return { text: `${base.start} + ${base.addend} = ?`, answer: base.result, hint };
-    }
-    //Texte für Tipps und Aufgaben (-)
-    function createSubtractionTenTask(base, questionPosition) {
-        const hint = `${base.result} - ${base.afterNextTen} = ${base.nextTen}, dann - ${base.toNextTen} = ${base.start}`;
-
-        //? an der Stelle1
-        if (questionPosition === 1) {
-            return { text: `? - ${base.addend} = ${base.start}`, answer: base.result, hint };
-        }
-        //? an der Stelle 2
-        if (questionPosition === 2) {
-            return { text: `${base.result} - ? = ${base.start}`, answer: base.addend, hint };
-        }
-        //? an der Stelle 3
-        return { text: `${base.result} - ${base.addend} = ?`, answer: base.start, hint };
     }
 
     function checkTenAnswer() {

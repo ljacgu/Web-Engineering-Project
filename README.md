@@ -24,7 +24,8 @@ Der Spieler gibt einen Namen ein, wählt einen Helden und entscheidet sich für 
 
 - `startscreen.html`: Grundstruktur der App mit Startscreen, Spielscreen, Highscore-Screen und 10er-Übergang
 - `style.css`: Layout, Farben, Buttons, Hintergründe und Animationen
-- `script.js`: Spiellogik, Aufgaben, Timer, Auswahl, Punkte und Highscore
+- `script.js`: Steuerung der Screens, Eingaben, Timer, Punkteanzeige und DOM-Aktualisierungen
+- `logicFunction.js`: zentrale Logik für Aufgaben, Antwortmöglichkeiten, 10er-Übergang und Highscore-Funktionen
 
 ## Screens
 
@@ -42,4 +43,6 @@ Ein zusätzlicher Übungsmodus mit eigener Aufgabe, Eingabefeld, Tipp-Funktion u
 
 ## Spiellogik
 
-Die Spiellogik liegt in `script.js`. Dort werden die Screens gewechselt, Aufgaben erzeugt, Antworten geprüft, Punkte und Leben aktualisiert und Highscores im Browser gespeichert.
+Die zentrale Spiellogik liegt in `logicFunction.js`. Dort werden Aufgaben erzeugt, Antwortmöglichkeiten erstellt, 10er-Übergang-Aufgaben berechnet und Highscore-Daten vorbereitet.
+
+`script.js` verbindet diese Logik mit der Oberfläche. Dort werden Screens gewechselt, Eingaben verarbeitet, Timer gestartet, Punkte und Leben angezeigt und Highscores im Browser gespeichert.

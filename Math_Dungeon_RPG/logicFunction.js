@@ -178,6 +178,116 @@ function shuffleAnswerChoices(arr) {
 }
 
 // -----------------------
+// Start 10er Uebergang
+// Logik fuer Aufgaben, Loesung und Tipp.
+// -----------------------
+
+const LOGIC_TEN_ZAHLENRAUM_MIN = 1;   //Zahlbegrenzung
+const LOGIC_TEN_ZAHLENRAUM_MAX = 100; //Zahlbegrenzung
+const LOGIC_TEN_STEP = 10;            //Zehnerschritt
+const LOGIC_TEN_ADDEND_MAX = 30;      //zweite Zahl beschraenken, damit nicht zu schwer
+
+function createTenTask() {
+    const base = createTenValue();
+    const op = pickOp(["+", "-"]);
+    const questionPosition = rand(1, 3);
+
+    if (op === "+") {
+        return createAdditionTenTask(base, questionPosition);
+    }
+
+    return createSubtractionTenTask(base, questionPosition);
+}
+
+function createTenValue() {
+    while (true) {
+        //startwert: Platz lassen, damit die Aufgabe ueber den naechsten Zehner geht
+        const start = rand(LOGIC_TEN_ZAHLENRAUM_MIN, LOGIC_TEN_ZAHLENRAUM_MAX - LOGIC_TEN_STEP - 1);
+        const nextTen = getNextTen(start);
+        const toNextTen = nextTen - start;
+        const maxAddend = Math.min(LOGIC_TEN_ADDEND_MAX, LOGIC_TEN_ZAHLENRAUM_MAX - start);
+
+        //nur Aufgaben mit echtem Zehneruebergang
+        if (toNextTen + 1 <= maxAddend) {
+            const addend = rand(toNextTen + 1, maxAddend);
+            return {
+                start,
+                addend,
+                result: start + addend,
+                nextTen,
+                toNextTen,
+                afterNextTen: addend - toNextTen
+            };
+        }
+    }
+}
+
+//teilt durch 10, rundet ab, multipliziert mit 10 und geht dann zum naechsten Zehner
+function getNextTen(number) {
+    return Math.floor(number / LOGIC_TEN_STEP) * LOGIC_TEN_STEP + LOGIC_TEN_STEP;
+}
+
+//Texte fuer Tipps und Aufgaben (+)
+function createAdditionTenTask(base, questionPosition) {
+    //? an der Stelle 1
+    if (questionPosition === 1) {
+        return {
+            text: `? + ${base.addend} = ${base.result}`,
+            answer: base.start,
+            hint: `Trick: Bei ? + ${base.addend} = ${base.result} rechnest du ${base.result} - ${base.addend}.`
+        };
+    }
+
+    //? an der Stelle 2
+    if (questionPosition === 2) {
+        return {
+            text: `${base.start} + ? = ${base.result}`,
+            answer: base.addend,
+            hint: `Gesuchte Zahl = ${base.result} - ${base.start}. Rechne den Abstand zwischen ${base.start} und ${base.result}.`
+        };
+    }
+
+    //? an der Stelle 3
+    return {
+        text: `${base.start} + ${base.addend} = ?`,
+        answer: base.result,
+        hint: `Trick: Rechne ${base.start} + ${base.addend}.`
+    };
+}
+
+//Texte fuer Tipps und Aufgaben (-)
+function createSubtractionTenTask(base, questionPosition) {
+    //? an der Stelle 1
+    if (questionPosition === 1) {
+        return {
+            text: `? - ${base.addend} = ${base.start}`,
+            answer: base.result,
+            hint: `Trick: Bei ? - ${base.addend} = ${base.start} rechnest du ${base.start} + ${base.addend}.`
+        };
+    }
+
+    //? an der Stelle 2
+    if (questionPosition === 2) {
+        return {
+            text: `${base.result} - ? = ${base.start}`,
+            answer: base.addend,
+            hint: `Gesuchte Zahl = ${base.result} - ${base.start}. Rechne den Abstand zwischen ${base.start} und ${base.result}.`
+        };
+    }
+
+    //? an der Stelle 3
+    return {
+        text: `${base.result} - ${base.addend} = ?`,
+        answer: base.start,
+        hint: `Trick: Rechne ${base.result} - ${base.addend}.`
+    };
+}
+
+// -----------------------
+// Ende 10er Uebergang
+// -----------------------
+
+// -----------------------
 // Highscore-Screen
 // -----------------------
 
@@ -263,6 +373,11 @@ if (typeof module !== "undefined") {
         getWrongAnswerSpread,
         createWrongAnswerChoice,
         shuffleAnswerChoices,
+        createTenTask,
+        createTenValue,
+        getNextTen,
+        createAdditionTenTask,
+        createSubtractionTenTask,
         loadHighscoreLists,
         saveHighscoreLists,
         addHighscoreEntry,

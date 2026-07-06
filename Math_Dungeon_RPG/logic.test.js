@@ -12,6 +12,11 @@ const {
     getWrongAnswerSpread,
     createWrongAnswerChoice,
     shuffleAnswerChoices,
+    createTenTask,
+    createTenValue,
+    getNextTen,
+    createAdditionTenTask,
+    createSubtractionTenTask,
     addHighscoreEntry,
     getBestScoreFromList,
     formatTime
@@ -108,6 +113,95 @@ test("createWrongAnswerChoice - richtige Antwort und Abweichung - liefert Zahl i
     const wrongAnswer = createWrongAnswerChoice(20, 5);
     assert.ok(wrongAnswer >= 15);
     assert.ok(wrongAnswer <= 25);
+});
+
+//--------------------
+// 10er Uebergang
+// -------------------
+
+test("getNextTen liefert den naechsten Zehner", function () {
+    assert.strictEqual(getNextTen(47), 50);
+    assert.strictEqual(getNextTen(50), 60);
+});
+
+test("createTenValue erstellt Werte mit echtem Zehneruebergang", function () {
+    const base = createTenValue();
+
+    assert.ok(base.start >= 1);
+    assert.ok(base.result <= 100);
+    assert.ok(base.addend <= 30);
+    assert.strictEqual(base.result, base.start + base.addend);
+    assert.strictEqual(base.nextTen, getNextTen(base.start));
+    assert.strictEqual(base.toNextTen, base.nextTen - base.start);
+    assert.strictEqual(base.afterNextTen, base.addend - base.toNextTen);
+    assert.ok(base.addend > base.toNextTen);
+});
+
+test("createAdditionTenTask erstellt passende Texte und Antworten", function () {
+    const base = {
+        start: 47,
+        addend: 15,
+        result: 62,
+        nextTen: 50,
+        toNextTen: 3,
+        afterNextTen: 12
+    };
+
+    assert.deepStrictEqual(createAdditionTenTask(base, 1), {
+        text: "? + 15 = 62",
+        answer: 47,
+        hint: "Trick: Bei ? + 15 = 62 rechnest du 62 - 15."
+    });
+
+    assert.deepStrictEqual(createAdditionTenTask(base, 2), {
+        text: "47 + ? = 62",
+        answer: 15,
+        hint: "Gesuchte Zahl = 62 - 47. Rechne den Abstand zwischen 47 und 62."
+    });
+
+    assert.deepStrictEqual(createAdditionTenTask(base, 3), {
+        text: "47 + 15 = ?",
+        answer: 62,
+        hint: "Trick: Rechne 47 + 15."
+    });
+});
+
+test("createSubtractionTenTask erstellt passende Texte und Antworten", function () {
+    const base = {
+        start: 47,
+        addend: 15,
+        result: 62,
+        nextTen: 50,
+        toNextTen: 3,
+        afterNextTen: 12
+    };
+
+    assert.deepStrictEqual(createSubtractionTenTask(base, 1), {
+        text: "? - 15 = 47",
+        answer: 62,
+        hint: "Trick: Bei ? - 15 = 47 rechnest du 47 + 15."
+    });
+
+    assert.deepStrictEqual(createSubtractionTenTask(base, 2), {
+        text: "62 - ? = 47",
+        answer: 15,
+        hint: "Gesuchte Zahl = 62 - 47. Rechne den Abstand zwischen 47 und 62."
+    });
+
+    assert.deepStrictEqual(createSubtractionTenTask(base, 3), {
+        text: "62 - 15 = ?",
+        answer: 47,
+        hint: "Trick: Rechne 62 - 15."
+    });
+});
+
+test("createTenTask erstellt eine Aufgabe mit Text, Antwort und Tipp", function () {
+    const task = createTenTask();
+
+    assert.strictEqual(typeof task.text, "string");
+    assert.strictEqual(typeof task.answer, "number");
+    assert.strictEqual(typeof task.hint, "string");
+    assert.ok(task.text.includes("?"));
 });
 
 
