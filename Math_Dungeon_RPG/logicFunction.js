@@ -283,9 +283,6 @@ function createSubtractionTenTask(base, questionPosition) {
     };
 }
 
-// -----------------------
-// Ende 10er Uebergang
-// -----------------------
 
 // -----------------------
 // Highscore-Screen
