@@ -31,16 +31,23 @@ Der Spieler gibt einen Namen ein, wählt einen Helden und entscheidet sich für 
 
 **Startscreen**  
 Enthält die Namenseingabe, Heldenauswahl, Levelauswahl sowie Buttons zum Starten und zur Rangliste.
+Startscreen -> startGame -> createGameState -> setupGameBasic -> updateHighscoreForLevel -> resetGameDisplay -> showScreen -> showNextQuestion 
+Startscreen -> 10er-Übergang -> Tenscreen
+Startscreen -> showScreen -> Highscorescreen
 
 **Spielscreen**  
 Zeigt die aktuelle Aufgabe, vier Antwortmöglichkeiten, den Timer, die Leben, Punkte, Highscore und das Kampffeld mit Held und Monster.
+Spielscreen -> Button click -> checkAnswer -> continueOrEndGame ->continue -> shownextQuestion -> Button click
+                                                                ->end -> saveHighscore -> showGameResult -> Highscorescreen or Startscreen
 
 **Highscore-Screen**  
 Zeigt gespeicherte Ergebnisse nach Level sortiert.
+Spielscreen -> Button click -> Highscorescreen -> Startscreen
 
 **10er-Übergang**  
 Ein zusätzlicher Übungsmodus mit eigener Aufgabe, Eingabefeld, Tipp-Funktion und Punkteanzeige.
-
+startTenGame -> generateTenQuestion ->  showTenQuestion -> Antworten -> checkTenAnswer -> generateTenQuestion or finishTenGame
+                                                        -> Tipps     -> Tipps remove hidden -> Antworten
 ## Spiellogik
 
 Die zentrale Spiellogik liegt in `logicFunction.js`. Dort werden Aufgaben erzeugt, Antwortmöglichkeiten erstellt, 10er-Übergang-Aufgaben berechnet und Highscore-Daten vorbereitet.
