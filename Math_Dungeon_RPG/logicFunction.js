@@ -291,7 +291,7 @@ function createSubtractionTenTask(base, questionPosition) {
 // Highscore-Screen
 // -----------------------
 
-//Nochmal geschreiben damit unabgängig von script.js testbar
+
 const LOGIC_HIGHSCORE_SAVE_KEY = "matheAbenteuerHighscores";
 const LOGIC_HIGHSCORE_LEVELS = ["einfach", "mittel", "schwer"];
 const LOGIC_MAX_RANKING_PLACES = 5;

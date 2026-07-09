@@ -10,8 +10,6 @@
     const NEXT_DELAY = 1500;//Wartezeit bis zur nächsten Aufgabe
 
     const HIGHSCORE_LEVELS = ["einfach", "mittel", "schwer"]; //Highscores einfach, mittel und schwer
-    const MAX_RANKING_PLACES = 5; // Nur die beste 5 wird angezeigt
-    const HIGHSCORE_SAVE_KEY = "matheAbenteuerHighscores"; //Localstorage Name
 
     const TIMER_SECS = { einfach: 30, mittel: 20, schwer: 15, zehner: 30 }; //Zeitbegrenzung
 
