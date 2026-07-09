@@ -227,6 +227,30 @@ function getNextTen(number) {
     return Math.floor(number / LOGIC_TEN_STEP) * LOGIC_TEN_STEP + LOGIC_TEN_STEP;
 }
 
+function createAddHintQue1(base) {
+    return `${base.addend} = ${base.afterNextTen} + ${base.toNextTen}. Erst ${base.afterNextTen} Schritte von ${base.result} bis ${base.nextTen} zurück, dann noch ${base.toNextTen} zurück.`;
+}
+
+function createAddHintQue2(base) {
+    return `Erst von ${base.start} bis ${base.nextTen} zählen. ${base.toNextTen} Schritte. Dann von ${base.nextTen} bis ${base.result} weiter. Noch ${base.afterNextTen} Schritte.`;
+}
+
+function createAddHintQue3(base) {
+    return `${base.addend} = ${base.toNextTen} + ${base.afterNextTen}. Erst ${base.toNextTen} Schritte von ${base.start} bis ${base.nextTen}, dann noch ${base.afterNextTen} weiter.`;
+}
+
+function createSubHintQue1(base) {
+    return `${base.addend} = ${base.toNextTen} + ${base.afterNextTen}. Erst ${base.toNextTen} Schritte von ${base.start} bis ${base.nextTen}, dann noch ${base.afterNextTen} weiter.`;
+}
+
+function createSubHintQue2(base) {
+    return `Erst von ${base.result} bis ${base.nextTen} zurück. ${base.afterNextTen} Schritte. Dann von ${base.nextTen} bis ${base.start} zurück. Noch ${base.toNextTen} Schritte.`;
+}
+
+function createSubHintQue3(base) {
+    return `${base.addend} = ${base.afterNextTen} + ${base.toNextTen}. Erst ${base.afterNextTen} Schritte von ${base.result} bis ${base.nextTen} zurück, dann noch ${base.toNextTen} zurück.`;
+}
+
 //Texte fuer Tipps und Aufgaben (+)
 function createAdditionTenTask(base, questionPosition) {
     //? an der Stelle 1
@@ -234,7 +258,7 @@ function createAdditionTenTask(base, questionPosition) {
         return {
             text: `? + ${base.addend} = ${base.result}`,
             answer: base.start,
-            hint: `Trick: Bei ? + ${base.addend} = ${base.result} rechnest du ${base.result} - ${base.addend}.`
+            hint: createAddHintQue1(base)
         };
     }
 
@@ -243,7 +267,7 @@ function createAdditionTenTask(base, questionPosition) {
         return {
             text: `${base.start} + ? = ${base.result}`,
             answer: base.addend,
-            hint: `Gesuchte Zahl = ${base.result} - ${base.start}. Rechne den Abstand zwischen ${base.start} und ${base.result}.`
+            hint: createAddHintQue2(base)
         };
     }
 
@@ -251,7 +275,7 @@ function createAdditionTenTask(base, questionPosition) {
     return {
         text: `${base.start} + ${base.addend} = ?`,
         answer: base.result,
-        hint: `Trick: Rechne ${base.start} + ${base.addend}.`
+        hint: createAddHintQue3(base)
     };
 }
 
@@ -262,7 +286,7 @@ function createSubtractionTenTask(base, questionPosition) {
         return {
             text: `? - ${base.addend} = ${base.start}`,
             answer: base.result,
-            hint: `Trick: Bei ? - ${base.addend} = ${base.start} rechnest du ${base.start} + ${base.addend}.`
+            hint: createSubHintQue1(base)
         };
     }
 
@@ -271,7 +295,7 @@ function createSubtractionTenTask(base, questionPosition) {
         return {
             text: `${base.result} - ? = ${base.start}`,
             answer: base.addend,
-            hint: `Gesuchte Zahl = ${base.result} - ${base.start}. Rechne den Abstand zwischen ${base.start} und ${base.result}.`
+            hint: createSubHintQue2(base)
         };
     }
 
@@ -279,7 +303,7 @@ function createSubtractionTenTask(base, questionPosition) {
     return {
         text: `${base.result} - ${base.addend} = ?`,
         answer: base.start,
-        hint: `Trick: Rechne ${base.result} - ${base.addend}.`
+        hint: createSubHintQue3(base)
     };
 }
 

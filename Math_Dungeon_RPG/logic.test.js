@@ -150,19 +150,19 @@ test("createAdditionTenTask erstellt passende Texte und Antworten", function () 
     assert.deepStrictEqual(createAdditionTenTask(base, 1), {
         text: "? + 15 = 62",
         answer: 47,
-        hint: "Trick: Bei ? + 15 = 62 rechnest du 62 - 15."
+        hint: "15 = 12 + 3. Erst 12 Schritte von 62 bis 50 zurück, dann noch 3 zurück."
     });
 
     assert.deepStrictEqual(createAdditionTenTask(base, 2), {
         text: "47 + ? = 62",
         answer: 15,
-        hint: "Gesuchte Zahl = 62 - 47. Rechne den Abstand zwischen 47 und 62."
+        hint: "Erst von 47 bis 50 zählen. 3 Schritte. Dann von 50 bis 62 weiter. Noch 12 Schritte."
     });
 
     assert.deepStrictEqual(createAdditionTenTask(base, 3), {
         text: "47 + 15 = ?",
         answer: 62,
-        hint: "Trick: Rechne 47 + 15."
+        hint: "15 = 3 + 12. Erst 3 Schritte von 47 bis 50, dann noch 12 weiter."
     });
 });
 
@@ -179,19 +179,19 @@ test("createSubtractionTenTask erstellt passende Texte und Antworten", function 
     assert.deepStrictEqual(createSubtractionTenTask(base, 1), {
         text: "? - 15 = 47",
         answer: 62,
-        hint: "Trick: Bei ? - 15 = 47 rechnest du 47 + 15."
+        hint: "15 = 3 + 12. Erst 3 Schritte von 47 bis 50, dann noch 12 weiter."
     });
 
     assert.deepStrictEqual(createSubtractionTenTask(base, 2), {
         text: "62 - ? = 47",
         answer: 15,
-        hint: "Gesuchte Zahl = 62 - 47. Rechne den Abstand zwischen 47 und 62."
+        hint: "Erst von 62 bis 50 zurück. 12 Schritte. Dann von 50 bis 47 zurück. Noch 3 Schritte."
     });
 
     assert.deepStrictEqual(createSubtractionTenTask(base, 3), {
         text: "62 - 15 = ?",
         answer: 47,
-        hint: "Trick: Rechne 62 - 15."
+        hint: "15 = 12 + 3. Erst 12 Schritte von 62 bis 50 zurück, dann noch 3 zurück."
     });
 });
 

@@ -720,7 +720,11 @@
         if (tenState.score >= TEN_WIN_PTS) {
             finishTenGame();
         } else {
-            generateTenQuestion();
+            tenAnswerInput.disabled = true;
+            tenSubmitBtn.disabled = true;
+            tenTipBtn.disabled = true;
+            
+            setTimeout(generateTenQuestion, NEXT_DELAY);
         }
     }
 
