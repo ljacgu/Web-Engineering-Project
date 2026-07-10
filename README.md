@@ -1,49 +1,192 @@
 # Math Dungeon RPG
 
-Kurze Beschreibung
+## Was ist Math Dungeon RPG?
 
-Der Spieler gibt einen Namen ein, wählt einen Helden und entscheidet sich für ein Level. Danach werden Rechenaufgaben gelöst, um Monster zu besiegen, Punkte zu sammeln und eine Rangliste aufzubauen.
+Math Dungeon RPG ist ein kleines Mathe-Spiel für Kinder im Grundschulalter.
 
-## Überblick
+Das Spiel soll Kindern helfen, Rechenaufgaben spielerisch zu üben. Statt Aufgaben nur auf einem Arbeitsblatt zu lösen, kämpfen die Kinder mit einem Helden gegen Monster. Jede richtige Antwort bringt Punkte und schwächt das Monster.
 
-- Startscreen mit Namenseingabe, Heldenauswahl und Levelauswahl
-- Spielscreen mit Aufgabe, Timer, Leben, Punkten und Monster-Lebensbalken
-- eigener Übungsmodus für den 10er-Übergang
-- Highscore-Seite mit Ranglisten für die Level
+Das Ziel ist: Rechnen üben, Punkte sammeln und das Monster besiegen.
 
-## Spielablauf
+## Spiel starten
 
-1. Der Spieler gibt einen Namen ein und wählt Held und Level.
-2. Das Spiel startet und zeigt eine Matheaufgabe mit Antwortmöglichkeiten.
-3. Bei einer richtigen Antwort verliert das Monster Leben und die Punkte steigen.
-4. Bei einer falschen Antwort oder abgelaufener Zeit verliert der Spieler ein Leben.
-5. Das Spiel endet, wenn der Spieler gewinnt oder keine Leben mehr hat.
-6. Danach kann die Rangliste angezeigt oder ein neues Spiel gestartet werden.
+### Voraussetzungen
 
-## Aufbau der App
+Es muss nichts installiert werden. Das Spiel nutzt keine externen Frameworks.
 
-- `startscreen.html`: Grundstruktur der App mit Startscreen, Spielscreen, Highscore-Screen und 10er-Übergang
-- `style.css`: Layout, Farben, Buttons, Hintergründe und Animationen
-- `script.js`: Steuerung der Screens, Eingaben, Timer, Punkteanzeige und DOM-Aktualisierungen
-- `logicFunction.js`: zentrale Logik für Aufgaben, Antwortmöglichkeiten, 10er-Übergang und Highscore-Funktionen
+## Erste Schritte im Spiel
 
-## Screens
+Auf dem Startscreen macht das Kind zuerst drei Dinge:
 
-**Startscreen**  
-Enthält die Namenseingabe, Heldenauswahl, Levelauswahl sowie Buttons zum Starten und zur Rangliste.
+1. Einen Namen eingeben
+2. Einen Helden auswählen
+3. Ein Level auswählen
 
-**Spielscreen**  
-Zeigt die aktuelle Aufgabe, vier Antwortmöglichkeiten, den Timer, die Leben, Punkte, Highscore und das Kampffeld mit Held und Monster.
+Danach startet das Spiel mit dem Button `Spiel starten`.
 
-**Highscore-Screen**  
-Zeigt gespeicherte Ergebnisse nach Level sortiert.
+Wenn kein Name eingegeben wurde, startet das Spiel nicht. Das Kind bekommt dann eine Meldung und kann den Namen nachtragen.
+
+## Normales Mathespiel
+
+Im normalen Mathespiel beantwortet das Kind Rechenaufgaben mit Antwortbuttons.
+
+Es gibt drei Level:
+
+- einfach
+- mittel
+- schwer
+
+Je nach Level werden die Aufgaben schwieriger. Außerdem gibt es einen Timer. Das Kind muss also innerhalb der Zeit antworten.
+
+Im Spiel sieht das Kind:
+
+- den eigenen Namen
+- die aktuelle Rechenaufgabe
+- vier Antwortmöglichkeiten
+- Punkte
+- Leben
+- Timer
+- den eigenen Helden
+- das Monster
+- den Lebensbalken des Monsters
+
+## So funktioniert eine Runde
+
+Das Kind sieht eine Rechenaufgabe und klickt auf eine Antwort.
+
+Bei einer richtigen Antwort:
+
+- die Antwort wird positiv markiert
+- das Kind bekommt Punkte
+- das Monster verliert Lebenspunkte
+- eine kurze Rückmeldung erscheint
+
+Bei einer falschen Antwort:
+
+- die Antwort wird negativ markiert
+- das Kind verliert ein Leben
+- die richtige Lösung wird angezeigt
+
+Wenn die Zeit abläuft:
+
+- das Kind verliert ein Leben
+- das Spiel geht weiter oder endet, wenn keine Leben mehr übrig sind
+
+## Spielende
+
+Das normale Spiel endet, wenn:
+
+- das Kind genug Punkte gesammelt hat
+- oder keine Leben mehr übrig sind
+
+Nach dem Spiel kann das Kind:
+
+- zur Rangliste wechseln
+- zurück zum Hauptmenü gehen
+- ein neues Spiel starten
+
+## 10er-Übergang
+
+Der 10er-Übergang ist ein eigener Übungsmodus.
+
+Hier übt das Kind Aufgaben, bei denen über einen Zehner gerechnet wird, zum Beispiel von 47 auf 50 und dann weiter.
+
+In diesem Modus gibt es keine Antwortbuttons. Das Kind gibt die Lösung selbst in ein Eingabefeld ein.
+
+Der Screen zeigt:
+
+- den Namen des Kindes
+- die Aufgabe
+- ein Eingabefeld
+- den Punktestand
+- einen Tipp-Button
+- einen Antwort-Button
+
+## Tipp-Funktion
+
+Wenn das Kind nicht weiterweiß, kann es den Tipp-Button benutzen.
+
+Der Tipp erklärt, wie man über den nächsten Zehner rechnet.
+
+Wichtig:
+
+- richtige Antwort ohne Tipp gibt mehr Punkte
+- richtige Antwort mit Tipp gibt weniger Punkte
+
+So wird Hilfe angeboten, aber eigenständiges Rechnen wird stärker belohnt.
+
+## Rangliste
+
+Das Spiel besitzt eine Highscore-Seite.
+
+Dort werden die besten Ergebnisse gespeichert und angezeigt.
+
+Die Ranglisten sind getrennt nach:
+
+- einfach
+- mittel
+- schwer
+
+Gespeichert werden:
+
+- Name
+- Punkte
+- Spielzeit
+
+Die Speicherung erfolgt im Browser mit `localStorage`.
+
+Das bedeutet:
+
+- die Ergebnisse bleiben im selben Browser erhalten
+- es wird kein Server benötigt
+- auf einem anderen Gerät sind die Ergebnisse nicht automatisch sichtbar
+- wenn Browserdaten gelöscht werden, können die Highscores verloren gehen
+
+## Für wen ist das Spiel gedacht?
+
+Das Spiel ist für Kinder im Grundschulalter gedacht.
+
+Es soll besonders beim Üben von Rechenaufgaben helfen. Die Spielwelt mit Helden, Monstern, Punkten und Leben soll motivieren und den Kindern ein bekanntes Spielgefühl geben.
 
 
-**10er-Übergang**  
-Ein zusätzlicher Übungsmodus mit eigener Aufgabe, Eingabefeld, Tipp-Funktion und Punkteanzeige.
+## Bedienung kurz erklärt
 
-## Spiellogik
+### Startscreen
 
-Die zentrale Spiellogik liegt in `logicFunction.js`. Dort werden Aufgaben erzeugt, Antwortmöglichkeiten erstellt, 10er-Übergang-Aufgaben berechnet und Highscore-Daten vorbereitet.
+Hier beginnt das Spiel.
 
-`script.js` verbindet diese Logik mit der Oberfläche. Dort werden Screens gewechselt, Eingaben verarbeitet, Timer gestartet, Punkte und Leben angezeigt und Highscores im Browser gespeichert.
+Das Kind gibt einen Namen ein, wählt einen Helden und entscheidet sich für ein Level.
+
+### Spielscreen
+
+Hier werden die Matheaufgaben gelöst.
+
+Das Kind klickt auf eine Antwort und bekommt sofort Rückmeldung.
+
+### 10er-Übergang
+
+Hier gibt das Kind die Lösung selbst ein.
+
+Bei Bedarf kann ein Tipp angezeigt werden.
+
+### Highscore-Screen
+
+Hier sieht das Kind die Rangliste.
+
+Über den Zurück-Button gelangt es wieder zum Hauptmenü.
+
+## Feedback im Spiel
+
+Das Spiel zeigt direkt, was passiert ist:
+
+- Grün bedeutet: richtig
+- Rot bedeutet: falsch
+- Punkte zeigen den Fortschritt
+- Leben zeigen die verbleibenden Versuche
+- der Monster-Lebensbalken zeigt, wie stark das Monster noch ist
+
+## Weitere Dokumentation
+
+Zusätzliche technische Dokumentation befindet sich in:
+- `Funktionsuebersicht.md`
+
