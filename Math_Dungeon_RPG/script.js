@@ -11,7 +11,7 @@
 
     const HIGHSCORE_LEVELS = ["einfach", "mittel", "schwer"]; //Highscores einfach, mittel und schwer
 
-    const TIMER_SECS = { einfach: 30, mittel: 20, schwer: 15, zehner: 30 }; //Zeitbegrenzung
+    const TIMER_SECS = { einfach: 30, mittel: 20, schwer: 15 }; //Zeitbegrenzung
 
     const COLOR_SUCCESS = "#00b894";
     const COLOR_ERROR = "#d63031";
@@ -309,9 +309,9 @@
         setChoiceButtonsDisabled(true);
 
         if (answer === state.answer) {
-            answerIScorrect(clickedBtn);
+            answerIsCorrect(clickedBtn);
         } else {
-            answerISwrong(clickedBtn);
+            answerIsWrong(clickedBtn);
         }
 
         continueOrEndGame();
@@ -325,7 +325,7 @@
     }
 
     //Verarbeitet eine richtige Antwort: Punkte, Monster-Schaden, Highscore und Feedback.
-    function answerIScorrect(clickedBtn) {
+    function answerIsCorrect(clickedBtn) {
         state.pts += PTS_CORRECT;
         scoreEl.textContent = state.pts;
 
@@ -347,7 +347,7 @@
     }
 
     //Verarbeitet eine falsche Antwort: Leben abziehen, richtige Lösung zeigen und Feedback.
-    function answerISwrong(clickedBtn) {
+    function answerIsWrong(clickedBtn) {
         state.lives--;
         updateLifeDisplay();
         markCorrectChoice(state.answer);
@@ -481,13 +481,13 @@
             countdownEl.textContent = remain;
             //Zeitabgelaufen dann timer stoppen, life-1, animation + Feedback
             if (remain <= 0) {
-                timeISout();
+                timeIsOut();
             }
         }, 1000); //1s
     }
 
     //Verarbeitet den Fall, dass die Zeit für eine Aufgabe abgelaufen ist.
-    function timeISout() {
+    function timeIsOut() {
         stopTimer();
         state.lives--;
         updateLifeDisplay();

@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="2b4a87b4-9733-4015-99e5-93e9049c92bb" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Architektur.md" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="31" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;muhamadd557&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/ljacgu/Web-Engineering-Project.git&quot;,
+    &quot;accountId&quot;: &quot;4ee6675d-ba7a-4e12-bea5-4f0fb58346a2&quot;
+  }
+}</component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.8903361462725137" />
+      <entry key="MS500" value="4.872647354293472" />
+      <entry key="S2" value="10.769906723065708" />
+      <entry key="S5" value="15.4260318458765" />
+      <entry key="S10" value="18.694824602778898" />
+      <entry key="S30" value="44.44267243953849" />
+      <entry key="S60" value="88.10889265709974" />
+      <entry key="M2" value="147.4081703041392" />
+      <entry key="M5" value="235.92256396491183" />
+      <entry key="M10" value="325.7765378779168" />
+      <entry key="M15" value="392.3033995376097" />
+      <entry key="M30" value="537.7125290619232" />
+      <entry key="H1" value="907.6734917474025" />
+      <entry key="H2" value="2096.511943553298" />
+      <entry key="H4" value="4931.426530304599" />
+      <entry key="D1" value="19436.441953101254" />
+      <entry key="W1" value="27904.726109501957" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="0.0" />
+      <entry key="S2" value="0.0" />
+      <entry key="S5" value="0.0" />
+      <entry key="S10" value="0.0" />
+      <entry key="S30" value="8.25047964E-316" />
+      <entry key="S60" value="2.8723648085187364E-158" />
+      <entry key="M2" value="1.6948052420611917E-79" />
+      <entry key="M5" value="3.102043791478423E-32" />
+      <entry key="M10" value="1.7615284476026117E-16" />
+      <entry key="M15" value="3.153303495610604E-11" />
+      <entry key="M30" value="6.080495003930425E-6" />
+      <entry key="H1" value="0.003383142286380128" />
+      <entry key="H2" value="0.103088267615731" />
+      <entry key="H4" value="0.7358661637704242" />
+      <entry key="D1" value="6.015955622978027" />
+      <entry key="W1" value="9.28013844427907" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="1.8023922500602103" />
+      <entry key="MS500" value="4.8292038786679" />
+      <entry key="S2" value="10.747144500518505" />
+      <entry key="S5" value="15.413139836316454" />
+      <entry key="S10" value="18.687001050575287" />
+      <entry key="S30" value="44.43618847248601" />
+      <entry key="S60" value="88.10233933802029" />
+      <entry key="M2" value="147.40261308012617" />
+      <entry key="M5" value="235.9188913204484" />
+      <entry key="M10" value="325.7738668447828" />
+      <entry key="M15" value="392.3011811569514" />
+      <entry key="M30" value="537.7109199951514" />
+      <entry key="H1" value="907.6753776454948" />
+      <entry key="H2" value="2096.6130935626866" />
+      <entry key="H4" value="4932.159910117055" />
+      <entry key="D1" value="19442.456090150303" />
+      <entry key="W1" value="27914.00586572437" />
+    </decayedShown>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4,
+  &quot;fromUser&quot;: false
+}</component>
+  <component name="ProjectId" id="3FVCo2nTpFIq3sXcQ2Ad0izoJdq" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Node.js Test Runner.addHighscoreEntry sortiert Punkte absteigend und Zeit aufsteigend.executor&quot;: &quot;Run&quot;,
+    &quot;Node.js Test Runner.calculateAnswer rechnet alle Grundrechenarten richtig.executor&quot;: &quot;Run&quot;,
+    &quot;Node.js Test Runner.createEasyQuestion creates valid plus and minus questions.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;javascript.preferred.runtime.type.id&quot;: &quot;node&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/sjunh/WebstormProjects/Web-Engineering-Project/Math_Dungeon_RPG&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RunManager" selected="Node.js Test Runner.calculateAnswer rechnet alle Grundrechenarten richtig">
+    <configuration name="addHighscoreEntry sortiert Punkte absteigend und Zeit aufsteigend" type="NodeJsTestRunner" temporary="true">
+      <node-interpreter value="project" />
+      <working-dir value="$PROJECT_DIR$" />
+      <language value="JAVA_SCRIPT" />
+      <typescript-loader value="MANUAL_SETUP_IN_NODE_OPTION" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/tests/script.test.js" />
+      <test-names>
+        <test-name value="addHighscoreEntry sortiert Punkte absteigend und Zeit aufsteigend" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="calculateAnswer rechnet alle Grundrechenarten richtig" type="NodeJsTestRunner" temporary="true">
+      <node-interpreter value="project" />
+      <working-dir value="$PROJECT_DIR$" />
+      <language value="JAVA_SCRIPT" />
+      <typescript-loader value="MANUAL_SETUP_IN_NODE_OPTION" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/tests/script.test.js" />
+      <test-names>
+        <test-name value="calculateAnswer rechnet alle Grundrechenarten richtig" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="createEasyQuestion creates valid plus and minus questions" type="NodeJsTestRunner" temporary="true">
+      <node-interpreter value="project" />
+      <working-dir value="$PROJECT_DIR$" />
+      <language value="JAVA_SCRIPT" />
+      <typescript-loader value="MANUAL_SETUP_IN_NODE_OPTION" />
+      <envs />
+      <scope-kind value="TEST" />
+      <test-file value="$PROJECT_DIR$/tests/script.test.js" />
+      <test-names>
+        <test-name value="createEasyQuestion creates valid plus and minus questions" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Node.js Test Runner.addHighscoreEntry sortiert Punkte absteigend und Zeit aufsteigend" />
+        <item itemvalue="Node.js Test Runner.calculateAnswer rechnet alle Grundrechenarten richtig" />
+        <item itemvalue="Node.js Test Runner.createEasyQuestion creates valid plus and minus questions" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-31caf2ab9e3c-JavaScript-WS-261.25134.101" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="2b4a87b4-9733-4015-99e5-93e9049c92bb" name="Changes" comment="" />
+      <created>1782151020183</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1782151020183</updated>
+      <workItem from="1782151021431" duration="6444000" />
+      <workItem from="1782237716352" duration="3327000" />
+      <workItem from="1782384893453" duration="9164000" />
+      <workItem from="1782542960343" duration="9333000" />
+      <workItem from="1782553353843" duration="2583000" />
+      <workItem from="1782633775698" duration="3213000" />
+      <workItem from="1782658908432" duration="9390000" />
+      <workItem from="1782892668740" duration="4330000" />
+      <workItem from="1782897868460" duration="10731000" />
+      <workItem from="1782993811469" duration="9343000" />
+      <workItem from="1783062690995" duration="9070000" />
+      <workItem from="1783144994176" duration="4293000" />
+      <workItem from="1783163863734" duration="9899000" />
+      <workItem from="1783331900042" duration="486000" />
+      <workItem from="1783579135758" duration="1906000" />
+      <workItem from="1783595731518" duration="5841000" />
+      <workItem from="1783604879858" duration="2826000" />
+      <workItem from="1783666967589" duration="1892000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
